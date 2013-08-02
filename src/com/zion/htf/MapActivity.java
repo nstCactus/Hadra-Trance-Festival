@@ -18,6 +18,7 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 
 import com.actionbarsherlock.view.MenuItem;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -27,7 +28,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Locale;
 
-public class MapActivity extends SherlockFragmentActivity implements GoogleMap.OnMapLongClickListener, ActionBar.OnNavigationListener {
+public class MapActivity extends SherlockFragmentActivity implements ActionBar.OnNavigationListener {
     private GoogleMap map;
     private int spinnerPosition;
     private SQLiteDatabase database;
@@ -53,7 +54,6 @@ public class MapActivity extends SherlockFragmentActivity implements GoogleMap.O
 
         // Initial location
         this.map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(45.115137, 5.609024), 16.0f));
-        if(BuildConfig.DEBUG) this.map.setOnMapLongClickListener(this);
 
         // List navigation
         ActionBar actionBar = getSupportActionBar();
@@ -80,7 +80,7 @@ public class MapActivity extends SherlockFragmentActivity implements GoogleMap.O
             }
         }
         catch(SQLException e){
-            Toast.makeText(this, "Impossible de récupérer la listes des emplacements", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, this.getString(R.string.error_failed_fetching_poi), Toast.LENGTH_SHORT).show();
             Log.e(this.TAG, "Impossible de récupérer la liste des POI", e);
         }
         finally {
@@ -106,17 +106,6 @@ public class MapActivity extends SherlockFragmentActivity implements GoogleMap.O
         return true;
     }
 
-    public void onMapLongClick(LatLng latLng){
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        SupportMapFragment supportMapFragment = (SupportMapFragment)fragmentManager.findFragmentById(R.id.map);
-        GoogleMap map = supportMapFragment.getMap();
-
-        AlertDialog alert = new AlertDialog.Builder(this).create();
-        alert.setTitle("Paramètres de la carte");
-        alert.setMessage("Zoom level:" + map.getCameraPosition().toString());
-        alert.show();
-    }
-
     @Override
     public boolean onNavigationItemSelected(int itemPosition, long itemId) {
         this.spinnerPosition = itemPosition;
@@ -134,11 +123,20 @@ public class MapActivity extends SherlockFragmentActivity implements GoogleMap.O
     @Override
     public boolean onMenuItemSelected(int featureId, MenuItem item){
         boolean ret = false;
-        if(item.getTitle().equals(this.getString(R.string.action_directions))){
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?f=d&daddr=45.12465411273364,5.591188743710518"));
-            intent.setComponent(new ComponentName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity"));
-            startActivity(intent);
-            ret = true;
+        switch(item.getItemId()){
+            case R.id.action_getDirections:
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?f=d&daddr=45.12465411273364,5.591188743710518"));
+                intent.setComponent(new ComponentName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity"));
+                startActivity(intent);
+                ret = true;
+                break;
+            case R.id.action_legalNotices:
+                String licenseInfo = GooglePlayServicesUtil.getOpenSourceSoftwareLicenseInfo(getApplicationContext());
+                AlertDialog.Builder licenseDialog = new AlertDialog.Builder(this);
+                licenseDialog.setTitle(this.getString(R.string.action_legalNotices));
+                licenseDialog.setMessage(licenseInfo);
+                licenseDialog.show();
+                break;
         }
         return ret;
     }

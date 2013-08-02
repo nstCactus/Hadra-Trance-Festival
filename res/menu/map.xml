@@ -3,4 +3,8 @@
           android:title="@string/action_directions"
           android:orderInCategory="1"
           android:showAsAction="ifRoom" />
+    <item android:id="@+id/action_legalNotices"
+          android:title="@string/action_legalNotices"
+          android:orderInCategory="1"
+          android:showAsAction="never" />
 </menu>

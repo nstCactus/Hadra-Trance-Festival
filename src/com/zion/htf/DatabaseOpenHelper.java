@@ -14,7 +14,7 @@ import java.io.InputStreamReader;
 
 public class DatabaseOpenHelper extends SQLiteOpenHelper{
     private Context context;
-    private final String TAG = "Database";
+    private final String TAG = "DatabaseOpenHelper";
 
     public DatabaseOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory){
         super(context, name, factory, 1);

@@ -1,16 +1,18 @@
 <resources>
     <string name="app_name">Hadra Trance Festival</string>
 
-    <string name="main_stage">Scène principale</string>
+    <string name="main_stage">Main stage</string>
     <string name="chill_out">Chill Out</string>
 
-    <string name="title_activity_map">Plan</string>
+    <string name="title_activity_map">Map</string>
     <string name="title_activity_line_up">Line Up</string>
 
-    <string name="action_settings">Paramètres</string>
+    <string name="action_settings">Settings</string>
 	<string name="action_switchToTerrain">Terrain</string>
     <string name="action_switchToSatellite">Satellite</string>
-    <string name="action_directions">Itinéraire</string>
+    <string name="action_directions">Get directions</string>
+    <string name="action_legalNotices">Legal notice</string>
 
-    <string name="error_database_creation">Impossible de créer la base de données</string>
+    <string name="error_database_creation">Database creation failed</string>
+    <string name="error_failed_fetching_poi">Failed fetching the lst of locations</string>
 </resources>
