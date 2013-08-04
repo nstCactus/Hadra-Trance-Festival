@@ -44,7 +44,8 @@ CREATE TABLE sets(
  id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
  begin_date INTEGER NOT NULL,
  end_date INTEGER NOT NULL,
- set_type INTEGER NOT NULL REFERENCES lst__set_types(id)
+ type INTEGER NOT NULL REFERENCES lst__set_types(id),
+ artist INTEGER NOT NULL REFERENCES artists(id)
 );
 
 /********
@@ -104,3 +105,26 @@ INSERT INTO location_descriptions VALUES (1, "Arrivée de la navette (site)", "f
 INSERT INTO location_descriptions VALUES (1, "Shuttle destination (site)", "en");
 INSERT INTO location_descriptions VALUES (2, "L'éveil des sens", "fr");
 INSERT INTO location_descriptions VALUES (2, "Hippie stuff", "en");
+
+INSERT INTO lst__genres VALUES(1, "Psytrance");
+INSERT INTO lst__genres VALUES(2, "Progressive");
+INSERT INTO lst__genres VALUES(3, "Full On");
+INSERT INTO lst__genres VALUES(5, "Dark Trance");
+
+INSERT INTO artists VALUES(1, "Protonica", 2, "Allemagne", "Blablabla", "");
+INSERT INTO artists VALUES(2, "A-Team", 3, "Israël / Espagne", "Blablabla", "");
+INSERT INTO artists VALUES(3, "Electrypnose", 1, "Suisse", "Blablabla", "");
+INSERT INTO artists VALUES(4, "Hyper Frequencies", 1, "France", "Blablabla", "");
+INSERT INTO artists VALUES(5, "Everblast", 3, "États-Unis / Royaume-Uni", "Blablabla", "");
+INSERT INTO artists VALUES(6, "Hoodwink", 2, "Royaume-Uni", "Blablabla", "");
+
+INSERT INTO lst__set_types VALUES(1, "DJ set");
+INSERT INTO lst__set_types VALUES(2, "Live act");
+INSERT INTO lst__set_types VALUES(3, "Live band");
+
+INSERT INTO sets VALUES(1, "4154176800", "4154182200", 1, 1);
+INSERT INTO sets VALUES(2, "4154182200", "4154185800", 2, 2);
+INSERT INTO sets VALUES(3, "4154185800", "4154191200", 3, 3);
+INSERT INTO sets VALUES(4, "4154191200", "4154194800", 2, 4);
+INSERT INTO sets VALUES(5, "4154194800", "4154200200", 3, 5);
+INSERT INTO sets VALUES(6, "4154200200", "4154203800", 1, 6);

@@ -1,16 +1,9 @@
 package com.zion.htf;
 
 public class AlternativeStageLineUpFragment extends LineUpListFragment{
+    protected final int ID = 2;
+
     public AlternativeStageLineUpFragment(){
         super();
-        this.list = new Item[]{
-            new Artist("Driss"),
-            new Artist("Subfocus"),
-            new Artist("Secret Vibes"),
-            new Artist("Sine Die"),
-            new Artist("Love Pact"),
-            new Artist("Lakay"),
-            new Artist("Headflux")
-        };
     }
 }

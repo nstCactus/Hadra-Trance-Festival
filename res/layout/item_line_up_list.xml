@@ -8,7 +8,7 @@
     <ImageView
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:id="@+id/imageView"
+            android:id="@+id/photo"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:src="@drawable/icon"
@@ -18,26 +18,25 @@
             android:layout_height="40dp"
             android:text="Artist name"
             android:id="@+id/artist_name"
-            android:layout_toRightOf="@+id/imageView"
-            android:layout_alignTop="@+id/imageView"
+            android:layout_toRightOf="@+id/photo"
+            android:layout_alignTop="@+id/photo"
             android:textSize="20dp"
-            android:layout_marginRight="40dp"
             android:singleLine="true"
             android:paddingLeft="10dp"
             android:paddingTop="5dp"
-            android:paddingBottom="5dp"/>
+            android:paddingBottom="5dp"
+            android:layout_toLeftOf="@+id/set_type"/>
     <TextView
             android:layout_width="match_parent"
             android:layout_height="24dp"
             android:text="Genre"
             android:id="@+id/genre"
-            android:layout_alignParentRight="true"
-            android:layout_alignBottom="@+id/imageView"
-            android:layout_toRightOf="@+id/imageView"
-            android:layout_marginRight="40dp"
+            android:layout_alignBottom="@+id/photo"
+            android:layout_toRightOf="@+id/photo"
             android:singleLine="true"
             android:paddingLeft="10dp"
-            android:paddingBottom="5dp"/>
+            android:paddingBottom="5dp"
+            android:layout_toLeftOf="@+id/set_type"/>
     <TextView
             android:layout_width="40dp"
             android:layout_height="32dp"
@@ -60,5 +59,14 @@
             android:layout_alignParentStart="false"
             android:gravity="center_vertical"
             android:singleLine="true"/>
+
+    <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/set_type"
+            android:src="@drawable/ic_launcher"
+            android:layout_alignBottom="@+id/end_hour"
+            android:layout_toLeftOf="@+id/start_hour"
+            android:layout_alignParentTop="true"/>
 
 </RelativeLayout>
