@@ -1,0 +1,14 @@
+This project uses th following libraries:
+* ActionBarSherlock (http://actionbarsherlock.com):
+    Copyright 2012 Jake Wharton
+    To provide a unified user experience allowing older devices
+    to display an ICS-style actionbar
+* ViewPagerIndicator (http://viewpagerindicator.com/):
+    Copyright 2012 Jake Wharton
+    To provide a unified user experience allowing older devices
+    to use Swiping ViewPagers
+* Google Play Services Lib:
+    To display Maps
+* Pinned section listview (https://github.com/beworker/pinned-section-listview):
+    Copyright 2013 Sergej Shafarenka
+    To provide user-frendlier ListViews
