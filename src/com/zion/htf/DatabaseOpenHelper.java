@@ -16,8 +16,8 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper{
     private Context context;
     private final String TAG = "DatabaseOpenHelper";
 
-    public DatabaseOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory){
-        super(context, name, factory, 1);
+    public DatabaseOpenHelper(Context context){
+        super(context, "database.sqlite", null, 1);
 
         this.context = context;
     }

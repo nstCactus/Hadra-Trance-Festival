@@ -19,7 +19,6 @@
 
     <!-- "Implementation" of VPI theme. We just set the text size and color. -->
     <style name="CustomTabPageIndicator" parent="Widget.TabPageIndicator">
-        <!--<item name="android:textSize">50dip</item>-->
         <item name="android:textColor">#FF000000</item>
     </style>
 

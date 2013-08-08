@@ -30,7 +30,7 @@ import java.util.Locale;
 
 public class MapActivity extends SherlockFragmentActivity implements ActionBar.OnNavigationListener {
     private GoogleMap map;
-    private int spinnerPosition;
+    protected int spinnerPosition;
     private SQLiteDatabase database;
     private final String TAG = "MapActivity";
 
@@ -63,7 +63,7 @@ public class MapActivity extends SherlockFragmentActivity implements ActionBar.O
         actionBar.setListNavigationCallbacks(nav, this);
 
         // Populate the map with locations
-        DatabaseOpenHelper dbOpenHelper = new DatabaseOpenHelper(this, "database.sqlite", null);
+        DatabaseOpenHelper dbOpenHelper = new DatabaseOpenHelper(this);
         this.database = dbOpenHelper.getReadableDatabase();
         assert this.database != null;
 
@@ -75,7 +75,6 @@ public class MapActivity extends SherlockFragmentActivity implements ActionBar.O
             while(result.moveToNext()){
                 int iconResId = this.getResources().getIdentifier(result.getString(3), "drawable", "com.zion.htf");
                 String description = result.isNull(4) ? "" : result.getString(4);
-                Log.v(TAG, result.getString(2) + ": " + description);
                 this.addLocation(new LatLng(result.getDouble(0), result.getDouble(1)), result.getString(2), iconResId, description);
             }
         }
@@ -101,7 +100,6 @@ public class MapActivity extends SherlockFragmentActivity implements ActionBar.O
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getSupportMenuInflater().inflate(R.menu.map, menu);
         return true;
     }
@@ -122,14 +120,14 @@ public class MapActivity extends SherlockFragmentActivity implements ActionBar.O
 
     @Override
     public boolean onMenuItemSelected(int featureId, MenuItem item){
-        boolean ret = false;
+        boolean ret = true;
         switch(item.getItemId()){
             case R.id.action_getDirections:
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?f=d&daddr=45.12465411273364,5.591188743710518"));
                 intent.setComponent(new ComponentName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity"));
                 startActivity(intent);
-                ret = true;
                 break;
+
             case R.id.action_legalNotices:
                 String licenseInfo = GooglePlayServicesUtil.getOpenSourceSoftwareLicenseInfo(getApplicationContext());
                 AlertDialog.Builder licenseDialog = new AlertDialog.Builder(this);
@@ -137,8 +135,14 @@ public class MapActivity extends SherlockFragmentActivity implements ActionBar.O
                 licenseDialog.setMessage(licenseInfo);
                 licenseDialog.show();
                 break;
+
+            case android.R.id.home:
+                this.finish();
+                break;
+
+            default:
+                ret = false;
         }
         return ret;
     }
-
 }

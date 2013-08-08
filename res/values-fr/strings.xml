@@ -6,6 +6,7 @@
 
     <string name="title_activity_map">Plan</string>
     <string name="title_activity_line_up">Line Up</string>
+    <string name="title_activity_artist_details">Détails sur l\'artiste</string>
 
     <string name="action_settings">Paramètres</string>
 	<string name="action_switchToTerrain">Terrain</string>

@@ -13,6 +13,7 @@ import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.viewpagerindicator.PageIndicator;
 
 public class LineUpActivity extends SherlockFragmentActivity {
@@ -68,5 +69,21 @@ public class LineUpActivity extends SherlockFragmentActivity {
         public CharSequence getPageTitle(int position) {
             return TAB_TITLES[position];
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        boolean ret = true;
+
+        switch(item.getItemId()){
+            case android.R.id.home:
+                this.finish();
+                break;
+
+            default:
+                ret = false;
+        }
+
+        return ret;
     }
 }

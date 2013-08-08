@@ -24,12 +24,12 @@ public class MainActivity extends Activity {
 
     public void handler_mapButton(View view){
         Intent intent = new Intent(this, MapActivity.class);
-        startActivity(intent);
+        this.startActivity(intent);
     }
 
     public void handler_lineupButton(View view){
         Intent intent = new Intent(this, LineUpActivity.class);
-        startActivity(intent);
+        this.startActivity(intent);
     }
 
 }
