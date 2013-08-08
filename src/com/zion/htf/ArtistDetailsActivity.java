@@ -110,6 +110,7 @@ public class ArtistDetailsActivity extends SherlockFragmentActivity implements V
         else{
             Log.e(TAG, "No artist found matching id '" + artist_id + "'.");
         }
+        cursor.close();
     }
 
     @Override
