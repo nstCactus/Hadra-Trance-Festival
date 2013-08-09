@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    Copyright 2013 Yohann Bianchi
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+    or see <http://www.gnu.org/licenses/>.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/scrollView"
+            android:layout_below="@+id/genre"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="5dp"
+            android:padding="5dp">
+
+
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+            <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="125dp"
+                    android:id="@+id/artist_cover"
+                    android:layout_alignParentTop="true"
+                    android:src="@drawable/cover_penta"
+                    android:scaleType="centerCrop"
+                    android:cropToPadding="false"
+                    android:baselineAlignBottom="false"
+                    android:layout_centerHorizontal="true"
+                    android:layout_alignParentStart="false"
+                    android:layout_alignParentEnd="false"/>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="AuraQuake"
+                    android:id="@+id/label"
+                    android:layout_below="@+id/artist_cover"
+                    android:layout_alignParentLeft="true"
+                    android:layout_margin="5dp"/>
+
+            <com.zion.htf.widget.TintImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/website"
+                    android:src="@drawable/icon_website"
+                    android:clickable="true"
+                    android:layout_alignTop="@+id/label"
+                    android:layout_toLeftOf="@+id/soundcloud"
+                    android:layout_marginRight="5dp"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:background="#00000000"
+                    />
+
+            <com.zion.htf.widget.TintImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/soundcloud"
+                    android:src="@drawable/icon_soundcloud"
+                    android:clickable="true"
+                    android:layout_alignTop="@+id/website"
+                    android:layout_toLeftOf="@+id/facebook"
+                    android:layout_marginRight="5dp"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:background="#00000000"
+                    />
+
+            <com.zion.htf.widget.TintImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/facebook"
+                    android:src="@drawable/icon_facebook"
+                    android:clickable="true"
+                    android:layout_alignTop="@+id/website"
+                    android:layout_toLeftOf="@+id/myspace"
+                    android:layout_marginRight="5dp"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:background="#00000000"
+                    />
+
+            <com.zion.htf.widget.TintImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/myspace"
+                    android:src="@drawable/icon_myspace"
+                    android:clickable="true"
+                    android:layout_alignTop="@+id/soundcloud"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="5dp"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:background="#00000000"
+                    />
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Portugal"
+                    android:id="@+id/origin"
+                    android:paddingTop="5dp"
+                    android:layout_below="@+id/website" />
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Psytrance"
+                    android:id="@+id/genre"
+                    android:layout_alignTop="@+id/origin"
+                    android:layout_alignRight="@+id/myspace"
+                    android:layout_alignBottom="@+id/origin"
+                    android:paddingTop="5dp"/>
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/bio"
+                    android:layout_below="@+id/origin"/>
+        </RelativeLayout>
+    </ScrollView>
+</LinearLayout>

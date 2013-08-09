@@ -29,12 +29,35 @@
     <string name="title_activity_line_up">Line Up</string>
     <string name="title_activity_artist_details">Artist details</string>
 
+    <string name="error_database_creation">Database creation failed</string>
+    <string name="error_failed_fetching_poi">Failed fetching the list of locations</string>
+
+    <string name="about_text">
+        <![CDATA[
+            <html><body>
+                <font color="#FFFFFF">
+                    <p>This application has been written by <b>Yohann Bianchi</b> and is based on the original iPhone application written by <b>nda|code</b>. It is licenced under the <a href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt">GPL v2</a>.</p>
+                    <p>
+                        It uses the following libraries:
+                        <ul>
+                            <li><a href="http://actionbarsherlock.com">ActionBarSherlock</a>, to support the top ActionBar on older devices</li>
+                            <li><a href="http://viewpagerindicator.com">ViewPagerIndicator</a>, to support swiping panels in the Line Up section on older devices</li>
+                            <li><a href="https://github.com/beworker/pinned-section-listview">Sectionned-List-View</a>, to make sure the date is always visible when you scroll the Line Up section</li>
+                            <li>Google Play Services Library, to display the map</li>
+                        </ul>
+                    </p>
+                    </font>
+            </body></html>
+        ]]>
+    </string>
+
     <string name="action_settings">Settings</string>
 	<string name="action_switchToTerrain">Terrain</string>
     <string name="action_switchToSatellite">Satellite</string>
     <string name="action_directions">Get directions</string>
     <string name="action_legalNotices">Legal notice</string>
-
-    <string name="error_database_creation">Database creation failed</string>
-    <string name="error_failed_fetching_poi">Failed fetching the lst of locations</string>
+    <string name="action_onStage">Now on stage</string>
+    <string name="action_alarms">Alarms</string>
+    <string name="action_donate">Donate</string>
+    <string name="action_about">About</string>
 </resources>

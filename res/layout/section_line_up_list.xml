@@ -23,8 +23,8 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:divider="@color/abs__background_holo_light"
-              android:background="#ffffff">
+              android:divider="@color/abs__background_holo_dark"
+              android:background="@color/abs__background_holo_dark">
     <include
             android:id="@+id/list_item_section_header"
             layout="@android:layout/preference_category" />

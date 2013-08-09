@@ -17,7 +17,7 @@
     or see <http://www.gnu.org/licenses/>.
  */
 
-package com.zion.htf;
+package com.zion.htf.fragment;
 
 public class AlternativeStageLineUpFragment extends LineUpListFragment{
     public AlternativeStageLineUpFragment(){

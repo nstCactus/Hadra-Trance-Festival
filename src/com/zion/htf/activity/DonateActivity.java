@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<!--
+/*
     Copyright 2013 Yohann Bianchi
 
     This program is free software; you can redistribute it and/or modify
@@ -17,15 +15,12 @@
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
     or see <http://www.gnu.org/licenses/>.
--->
+ */
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/action_donate"
-          android:title="@string/action_donate"
-          android:orderInCategory="1"
-          android:showAsAction="never" />
-    <item android:id="@+id/action_about"
-          android:title="@string/action_about"
-          android:orderInCategory="2"
-          android:showAsAction="never" />
-</menu>
+package com.zion.htf.activity;
+
+import com.actionbarsherlock.app.SherlockActivity;
+
+public class DonateActivity extends SherlockActivity{
+
+}

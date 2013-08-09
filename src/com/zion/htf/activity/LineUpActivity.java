@@ -17,23 +17,25 @@
     or see <http://www.gnu.org/licenses/>.
  */
 
-package com.zion.htf;
-
-import java.util.List;
-import java.util.Vector;
+package com.zion.htf.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.viewpagerindicator.PageIndicator;
+import com.zion.htf.R;
+import com.zion.htf.fragment.AlternativeStageLineUpFragment;
+import com.zion.htf.fragment.MainStageLineUpFragment;
+
+import java.util.List;
+import java.util.Vector;
 
 public class LineUpActivity extends SherlockFragmentActivity {
     private LineUpPagerAdapter pagerAdpater;
@@ -44,6 +46,10 @@ public class LineUpActivity extends SherlockFragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_line_up);
+
+        ActionBar actionBar = this.getSupportActionBar();
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         // Ajout des fragments du viewPager
         List<Fragment> fragments = new Vector<Fragment>();

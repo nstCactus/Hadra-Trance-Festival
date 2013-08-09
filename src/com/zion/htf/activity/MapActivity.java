@@ -17,7 +17,7 @@
     or see <http://www.gnu.org/licenses/>.
  */
 
-package com.zion.htf;
+package com.zion.htf.activity;
 
 import android.app.AlertDialog;
 import android.content.ComponentName;
@@ -35,7 +35,6 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
-
 import com.actionbarsherlock.view.MenuItem;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -44,13 +43,14 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.zion.htf.DatabaseOpenHelper;
+import com.zion.htf.R;
 
 import java.util.Locale;
 
 public class MapActivity extends SherlockFragmentActivity implements ActionBar.OnNavigationListener {
     private GoogleMap map;
     protected int spinnerPosition;
-    private SQLiteDatabase database;
     private final String TAG = "MapActivity";
 
 
@@ -58,7 +58,7 @@ public class MapActivity extends SherlockFragmentActivity implements ActionBar.O
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-        
+
         FragmentManager fragmentManager = getSupportFragmentManager();
         SupportMapFragment supportMapFragment = (SupportMapFragment)fragmentManager.findFragmentById(R.id.map);
         this.map = supportMapFragment.getMap();
@@ -80,29 +80,32 @@ public class MapActivity extends SherlockFragmentActivity implements ActionBar.O
         nav.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
         actionBar.setListNavigationCallbacks(nav, this);
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         // Populate the map with locations
         DatabaseOpenHelper dbOpenHelper = new DatabaseOpenHelper(this);
-        this.database = dbOpenHelper.getReadableDatabase();
-        assert this.database != null;
+        SQLiteDatabase database = dbOpenHelper.getReadableDatabase();
+        assert database != null;
 
         try{
             String langCode = Locale.getDefault().getLanguage().equals("fr") ? "fr" : "en";
             String query = "SELECT latitude, longitude, label, icon, description FROM locations AS loc INNER JOIN lst__location_types AS lty ON lty.id = loc.location_type AND lty.lang_code = ? LEFT JOIN location_descriptions AS ldc ON ldc.id = loc.location_description AND ldc.lang_code = ?;";
-            Cursor result = this.database.rawQuery(query, new String[]{langCode, langCode});
+            Cursor cursor = database.rawQuery(query, new String[]{langCode, langCode});
 
-            while(result.moveToNext()){
-                int iconResId = this.getResources().getIdentifier(result.getString(3), "drawable", "com.zion.htf");
-                String description = result.isNull(4) ? "" : result.getString(4);
-                this.addLocation(new LatLng(result.getDouble(0), result.getDouble(1)), result.getString(2), iconResId, description);
+            while(cursor.moveToNext()){
+                int iconResId = this.getResources().getIdentifier(cursor.getString(3), "drawable", "com.zion.htf");
+                String description = cursor.isNull(4) ? "" : cursor.getString(4);
+                this.addLocation(new LatLng(cursor.getDouble(0), cursor.getDouble(1)), cursor.getString(2), iconResId, description);
             }
+            cursor.close();
         }
         catch(SQLException e){
             Toast.makeText(this, this.getString(R.string.error_failed_fetching_poi), Toast.LENGTH_SHORT).show();
             Log.e(this.TAG, "Impossible de récupérer la liste des POI", e);
         }
         finally {
-            this.database.close();
+            database.close();
         }
     }
 

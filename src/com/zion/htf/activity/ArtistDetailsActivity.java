@@ -17,7 +17,7 @@
     or see <http://www.gnu.org/licenses/>.
  */
 
-package com.zion.htf;
+package com.zion.htf.activity;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -25,7 +25,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -34,6 +33,8 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.MenuItem;
+import com.zion.htf.DatabaseOpenHelper;
+import com.zion.htf.R;
 
 public class ArtistDetailsActivity extends SherlockFragmentActivity implements View.OnClickListener {
     private static final String TAG = "ArtistDetailsActivity";
@@ -110,7 +111,8 @@ public class ArtistDetailsActivity extends SherlockFragmentActivity implements V
         else{
             Log.e(TAG, "No artist found matching id '" + artist_id + "'.");
         }
-        cursor.close();
+        if(!cursor.isClosed()) cursor.close();
+        database.close();
     }
 
     @Override

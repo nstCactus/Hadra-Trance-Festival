@@ -17,15 +17,19 @@
     or see <http://www.gnu.org/licenses/>.
  */
 
-package com.zion.htf;
+package com.zion.htf.activity;
 
-import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.View;
 
-public class MainActivity extends Activity {
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
+import com.zion.htf.R;
+
+public class MainActivity extends SherlockActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,11 +37,10 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        this.getSupportMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
@@ -49,6 +52,26 @@ public class MainActivity extends Activity {
     public void handler_lineupButton(View view){
         Intent intent = new Intent(this, LineUpActivity.class);
         this.startActivity(intent);
+    }
+
+    @Override
+    public boolean onMenuItemSelected(int featureId, MenuItem item){
+        boolean ret = true;
+
+        switch(item.getItemId()){
+            case R.id.action_donate:
+                this.startActivity(new Intent(this, DonateActivity.class));
+                break;
+
+            case R.id.action_about:
+                startActivity(new Intent(this, AboutActivity.class));
+                break;
+
+            default:
+                ret = false;
+        }
+
+        return ret;
     }
 
 }

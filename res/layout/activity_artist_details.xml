@@ -46,43 +46,49 @@
             android:layout_alignParentLeft="true"
             android:layout_margin="5dp"/>
 
-    <ImageView
+    <com.zion.htf.widget.TintImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/website"
             android:src="@drawable/icon_website"
             android:clickable="true"
             android:layout_alignTop="@+id/label"
-            android:layout_toLeftOf="@+id/facebook"
-            android:layout_marginRight="5dp"
-            android:focusable="true"
-            android:focusableInTouchMode="true"/>
-
-    <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/facebook"
-            android:src="@drawable/icon_facebook"
-            android:clickable="true"
-            android:layout_alignTop="@+id/website"
             android:layout_toLeftOf="@+id/soundcloud"
             android:layout_marginRight="5dp"
             android:focusable="true"
-            android:focusableInTouchMode="true"/>
+            android:focusableInTouchMode="true"
+            android:background="#00000000"
+            />
 
-    <ImageView
+    <com.zion.htf.widget.TintImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/soundcloud"
             android:src="@drawable/icon_soundcloud"
             android:clickable="true"
             android:layout_alignTop="@+id/website"
+            android:layout_toLeftOf="@+id/facebook"
+            android:layout_marginRight="5dp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:background="#00000000"
+            />
+
+    <com.zion.htf.widget.TintImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/facebook"
+            android:src="@drawable/icon_facebook"
+            android:clickable="true"
+            android:layout_alignTop="@+id/website"
             android:layout_toLeftOf="@+id/myspace"
             android:layout_marginRight="5dp"
             android:focusable="true"
-            android:focusableInTouchMode="true"/>
+            android:focusableInTouchMode="true"
+            android:background="#00000000"
+            />
 
-    <ImageView
+    <com.zion.htf.widget.TintImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/myspace"
@@ -92,16 +98,18 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="5dp"
             android:focusable="true"
-            android:focusableInTouchMode="true"/>
+            android:focusableInTouchMode="true"
+            android:background="#00000000"
+            />
 
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Portugal"
             android:id="@+id/origin"
-            android:layout_below="@+id/label"
-            android:layout_alignLeft="@+id/label"
-            android:paddingTop="5dp"/>
+            android:paddingTop="5dp"
+            android:layout_below="@+id/website"
+            android:layout_alignLeft="@+id/scrollView"/>
 
     <TextView
             android:layout_width="wrap_content"
