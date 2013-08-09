@@ -1,8 +1,7 @@
 apply plugin: 'android'
 
 dependencies {
-    //compile fileTree(dir: 'libs', include: '*.jar')
-    //compile file('../libs/android-support-v4.jar');
+    compile fileTree(dir: 'libs', include: '*.jar')
     compile project(':google-play-services_lib')
     compile project(':ActionBarSherlock_lib')
     compile project(':ViewPagerIndicator_lib')

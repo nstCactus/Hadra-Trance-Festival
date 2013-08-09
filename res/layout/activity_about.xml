@@ -10,10 +10,19 @@
 
     <WebView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="fill_parent"
             android:id="@+id/webView"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            />
+            android:layout_above="@+id/donate_button"/>
+
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Donate"
+            android:id="@+id/donate_button"
+            android:layout_alignParentBottom="true"
+            android:layout_alignLeft="@+id/webView"
+            android:onClick="onDonatePressed"/>
 
 </RelativeLayout>
