@@ -42,6 +42,20 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="com.zion.htf.permission.MAPS_RECEIVE"/>
 
+    <!-- PayPal -->
+    <!-- for card.io card scanning -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <!-- for most things, including card.io and paypal -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+    <!-- Camera features -->
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
+    <uses-feature android:name="android.hardware.camera.flash" android:required="false" />
+
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -78,7 +92,20 @@
                 android:name=".activity.AboutActivity"
                 android:label="@string/action_about"
                 android:parentActivityName=".activity.MainActivity"
-                android:theme="@android:style/Theme.Dialog" />
+                 />
+
+        <!-- PayPal -->
+        <service android:name="com.paypal.android.sdk.payments.PayPalService" android:exported="false"/>
+
+        <activity android:name="com.paypal.android.sdk.payments.PaymentActivity" />
+        <activity android:name="com.paypal.android.sdk.payments.LoginActivity" />
+        <activity android:name="com.paypal.android.sdk.payments.PaymentMethodActivity" />
+        <activity android:name="com.paypal.android.sdk.payments.PaymentConfirmActivity" />
+        <activity android:name="com.paypal.android.sdk.payments.PaymentCompletedActivity" />
+        <activity
+                android:name="io.card.payment.CardIOActivity"
+                android:configChanges="keyboardHidden|orientation" />
+        <activity android:name="io.card.payment.DataEntryActivity" />
 
         <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyDueyhcgOJaNXOR3lz4VQJQ7NJE9Nn90HI"/>
         </application>

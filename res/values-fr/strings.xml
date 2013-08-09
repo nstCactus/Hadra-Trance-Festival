@@ -35,4 +35,5 @@
     <string name="action_alarms">Alarmes</string>
     <string name="action_donate">Donation</string>
     <string name="action_about">À propos</string>
+    <string name="donation_label">Generous donation</string>
 </resources>
