@@ -90,9 +90,15 @@
 
         <activity
                 android:name=".activity.AboutActivity"
+                android:theme="@android:style/Theme.Dialog"
+                android:excludeFromRecents="true"
                 android:label="@string/action_about"
-                android:parentActivityName=".activity.MainActivity"
-                 />
+                android:parentActivityName=".activity.MainActivity" />
+
+        <activity
+                android:name=".activity.DonateActivity"
+                android:label="@string/action_donate"
+                android:parentActivityName=".activity.MainActivity"/>
 
         <!-- PayPal -->
         <service android:name="com.paypal.android.sdk.payments.PayPalService" android:exported="false"/>
