@@ -36,4 +36,7 @@
     <string name="action_donate">Donation</string>
     <string name="action_about">À propos</string>
     <string name="donation_label">Generous donation</string>
+    <string name="donation_text">Je développe cette application bénévolement, sur mon temps libre.
+\n\nSi tu le souhaites tu peux soutenir cette démarche en donnant quelques dollars.</string>
+    <string name="donate_joke">Et souviens-toi : à chaque fois que tu refuse de faire un don, un enfant se fait une coupe mullet !</string>
 </resources>
