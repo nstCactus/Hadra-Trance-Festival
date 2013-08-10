@@ -28,6 +28,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.MenuItem;
 import com.paypal.android.sdk.payments.PayPalPayment;
 import com.paypal.android.sdk.payments.PayPalService;
 import com.paypal.android.sdk.payments.PaymentActivity;
@@ -53,6 +54,8 @@ public class DonateActivity extends SherlockActivity implements SeekBar.OnSeekBa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.activity_donate);
+
+        this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         this.seekBar = (SeekBar)this.findViewById(R.id.seekBar);
         this.seekBar.setOnSeekBarChangeListener(this);
@@ -128,5 +131,21 @@ public class DonateActivity extends SherlockActivity implements SeekBar.OnSeekBa
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        boolean ret = true;
+
+        switch(item.getItemId()){
+            case android.R.id.home:
+                this.finish();
+                break;
+
+            default:
+                ret = false;
+        }
+
+        return ret;
     }
 }
