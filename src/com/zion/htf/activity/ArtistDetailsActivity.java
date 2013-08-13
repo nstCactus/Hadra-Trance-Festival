@@ -32,6 +32,7 @@ import android.widget.TextView;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.zion.htf.DatabaseOpenHelper;
 import com.zion.htf.R;
@@ -116,6 +117,12 @@ public class ArtistDetailsActivity extends SherlockFragmentActivity implements V
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getSupportMenuInflater().inflate(R.menu.artist_details, menu);
+        return true;
+    }
+
+    @Override
     public void onClick(View v){
         Intent intent = null;
 
@@ -151,7 +158,7 @@ public class ArtistDetailsActivity extends SherlockFragmentActivity implements V
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onMenuItemSelected(int featureId, MenuItem item) {
         boolean ret = true;
 
         switch(item.getItemId()){
@@ -166,7 +173,7 @@ public class ArtistDetailsActivity extends SherlockFragmentActivity implements V
         return ret;
     }
 
-        private void dimButton(ImageView iv){
+    private void dimButton(ImageView iv){
         if(Build.VERSION.SDK_INT >= 16) iv.setImageAlpha(64);
         else                            iv.setAlpha(64);
     }

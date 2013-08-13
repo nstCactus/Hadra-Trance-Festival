@@ -19,7 +19,6 @@
 
 package com.zion.htf.activity;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -39,7 +38,6 @@ public class MainActivity extends SherlockActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         this.getSupportMenuInflater().inflate(R.menu.main, menu);
         return true;
     }

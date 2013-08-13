@@ -32,11 +32,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class DatabaseOpenHelper extends SQLiteOpenHelper{
+    private static final int DB_VERSION = 2;
     private Context context;
     private final String TAG = "DatabaseOpenHelper";
 
     public DatabaseOpenHelper(Context context){
-        super(context, "database.sqlite", null, 1);
+        super(context, "database.sqlite", null, DB_VERSION);
 
         this.context = context;
     }
@@ -58,20 +59,20 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper{
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int from, int to) {
-//        try{
-//            if(from < 2){
-//                this.applyScript(sqLiteDatabase, "database_upgrade_v2.sql");
-//            }
-//        }
-//        catch(IOException e){
-//            Toast.makeText(this.context, R.string.error_database_creation, Toast.LENGTH_SHORT).show();
-//            Log.e(this.TAG, "Impossible de lire le script de mise à jour de la base", e);
-//        }
-//
-//        catch(SQLException e){
-//            Toast.makeText(this.context, R.string.error_database_creation, Toast.LENGTH_SHORT).show();
-//            Log.e(this.TAG, "Une requête du script a échoué", e);
-//        }
+        try{
+            if(from < 2){
+                this.applyScript(sqLiteDatabase, "database_upgrade_v2.sql");
+            }
+        }
+        catch(IOException e){
+            Toast.makeText(this.context, R.string.error_database_creation, Toast.LENGTH_SHORT).show();
+            Log.e(this.TAG, "Impossible de lire le script de mise à jour de la base", e);
+        }
+
+        catch(SQLException e){
+            Toast.makeText(this.context, R.string.error_database_creation, Toast.LENGTH_SHORT).show();
+            Log.e(this.TAG, "Une requête du script a échoué", e);
+        }
     }
 
     /**

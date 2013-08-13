@@ -35,6 +35,7 @@ import com.zion.htf.Item;
 import com.zion.htf.R;
 import com.zion.htf.Set;
 import com.zion.htf.activity.ArtistDetailsActivity;
+import com.zion.htf.activity.LineUpActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.List;

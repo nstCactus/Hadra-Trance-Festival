@@ -22,17 +22,21 @@ package com.zion.htf.fragment;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ListView;
 
+import com.actionbarsherlock.app.SherlockFragment;
 import com.zion.htf.DatabaseOpenHelper;
 import com.zion.htf.Item;
 import com.zion.htf.R;
 import com.zion.htf.Set;
+import com.zion.htf.activity.LineUpActivity;
 import com.zion.htf.adapter.LineUpAdapter;
 
 import java.text.SimpleDateFormat;
@@ -40,8 +44,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class LineUpListFragment extends Fragment{
+public class LineUpListFragment extends SherlockFragment {
     private final String TAG = "LineUpListFragment";
+    public static final String STAGE_NAME = "STAGE_NAME";
+
     protected Item[] list;
     protected String stage;
 
@@ -57,13 +63,42 @@ public class LineUpListFragment extends Fragment{
     /* END Columns indexes for convenience */
 
     @Override
+    public void onCreate(Bundle savedInstance){
+        super.onCreate(savedInstance);
+        this.stage = this.getArguments().getString(STAGE_NAME);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+        if(this.stage != null) Log.e(TAG, "stageName is null. You must instantiate this using LineUpListFragment.newInstance(String stageName).");
+
         View view = inflater.inflate(R.layout.fragment_line_up_list, container, false);
 
-        ListView listView = (ListView)view.findViewById(R.id.line_up_list);
+        final ListView listView = (ListView)view.findViewById(R.id.line_up_list);
         listView.setAdapter(new LineUpAdapter<Item>(this.getActivity(), R.layout.item_line_up_list, R.id.label, this.getAllSets()));
 
+        if(LineUpActivity.sectionHeaderHeight == 0){
+            listView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    LineUpActivity.sectionHeaderHeight = listView.getChildAt(0).getMeasuredHeight();
+                    if(Build.VERSION.SDK_INT >= 16) listView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    else                            listView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
+            });
+        }
+
+        view.setTag(this.stage);
         return view;
+    }
+
+    public static final LineUpListFragment newInstance(String stageName){
+        LineUpListFragment fragment = new LineUpListFragment();
+        Bundle args = new Bundle(1);
+        args.putString(STAGE_NAME, stageName);
+        fragment.setArguments(args);
+
+        return fragment;
     }
 
     protected List<Item> getAllSets(){

@@ -65,4 +65,12 @@
 \n\nYou may support this by donating some euros.</string>
     <string name="donate_joke">And remember: everytime you don\'t donate, a kid gets a mullet!
     </string>
+    <string name="error_too_early_title">Too early...</string>
+    <string name="error_too_early_message">Hadra Trance Festival has not begun yet. Please retry
+        after thursday, august 22nd at 9pm.
+    </string>
+    <string name="error_too_late_title">Too late...</string>
+    <string name="error_too_late_message">Hadra Trance Festival is over since sunday, august 25th at 6pm.
+        See you next year!
+    </string>
 </resources>

@@ -24,6 +24,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.LayoutParams;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -36,7 +41,6 @@ import com.paypal.android.sdk.payments.PaymentConfirmation;
 import com.zion.htf.R;
 
 import org.json.JSONException;
-
 import java.math.BigDecimal;
 
 public class DonateActivity extends SherlockActivity implements SeekBar.OnSeekBarChangeListener{
@@ -70,6 +74,26 @@ public class DonateActivity extends SherlockActivity implements SeekBar.OnSeekBa
         startService(intent);
 
         this.onProgressChanged(this.seekBar, this.seekBar.getProgress(), false);
+
+        final ScrollView scrollView = (ScrollView)this.findViewById(R.id.donate_scrollView);
+        ViewTreeObserver observer = scrollView.getViewTreeObserver();
+        if(observer != null){
+            observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    TextView donateJoke = (TextView) findViewById(R.id.donate_joke);
+                    int viewHeight = scrollView.getMeasuredHeight();
+                    LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+                    params.setMargins(0, viewHeight, 0, 0);
+                    donateJoke.setLayoutParams(params);
+                }
+            });
+        }
+    }
+
+    public void toggleDonateJokeImage(View button){
+        ImageView image = (ImageView)this.findViewById(R.id.donate_joke_image);
+        image.setVisibility(image.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
     }
 
     @Override
