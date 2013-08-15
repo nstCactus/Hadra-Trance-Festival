@@ -20,14 +20,11 @@
 package com.zion.htf.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.hb.views.PinnedSectionListView;
@@ -35,13 +32,25 @@ import com.zion.htf.Application;
 import com.zion.htf.Item;
 import com.zion.htf.R;
 import com.zion.htf.Set;
-import com.zion.htf.activity.ArtistDetailsActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
-public class LineUpAdapter<T> extends ArrayAdapter<T> implements PinnedSectionListView.PinnedSectionListAdapter, AdapterView.OnItemClickListener{
+public class LineUpAdapter<T> extends ArrayAdapter<T> implements PinnedSectionListView.PinnedSectionListAdapter{
+	static class ItemViewHolder {
+		ImageView artistPhoto;
+		TextView artistName;
+		TextView genre;
+		TextView startHour;
+		TextView endHour;
+
+	}
+
+	static class SectionViewHolder{
+		TextView sectionHeader;
+	}
+
 	protected LayoutInflater   layoutInflater   = (LayoutInflater)this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	protected SimpleDateFormat simpleDateFormat = Locale.getDefault().getLanguage().equals("fr") ? new SimpleDateFormat("HH:mm") : new SimpleDateFormat("h:mm a");
 
@@ -51,37 +60,55 @@ public class LineUpAdapter<T> extends ArrayAdapter<T> implements PinnedSectionLi
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent){
-		View view;
 		if(this.getItemViewType(position) == Item.TYPE_SECTION){
+			SectionViewHolder holder;
+
 			if(convertView == null){
-				view = this.layoutInflater.inflate(R.layout.section_line_up_list, parent, false);
+				// Inflate the view
+				convertView = this.layoutInflater.inflate(R.layout.section_line_up_list, parent, false);
+
+				// Get reference to its field and store it in the ViewHolder
+				holder = new SectionViewHolder();
+				holder.sectionHeader = (TextView)convertView.findViewById(R.id.list_item_section_header);
+
+				// Store the ViewHolder in the View's tag for future retrieval
+				convertView.setTag(holder);
 			}
 			else{
-				view = convertView;
+				holder = (SectionViewHolder)convertView.getTag();
 			}
 
-			TextView sectionHeader = (TextView)view.findViewById(R.id.list_item_section_header);
-			sectionHeader.setText(this.getItem(position).toString());
+			holder.sectionHeader.setText(this.getItem(position).toString());
 		}
 		else{
+			ItemViewHolder holder;
 			Set set = (Set)this.getItem(position);
-			view = super.getView(position, convertView, parent);
 
-			TextView genreField = (TextView)view.findViewById(R.id.genre);
-			genreField.setText(set.getGenre());
+			if(null == convertView){
+				// Inflate the view
+				convertView = super.getView(position, convertView, parent);
 
-			TextView beginDateField = (TextView)view.findViewById(R.id.start_hour);
-			beginDateField.setText(this.simpleDateFormat.format(set.getBeginDate()));
+				// Get references to its fields and store them in the ViewHolder
+				holder = new ItemViewHolder();
+				holder.artistName = (TextView)convertView.findViewById(R.id.label);
+				holder.genre = (TextView)convertView.findViewById(R.id.genre);
+				holder.startHour = (TextView)convertView.findViewById(R.id.start_hour);
+				holder.endHour = (TextView)convertView.findViewById(R.id.end_hour);
+				holder.artistPhoto = (ImageView)convertView.findViewById(R.id.artist_photo);
 
-			TextView endDateField = (TextView)view.findViewById(R.id.end_hour);
-			endDateField.setText(this.simpleDateFormat.format(set.getEndDate()));
+				convertView.setTag(holder);
+			}
+			else{
+				holder = (ItemViewHolder)convertView.getTag();
+			}
 
-			ImageView artistPhoto = (ImageView)view.findViewById(R.id.artist_photo);
-			artistPhoto.setImageResource(this.getPhotoResourceId(set.getPhotoResourceName()));
-
-			((ListView)parent).setOnItemClickListener(this);
+			holder.artistName.setText(set.toString());
+			holder.startHour.setText(this.simpleDateFormat.format(set.getBeginDate()));
+			holder.endHour.setText(this.simpleDateFormat.format(set.getEndDate()));
+			holder.genre.setText(set.getGenre());
+			holder.artistPhoto.setImageResource(this.getPhotoResourceId(set.getPhotoResourceName()));
 		}
-		return view;
+		return convertView;
 	}
 
 	@Override
@@ -98,16 +125,6 @@ public class LineUpAdapter<T> extends ArrayAdapter<T> implements PinnedSectionLi
 	@Override
 	public boolean isItemViewTypePinned(int viewType){
 		return viewType == Item.TYPE_SECTION;
-	}
-
-	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-		Item item = (Item)this.getItem(position);
-		if(item.getType() == Item.TYPE_ITEM){
-			Intent intent = new Intent(this.getContext(), ArtistDetailsActivity.class);
-			intent.putExtra("artist_id", ((Set)item).getArtistId());
-			this.getContext().startActivity(intent);
-		}
 	}
 
 	public int getPhotoResourceId(String resourceName){

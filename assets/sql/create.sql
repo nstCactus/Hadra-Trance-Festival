@@ -69,28 +69,28 @@ CREATE TABLE sets(
 /********
  * Data *
  ********/
-INSERT INTO "lst__location_types" VALUES (0, 'Bar', 'marker_', 'fr');
-INSERT INTO "lst__location_types" VALUES (0, 'Bar', 'marker_', 'en');
-INSERT INTO "lst__location_types" VALUES (1, 'Stand Hadra', 'marker_', 'fr');
-INSERT INTO "lst__location_types" VALUES (1, 'Stand Hadra', 'marker_', 'en');
-INSERT INTO "lst__location_types" VALUES (2, 'Espace des sens', 'marker_', 'fr');
-INSERT INTO "lst__location_types" VALUES (2, 'Espace des sens', 'marker_', 'en');
-INSERT INTO "lst__location_types" VALUES (3, 'Douches', 'marker_', 'fr');
-INSERT INTO "lst__location_types" VALUES (3, 'Douches', 'marker_', 'en');
-INSERT INTO "lst__location_types" VALUES (4, 'Scène', 'marker_', 'fr');
-INSERT INTO "lst__location_types" VALUES (4, 'Scène', 'marker_', 'en');
-INSERT INTO "lst__location_types" VALUES (5, 'Toilettes', 'marker_', 'fr');
-INSERT INTO "lst__location_types" VALUES (5, 'Toilettes', 'marker_', 'en');
-INSERT INTO "lst__location_types" VALUES (6, 'Eau potable', 'marker_', 'fr');
-INSERT INTO "lst__location_types" VALUES (6, 'Eau potable', 'marker_', 'en');
-INSERT INTO "lst__location_types" VALUES (7, 'Départ navette', 'marker_', 'fr');
-INSERT INTO "lst__location_types" VALUES (7, 'Départ navette', 'marker_', 'en');
-INSERT INTO "lst__location_types" VALUES (8, 'Camping', 'marker_', 'fr');
-INSERT INTO "lst__location_types" VALUES (8, 'Camping', 'marker_', 'en');
-INSERT INTO "lst__location_types" VALUES (9, 'Poste de secours', 'marker_', 'fr');
-INSERT INTO "lst__location_types" VALUES (9, 'Poste de secours', 'marker_', 'en');
-INSERT INTO "lst__location_types" VALUES (10, 'Restaurants', 'marker_', 'fr');
-INSERT INTO "lst__location_types" VALUES (10, 'Restaurants', 'marker_', 'en');
+INSERT INTO "lst__location_types" VALUES (0, 'Bar', 'marker_bar', 'fr');
+INSERT INTO "lst__location_types" VALUES (0, 'Bar', 'marker_bar', 'en');
+INSERT INTO "lst__location_types" VALUES (1, 'Stand Hadra', 'marker_hadra', 'fr');
+INSERT INTO "lst__location_types" VALUES (1, 'Hadra''s boot', 'marker_hadra', 'en');
+INSERT INTO "lst__location_types" VALUES (2, 'Espace des sens', 'marker_chillout', 'fr');
+INSERT INTO "lst__location_types" VALUES (2, 'Chillout', 'marker_chillout', 'en');
+INSERT INTO "lst__location_types" VALUES (3, 'Douches', 'marker_shower', 'fr');
+INSERT INTO "lst__location_types" VALUES (3, 'Showers', 'marker_shower', 'en');
+INSERT INTO "lst__location_types" VALUES (4, 'Scène', 'marker_stage', 'fr');
+INSERT INTO "lst__location_types" VALUES (4, 'Stage', 'marker_stage', 'en');
+INSERT INTO "lst__location_types" VALUES (5, 'Toilettes', 'marker_toilet', 'fr');
+INSERT INTO "lst__location_types" VALUES (5, 'Toilets', 'marker_toilet', 'en');
+INSERT INTO "lst__location_types" VALUES (6, 'Eau potable', 'marker_water', 'fr');
+INSERT INTO "lst__location_types" VALUES (6, 'Drinkable water', 'marker_water', 'en');
+INSERT INTO "lst__location_types" VALUES (7, 'Navette', 'marker_shuttle', 'fr');
+INSERT INTO "lst__location_types" VALUES (7, 'Shuttle', 'marker_shuttle', 'en');
+INSERT INTO "lst__location_types" VALUES (8, 'Camping', 'marker_camp', 'fr');
+INSERT INTO "lst__location_types" VALUES (8, 'Campsite', 'marker_camp', 'en');
+INSERT INTO "lst__location_types" VALUES (9, 'Poste de secours', 'marker_rescue', 'fr');
+INSERT INTO "lst__location_types" VALUES (9, 'Rescue center', 'marker_rescue', 'en');
+INSERT INTO "lst__location_types" VALUES (10, 'Restaurants', 'marker_restaurant', 'fr');
+INSERT INTO "lst__location_types" VALUES (10, 'Restaurants', 'marker_restaurant', 'en');
 
 INSERT INTO "locations" VALUES (1, 45.1142451237965, 5.60978658071747, 0, NULL);
 INSERT INTO "locations" VALUES (2, 45.1177315966413, 5.61004943720093, 0, NULL);

@@ -96,6 +96,7 @@ public class MapActivity extends SherlockFragmentActivity implements ActionBar.O
 			while(cursor.moveToNext()){
 				int iconResId = this.getResources().getIdentifier(cursor.getString(3), "drawable", "com.zion.htf");
 				String description = cursor.isNull(4) ? "" : cursor.getString(4);
+				//if(iconResId == 0) iconResId = R.drawable.marker_generic;
 				this.addLocation(new LatLng(cursor.getDouble(0), cursor.getDouble(1)), cursor.getString(2), iconResId, description);
 			}
 			if(!cursor.isClosed()) cursor.close();
@@ -115,8 +116,10 @@ public class MapActivity extends SherlockFragmentActivity implements ActionBar.O
 
 	private void addLocation(LatLng latLng, String type, int iconResId, String description){
 		MarkerOptions options = new MarkerOptions();
-		options.position(latLng).title(type).snippet(description);
-		options.icon(BitmapDescriptorFactory.fromResource(iconResId));
+		options.position(latLng)
+			   .title(type)
+			   .snippet(description);
+		if(0 != iconResId) options.icon(BitmapDescriptorFactory.fromResource(iconResId));
 		this.map.addMarker(options);
 	}
 

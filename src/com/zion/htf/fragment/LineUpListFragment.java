@@ -19,6 +19,7 @@
 
 package com.zion.htf.fragment;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockFragment;
@@ -34,6 +36,7 @@ import com.zion.htf.Application;
 import com.zion.htf.Item;
 import com.zion.htf.R;
 import com.zion.htf.Set;
+import com.zion.htf.activity.ArtistDetailsActivity;
 import com.zion.htf.activity.LineUpActivity;
 import com.zion.htf.adapter.LineUpAdapter;
 
@@ -44,7 +47,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class LineUpListFragment extends SherlockFragment{
+public class LineUpListFragment extends SherlockFragment implements AdapterView.OnItemClickListener{
 	private static final String               TAG          = "LineUpListFragment";
 	private static       SQLiteDatabaseHelper dbOpenHelper = Application.getDbHelper();
 
@@ -61,7 +64,8 @@ public class LineUpListFragment extends SherlockFragment{
 	protected final int COLUMN_END_DATE   = 4;
 	protected final int COLUMN_TYPE       = 5;
 	protected final int COLUMN_PICTURE    = 6;
-	protected final int COLUMN_ARTIST_ID  = 7;
+	protected final int COLUMN_ARTIST_ID = 7;
+	private ListView listView;
 	/* END Columns indexes for convenience */
 
 	protected LineUpListFragment(Bundle args){
@@ -82,23 +86,48 @@ public class LineUpListFragment extends SherlockFragment{
 
 		View view = inflater.inflate(R.layout.fragment_line_up_list, container, false);
 
-		final ListView listView = (ListView)view.findViewById(R.id.line_up_list);
-		listView.setAdapter(new LineUpAdapter<Item>(this.getActivity(), R.layout.item_line_up_list, R.id.label, this.getAllSets()));
+		this.listView = (ListView)view.findViewById(R.id.line_up_list);
+		this.listView.setAdapter(new LineUpAdapter<Item>(this.getActivity(), R.layout.item_line_up_list, R.id.label, this.getAllSets()));
 
 		if(LineUpActivity.sectionHeaderHeight == 0){
-			listView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener(){
-				@Override
-				public void onGlobalLayout(){
-					LineUpActivity.sectionHeaderHeight = 64;//listView.getChildAt(0).getMeasuredHeight();
-					if(Build.VERSION.SDK_INT >= 16) listView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-					else listView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-				}
-			});
+			final ViewTreeObserver viewTreeObserver = this.listView.getViewTreeObserver();
+			if(null == viewTreeObserver){
+				Log.e(TAG, "Can't get a ViewTreeObserver to get the height of a ListView section header. Falling back to default value");
+				LineUpActivity.sectionHeaderHeight = 64;
+			}
+			else{
+				viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener(){
+					@SuppressWarnings("ConstantConditions")
+					@Override
+					public void onGlobalLayout(){
+						if(1 > listView.getChildCount())
+							throw new RuntimeException("No children found in ListView. This is most likely due to an empty result set for this.getAllSets()");
+						LineUpActivity.sectionHeaderHeight = listView.getChildAt(0).getMeasuredHeight();
+						if(Build.VERSION.SDK_INT >= 16) listView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+						else							listView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+					}
+				});
+			}
 		}
+
+		this.listView.setOnItemClickListener(this);
 
 		view.setTag(this.stage);
 		return view;
 	}
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position, long id){
+		Item item = (Item)this.listView.getAdapter().getItem(position);
+		if(Item.TYPE_ITEM == item.getType()){
+			if(item.getType() == Item.TYPE_ITEM){
+				Intent intent = new Intent(this.getActivity(), ArtistDetailsActivity.class);
+				intent.putExtra("artist_id", ((Set)item).getArtistId());
+				this.getActivity().startActivity(intent);
+			}
+		}
+	}
+
 
 	public static final LineUpListFragment newInstance(String stageName){
 		Bundle args = new Bundle(1);
