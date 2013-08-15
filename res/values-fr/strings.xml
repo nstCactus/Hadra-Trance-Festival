@@ -20,31 +20,37 @@
 -->
 
 <resources>
-    <string name="main_stage">Scène principale</string>
+	<string name="main_stage">Scène principale</string>
 
-    <string name="title_activity_map">Plan</string>
-    <string name="title_activity_artist_details">Détails sur l\'artiste</string>
+	<string name="title_activity_map">Plan</string>
+	<string name="title_activity_artist_details">Détails sur l\'artiste</string>
 
-    <string name="error_database_creation">Impossible de créer la base de données</string>
-    <string name="error_failed_fetching_poi">Impossible de récupérer la listes des emplacements</string>
+	<string name="error_database_creation">Impossible de créer la base de données</string>
+	<string name="error_failed_fetching_poi">Impossible de récupérer la listes des emplacements
+	</string>
 
-    <string name="action_settings">Paramètres</string>
-    <string name="action_directions">Itinéraire</string>
-    <string name="action_legalNotices">Mentions légales</string>
-    <string name="action_onStage">À l\'écoute</string>
-    <string name="action_alarms">Alarmes</string>
-    <string name="action_donate">Faire un don</string>
-    <string name="action_about">À propos</string>
-    <string name="donation_label">Generous donation</string>
-    <string name="donation_text">Je développe cette application bénévolement, sur mon temps libre.
-\n\nSi tu le souhaites tu peux soutenir cette démarche en donnant quelques dollars.</string>
-    <string name="donate_joke">Et souviens-toi : à chaque fois que tu refuse de faire un don, un enfant se fait une coupe mullet !</string>
-    <string name="error_too_early_title">Ne sois pas si impatient...</string>
-    <string name="error_too_early_message">L\'Hadra Trance Festival n\'a pas encore commencé. Ré-essaie à partir du jeudi 22 août à 21h.
-    </string>
-    <string name="error_too_late_title">Trop tard...</string>
-    <string name="error_too_late_message">L\'Hadra Trance Festival est terminé depuis le dimanche 25 août à 18h.
-        À l\'an prochain !
-    </string>
+	<string name="action_settings">Paramètres</string>
+	<string name="action_directions">Itinéraire</string>
+	<string name="action_legalNotices">Mentions légales</string>
+	<string name="action_onStage">À l\'écoute</string>
+	<string name="action_alarms">Alarmes</string>
+	<string name="action_donate">Faire un don</string>
+	<string name="action_about">À propos</string>
+	<string name="donation_label">Generous donation</string>
+	<string name="donation_text">Je développe cette application bénévolement, sur mon temps libre.
+		\n\nSi tu le souhaites tu peux soutenir cette démarche en donnant quelques dollars.
+	</string>
+	<string name="donate_joke">Et souviens-toi : à chaque fois que tu refuse de faire un don, un
+		enfant se fait une coupe mullet !
+	</string>
+	<string name="error_too_early_title">Ne sois pas si impatient...</string>
+	<string name="error_too_early_message">L\'Hadra Trance Festival n\'a pas encore commencé.
+		Ré-essaie à partir du jeudi 22 août à 21h.
+	</string>
+	<string name="error_too_late_title">Trop tard...</string>
+	<string name="error_too_late_message">L\'Hadra Trance Festival est terminé depuis le dimanche 25
+		août à 18h.
+		À l\'an prochain !
+	</string>
 
 </resources>

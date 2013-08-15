@@ -21,12 +21,12 @@ package com.zion.htf.activity;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -34,147 +34,153 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import com.zion.htf.DatabaseOpenHelper;
+import com.zion.htf.Application;
 import com.zion.htf.R;
 
-public class ArtistDetailsActivity extends SherlockFragmentActivity implements View.OnClickListener {
-    private static final String TAG = "ArtistDetailsActivity";
-    private static final int COLUMN_NAME = 1;
-    private static final int COLUMN_GENRE = 2;
-    private static final int COLUMN_ORIGIN = 3;
-    private static final int COLUMN_PICTURE = 4;
-    private static final int COLUMN_WEBSITE = 5;
-    private static final int COLUMN_FACEBOOK = 6;
-    private static final int COLUMN_MYSPACE = 7;
-    private static final int COLUMN_SOUNDCLOUD = 8;
-    private static final int COLUMN_LABEL = 9;
-    private static final int COLUMN_BIO = 10;
-    private static final int COLUMN_COVER = 11;
+import org.michenux.android.db.sqlite.SQLiteDatabaseHelper;
 
-    private String facebook_url;
-    private String website_url;
-    private String soundcloud_url;
-    private String myspace_url;
+import java.util.Locale;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_artist_details);
+public class ArtistDetailsActivity extends SherlockFragmentActivity implements View.OnClickListener{
+	private static final String TAG               = "ArtistDetailsActivity";
+	private static final int    COLUMN_NAME       = 1;
+	private static final int    COLUMN_GENRE      = 2;
+	private static final int    COLUMN_ORIGIN     = 3;
+	private static final int    COLUMN_PICTURE    = 4;
+	private static final int    COLUMN_COVER      = 5;
+	private static final int    COLUMN_WEBSITE    = 6;
+	private static final int    COLUMN_FACEBOOK   = 7;
+	private static final int    COLUMN_SOUNDCLOUD = 8;
+	private static final int    COLUMN_LABEL      = 9;
+	private static final int    COLUMN_BIO        = 11;// Column 10 is foreign key bios(id)
+	private String facebook_url;
+	private String website_url;
+	private String soundcloud_url;
+	private SQLiteDatabaseHelper dbOpenHelper = Application.getDbHelper();
 
-        ActionBar actionBar = this.getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeButtonEnabled(true);
+	@Override
+	protected void onCreate(Bundle savedInstanceState){
+		super.onCreate(savedInstanceState);
+		this.setContentView(R.layout.activity_artist_details);
+
+		ActionBar actionBar = this.getSupportActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(true);
+		actionBar.setHomeButtonEnabled(true);
 
 
-        int artist_id = this.getIntent().getIntExtra("artist_id", 0);
+		int artist_id = this.getIntent().getIntExtra("artist_id", 0);
 
-        DatabaseOpenHelper dbOpenHelper = new DatabaseOpenHelper(this);
-        SQLiteDatabase database = dbOpenHelper.getReadableDatabase();
-        final Cursor cursor = database.rawQuery("SELECT * FROM artists WHERE id = " + artist_id + ";", null);
+		String langCode = Locale.getDefault().getLanguage().equals("fr") ? "fr" : "en";
+		final Cursor cursor = this.dbOpenHelper.getReadableDatabase().rawQuery(String.format("SELECT artists.*, bios.text FROM artists LEFT JOIN bios ON artists.bio = bios.id AND lang_code = '%s' WHERE artists.id = %d;", langCode, artist_id), null);
 
-        if(cursor.moveToNext()){
-            this.getSupportActionBar().setTitle(cursor.getString(COLUMN_NAME));
+		if(cursor.moveToNext()){
+			this.getSupportActionBar().setTitle(cursor.getString(COLUMN_NAME));
 
-            TextView label_field = (TextView)this.findViewById(R.id.label);
-            label_field.setText(cursor.getString(COLUMN_LABEL));
+			TextView label_field = (TextView)this.findViewById(R.id.label);
+			label_field.setText(cursor.getString(COLUMN_LABEL));
 
-            ImageView artist_cover_field = (ImageView)this.findViewById(R.id.artist_cover);
+			ImageView artist_cover_field = (ImageView)this.findViewById(R.id.artist_cover);
+			String cover = cursor.getString(COLUMN_COVER);
+			boolean hasCover = false;
+			if(!cursor.isNull(COLUMN_COVER)){
+				int resId = this.getResources().getIdentifier(cover, "drawable", "com.zion.htf");
+				if(resId != 0){
+					artist_cover_field.setImageResource(resId);
+					artist_cover_field.setScaleType(ImageView.ScaleType.CENTER_CROP);
+					hasCover = true;
+				}
+			}
+			if(!hasCover && !cursor.isNull(COLUMN_PICTURE)){
+				int photoId = this.getResources().getIdentifier(cursor.getString(COLUMN_PICTURE), "drawable", "com.zion.htf");
+				if(photoId != 0) artist_cover_field.setImageResource(photoId);
+			}
 
-            TextView origin_field = (TextView)this.findViewById(R.id.origin);
-            origin_field.setText(cursor.getString(COLUMN_ORIGIN));
+			TextView origin_field = (TextView)this.findViewById(R.id.origin);
+			origin_field.setText(cursor.getString(COLUMN_ORIGIN));
 
-            TextView genre_field = (TextView)this.findViewById(R.id.genre);
-            genre_field.setText(cursor.getString(COLUMN_GENRE));
+			TextView genre_field = (TextView)this.findViewById(R.id.genre);
+			genre_field.setText(cursor.getString(COLUMN_GENRE));
 
-            ImageView website_button = (ImageView)this.findViewById(R.id.website);
-            this.website_url = cursor.getString(COLUMN_WEBSITE);
-            if(website_url.length() > 0)    website_button.setOnClickListener(this);
-            else                            this.dimButton(website_button);
+			ImageButton website_button = (ImageButton)this.findViewById(R.id.website);
+			this.website_url = cursor.getString(COLUMN_WEBSITE);
+			if(null == this.website_url || this.website_url.length() == 0) this.disable(website_button);
 
-            ImageView facebook_button = (ImageView)this.findViewById(R.id.facebook);
-            this.facebook_url = cursor.getString(COLUMN_FACEBOOK);
-            if(this.facebook_url.length() > 0)  facebook_button.setOnClickListener(this);
-            else                                this.dimButton(facebook_button);
+			ImageButton facebook_button = (ImageButton)this.findViewById(R.id.facebook);
+			this.facebook_url = cursor.getString(COLUMN_FACEBOOK);
+			if(null == this.facebook_url || this.facebook_url.length() == 0) this.disable(facebook_button);
 
-            ImageView myspace_button = (ImageView)this.findViewById(R.id.myspace);
-            this.myspace_url = cursor.getString(COLUMN_MYSPACE);
-            if(myspace_url.length() > 0)    myspace_button.setOnClickListener(this);
-            else                            this.dimButton(myspace_button);
+			ImageButton soundcloud_button = (ImageButton)this.findViewById(R.id.soundcloud);
+			this.soundcloud_url = cursor.getString(COLUMN_SOUNDCLOUD);
+			if(null == this.soundcloud_url || this.soundcloud_url.length() == 0) this.disable(soundcloud_button);
 
-            ImageView soundcloud_button = (ImageView)this.findViewById(R.id.soundcloud);
-            this.soundcloud_url = cursor.getString(COLUMN_SOUNDCLOUD);
-            if(soundcloud_url.length() > 0) soundcloud_button.setOnClickListener(this);
-            else                            this.dimButton(soundcloud_button);
+			TextView bio_field = (TextView)this.findViewById(R.id.bio);
+			String bio = cursor.getString(COLUMN_BIO);
+			if(bio != null) bio_field.setText(bio);
+			else bio_field.setText("No bio available");//TODO: ask Facebook for a bio
+		}
+		else{
+			Log.e(TAG, "No artist found matching id '" + artist_id + "'.");
+		}
+		if(!cursor.isClosed()) cursor.close();
+		this.dbOpenHelper.close();
+	}
 
-            TextView bio_field = (TextView)this.findViewById(R.id.bio);
-            bio_field.setText(cursor.getString(COLUMN_BIO));
-        }
-        else{
-            Log.e(TAG, "No artist found matching id '" + artist_id + "'.");
-        }
-        if(!cursor.isClosed()) cursor.close();
-        database.close();
-    }
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu){
+		this.getSupportMenuInflater().inflate(R.menu.artist_details, menu);
+		return true;
+	}
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getSupportMenuInflater().inflate(R.menu.artist_details, menu);
-        return true;
-    }
+	@Override
+	public void onClick(View v){
+		Intent intent = null;
 
-    @Override
-    public void onClick(View v){
-        Intent intent = null;
+		switch(v.getId()){
+			case R.id.website:
+				intent = new Intent(Intent.ACTION_VIEW, Uri.parse(this.website_url));
+				break;
 
-        switch(v.getId()){
-            case R.id.website:
-                intent = new Intent(Intent.ACTION_VIEW, Uri.parse(this.website_url));
-                break;
+			case R.id.soundcloud:
+				intent = new Intent(Intent.ACTION_VIEW, Uri.parse(this.soundcloud_url));
+				break;
 
-            case R.id.soundcloud:
-                intent = new Intent(Intent.ACTION_VIEW, Uri.parse(this.soundcloud_url));
-                break;
+			case R.id.facebook:
+				try{
+					String facebookId = this.facebook_url.substring(this.facebook_url.lastIndexOf('/') + 1);
+					if(!facebookId.matches("\\d+")) throw new Exception("Non-numeric facebook id.");
 
-            case R.id.myspace:
-                intent = new Intent(Intent.ACTION_VIEW, Uri.parse(this.myspace_url));
-                break;
+					intent = new Intent(Intent.ACTION_VIEW, Uri.parse("fb://profile/" + facebookId));
+					this.startActivity(intent);
+				}
+				catch(Exception e){
+					intent = new Intent(Intent.ACTION_VIEW, Uri.parse(this.facebook_url));
+				}
 
-            case R.id.facebook:
-                try {
-                    String facebookId = this.facebook_url.substring(this.facebook_url.lastIndexOf("/") + 1);
-                    if(!facebookId.matches("\\d+")) throw new Exception("Non-numeric facebook id.");
+				break;
+		}
 
-                    intent = new Intent(Intent.ACTION_VIEW, Uri.parse("fb://profile/" + facebookId));
-                    startActivity(intent);
-                }
-                catch(Exception e){
-                    intent = new Intent(Intent.ACTION_VIEW, Uri.parse(this.facebook_url));
-                }
+		if(intent != null) this.startActivity(intent);
+	}
 
-                break;
-        }
+	@Override
+	public boolean onMenuItemSelected(int featureId, MenuItem item){
+		boolean ret = true;
 
-        if(intent != null) this.startActivity(intent);
-    }
+		switch(item.getItemId()){
+			case android.R.id.home:
+				this.finish();
+				break;
 
-    @Override
-    public boolean onMenuItemSelected(int featureId, MenuItem item) {
-        boolean ret = true;
+			default:
+				ret = false;
+		}
 
-        switch(item.getItemId()){
-            case android.R.id.home:
-                this.finish();
-                break;
+		return ret;
+	}
 
-            default:
-                ret = false;
-        }
-
-        return ret;
-    }
-
-    private void dimButton(ImageView iv){
-        if(Build.VERSION.SDK_INT >= 16) iv.setImageAlpha(64);
-        else                            iv.setAlpha(64);
-    }
+	private void disable(ImageButton iv){
+		iv.setClickable(false);
+		if(Build.VERSION.SDK_INT >= 16) iv.setImageAlpha(64);
+		else iv.setAlpha(64);
+	}
 }

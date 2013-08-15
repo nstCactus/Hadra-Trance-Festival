@@ -19,50 +19,175 @@
     or see <http://www.gnu.org/licenses/>.
 -->
 
+<!--
+	RENDERING PROBLEMS
+
+	4 buttons in the LinearLayout having id "smallButtons" aren't displayed
+	in the editor. They are when running the app. Not sure what causes this.
+-->
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".MainActivity">
 
-    <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/title"
-            android:src="@drawable/title"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:padding="20dp"/>
+	<ImageView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:id="@+id/title"
+			android:src="@drawable/title"
+			android:layout_alignParentTop="true"
+			android:layout_centerHorizontal="true"
+			android:paddingTop="20dp" />
 
-    <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/title_activity_line_up"
-            android:id="@+id/button_lineup"
-            android:onClick="handler_lineupButton"
-            android:src="@drawable/button_lineup"
-            android:background="#00FFFFFF"
-            android:layout_alignRight="@+id/title"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="175dp"
-            android:contentDescription="@string/title_activity_line_up"
-            android:clickable="true"
-            android:focusable="true"
-            android:focusableInTouchMode="true"/>
+	<LinearLayout
+			android:id="@+id/small_buttons"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_below="@drawable/title"
+			android:layout_centerInParent="true"
+			android:layout_marginTop="10dp">
 
-    <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/title_activity_map"
-            android:id="@+id/button_map"
-            android:onClick="handler_mapButton"
-            android:src="@drawable/button_map"
-            android:background="#00FFFFFF"
-            android:layout_alignLeft="@+id/title"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="175dp"
-            android:contentDescription="@string/title_activity_map"
-            android:clickable="true"
-            android:focusable="true"
-            android:focusableInTouchMode="true"/>
+		<com.zion.htf.widget.TintImageButton
+				style="@style/smallButtons"
+				android:id="@+id/button_facebook"
+				android:src="@drawable/button_facebook"
+				android:layout_below="@drawable/title"
+				android:layout_alignLeft="@drawable/title"
+				android:onClick="onButtonClicked" />
+
+		<com.zion.htf.widget.TintImageButton
+				android:id="@+id/button_soundcloud"
+				android:src="@drawable/button_soundcloud"
+				android:layout_below="@drawable/title"
+				android:layout_alignLeft="@drawable/title"
+				style="@style/smallButtons"
+				android:onClick="onButtonClicked" />
+
+		<com.zion.htf.widget.TintImageButton
+				android:id="@+id/button_youtube"
+				android:src="@drawable/button_youtube"
+				style="@style/smallButtons"
+				android:layout_below="@drawable/title"
+				android:layout_alignLeft="@drawable/title"
+				android:onClick="onButtonClicked" />
+
+		<com.zion.htf.widget.TintImageButton
+				android:id="@+id/button_hadra"
+				android:src="@drawable/button_hadra"
+				style="@style/smallButtons"
+				android:layout_below="@drawable/title"
+				android:layout_alignLeft="@drawable/title"
+				android:onClick="onButtonClicked" />
+
+		<com.zion.htf.widget.TintImageButton
+				android:id="@+id/button_music"
+				android:src="@drawable/button_music"
+				style="@style/smallButtons"
+				android:layout_below="@drawable/title"
+				android:layout_alignLeft="@drawable/title"
+				android:onClick="onButtonClicked" />
+	</LinearLayout>
+
+	<LinearLayout
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_centerHorizontal="true"
+			android:layout_below="@+id/small_buttons"
+			android:id="@+id/linearLayout">
+
+		<ImageButton
+				style="@style/bigButtons"
+				android:id="@+id/button_lineup"
+				android:onClick="onButtonClicked"
+				android:src="@drawable/button_lineup_selector" />
+
+		<ImageButton
+				style="@style/bigButtons"
+				android:id="@+id/button_tickets"
+				android:src="@drawable/button_tickets_selector"
+				android:layout_toRightOf="@id/button_lineup"
+				android:onClick="onButtonClicked" />
+	</LinearLayout>
+
+	<LinearLayout
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_below="@+id/linearLayout"
+			android:layout_alignLeft="@+id/linearLayout">
+
+		<ImageButton
+				style="@style/bigButtons"
+				android:id="@+id/button_map"
+				android:onClick="onButtonClicked"
+				android:src="@drawable/button_map_selector"
+				android:layout_below="@id/button_lineup" />
+
+		<ImageButton
+				style="@style/bigButtons"
+				android:id="@+id/button_infos"
+				android:src="@drawable/button_infos_selector"
+				android:layout_below="@id/button_tickets"
+				android:layout_toRightOf="@id/button_map"
+				android:onClick="onButtonClicked" />
+
+	</LinearLayout>
+
+	<RelativeLayout
+			xmlns:android="http://schemas.android.com/apk/res/android"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_alignParentBottom="true"
+			android:layout_alignParentLeft="true"
+			android:id="@+id/relativeLayout">
+
+		<ImageView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/speaker_left"
+				android:src="@drawable/speaker_left"
+				android:layout_alignParentLeft="true" />
+
+		<ImageView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/speaker_right"
+				android:src="@drawable/speaker_right"
+				android:layout_alignParentRight="true" />
+
+		<LinearLayout
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:layout_centerVertical="true"
+				android:layout_centerHorizontal="true"
+				android:gravity="center">
+
+			<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Main stage"
+					android:id="@+id/stage"
+					style="@style/now_playing"
+					android:layout_above="@+id/artist_name" />
+
+			<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Penta (live)"
+					android:id="@+id/artist_name"
+					style="@style/now_playing.artist"
+					android:layout_centerVertical="true" />
+
+			<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="20h - 22h30"
+					style="@style/now_playing"
+					android:id="@+id/hour"
+					android:layout_centerHorizontal="true"
+					android:layout_below="@id/artist_name" />
+		</LinearLayout>
+	</RelativeLayout>
 </RelativeLayout>

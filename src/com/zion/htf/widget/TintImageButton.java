@@ -29,25 +29,25 @@ import com.zion.htf.R;
  * A TintImageButton is a plain ImageButton that automatically has a tint upon selection.
  * The tint color has to be defined and accessible through <code>R.color.tint</code>
  */
-public class TintImageButton extends ImageButton {
-    public final static String TAG = "TintImageButton";
+public class TintImageButton extends ImageButton{
+	public final static String TAG = "TintImageButton";
 
-    public TintImageButton(Context context){
-        super(context);
-    }
+	public TintImageButton(Context context){
+		super(context);
+	}
 
-    public TintImageButton(Context context, AttributeSet attrs){
-        super(context, attrs);
-    }
+	public TintImageButton(Context context, AttributeSet attrs){
+		super(context, attrs);
+	}
 
-    public TintImageButton(Context context, AttributeSet attrs, int defStyle){
-        super(context, attrs, defStyle);
-    }
+	public TintImageButton(Context context, AttributeSet attrs, int defStyle){
+		super(context, attrs, defStyle);
+	}
 
-    @Override
-    public void setPressed(boolean pressed){
-        super.setPressed(pressed);
-        if(pressed) this.setColorFilter(R.color.tint);
-        else        this.clearColorFilter();
-    }
+	@Override
+	public void setPressed(boolean pressed){
+		super.setPressed(pressed);
+		if(pressed) this.setColorFilter(R.color.tint);
+		else this.clearColorFilter();
+	}
 }

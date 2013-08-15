@@ -20,31 +20,57 @@
 -->
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- This is our main ActionBarSherlock theme -->
-    <style name="AppTheme" parent="Theme.Sherlock">
-        <item name="actionBarStyle">@style/Widget.Styled.ActionBar</item>
-        <item name="android:actionBarStyle">@style/Widget.Styled.ActionBar</item>
-    </style>
+	<!-- This is our main ActionBarSherlock theme -->
+	<style name="AppTheme" parent="Theme.Sherlock">
+		<item name="actionBarStyle">@style/Widget.Styled.ActionBar</item>
+		<item name="android:actionBarStyle">@style/Widget.Styled.ActionBar</item>
+	</style>
 
-    <!-- This is our ViewPagerIndicator theme. We inherit from the ABS theme -->
-    <style name="Theme.VPI" parent="AppTheme">
-        <item name="vpiTabPageIndicatorStyle">@style/CustomTabPageIndicator</item>
-    </style>
+	<!-- This is our ViewPagerIndicator theme. We inherit from the ABS theme -->
+	<style name="Theme.VPI" parent="AppTheme">
+		<item name="vpiTabPageIndicatorStyle">@style/CustomTabPageIndicator</item>
+	</style>
 
-    <!-- "Implementation" of our ABS custom theme -->
-    <style name="Widget.Styled.ActionBar" parent="Widget.Sherlock.ActionBar">
-        <item name="titleTextStyle">@style/TitleText</item>
-        <item name="android:titleTextStyle">@style/TitleText</item>
-    </style>
+	<!-- "Implementation" of our ABS custom theme -->
+	<style name="Widget.Styled.ActionBar" parent="Widget.Sherlock.ActionBar">
+		<item name="titleTextStyle">@style/TitleText</item>
+		<item name="android:titleTextStyle">@style/TitleText</item>
+	</style>
 
-    <!-- "Implementation" of VPI theme. We just set the text size and color. -->
-    <style name="CustomTabPageIndicator" parent="Widget.TabPageIndicator">
-        <item name="android:textColor">#FFFFFFFF</item>
-    </style>
+	<!-- "Implementation" of VPI theme. We just set the text size and color. -->
+	<style name="CustomTabPageIndicator" parent="Widget.TabPageIndicator">
+		<item name="android:textColor">#FFFFFFFF</item>
+	</style>
 
-    <!-- More customizations for ABS -->
-    <style name="TitleText" >
-        <item name="android:textColor">@android:color/darker_gray</item>
-        <item name="android:textSize">17dip</item>
-    </style>
+	<!-- More customizations for ABS -->
+	<style name="TitleText">
+		<item name="android:textColor">@android:color/darker_gray</item>
+		<item name="android:textSize">17dip</item>
+	</style>
+
+	<style name="imageButtons">
+		<item name="android:background">#00FFFFFF</item>
+		<item name="android:layout_width">wrap_content</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:clickable">true</item>
+	</style>
+
+	<style name="smallButtons" parent="imageButtons">
+		<item name="android:layout_margin">5dp</item>
+	</style>
+
+	<style name="bigButtons" parent="imageButtons">
+		<item name="android:layout_margin">10dp</item>
+	</style>
+
+	<style name="now_playing">
+		<item name="android:layout_centerHorizontal">true</item>
+		<item name="android:textColor">@color/brand_orange</item>
+		<item name="android:textSize">17sp</item>
+	</style>
+
+	<style name="now_playing.artist" parent="now_playing">
+		<item name="android:textColor">@color/brand_yellow</item>
+		<item name="android:textSize">25sp</item>
+	</style>
 </resources>

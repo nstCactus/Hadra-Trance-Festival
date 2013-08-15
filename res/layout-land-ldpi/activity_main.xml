@@ -19,57 +19,45 @@
     or see <http://www.gnu.org/licenses/>.
 -->
 
+<!-- FIXME: Adapt this layout to the new UI -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity"
-        >
-    <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/imageView"
-            android:src="@drawable/background"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:adjustViewBounds="false"
-            android:cropToPadding="false"
-            android:scaleType="centerCrop"/>
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".MainActivity">
 
-    <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/title_activity_map"
-            android:id="@+id/button_map"
-            android:onClick="handler_mapButton"
-            android:src="@drawable/button_map"
-            android:background="#00FFFFFF"
-            android:layout_marginBottom="40dp"
-            android:layout_alignParentEnd="false"
-            android:contentDescription="@string/title_activity_map"
-            android:layout_alignParentBottom="true"
-            android:layout_alignLeft="@+id/title"/>
+	<ImageButton
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/title_activity_map"
+			android:id="@+id/button_map"
+			android:onClick="handler_mapButton"
+			android:src="@drawable/button_map_selector"
+			android:background="#00FFFFFF"
+			android:layout_marginBottom="40dp"
+			android:layout_alignParentEnd="false"
+			android:contentDescription="@string/title_activity_map"
+			android:layout_alignParentBottom="true"
+			android:layout_alignLeft="@+id/title" />
 
-    <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/title_activity_line_up"
-            android:id="@+id/button_lineup"
-            android:onClick="handler_lineupButton"
-            android:src="@drawable/button_lineup"
-            android:background="#00FFFFFF"
-            android:contentDescription="@string/title_activity_line_up"
-            android:layout_alignTop="@+id/button_map"
-            android:layout_alignRight="@+id/title" />
+	<ImageButton
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/title_activity_line_up"
+			android:id="@+id/button_lineup"
+			android:onClick="handler_lineupButton"
+			android:src="@drawable/button_lineup_selector"
+			android:background="#00FFFFFF"
+			android:contentDescription="@string/title_activity_line_up"
+			android:layout_alignTop="@+id/button_map"
+			android:layout_alignRight="@+id/title" />
 
 
-    <ImageView
-            android:layout_width="300dp"
-            android:layout_height="150dp"
-            android:id="@+id/title"
-            android:src="@drawable/title"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"/>
+	<ImageView
+			android:layout_width="300dp"
+			android:layout_height="150dp"
+			android:id="@+id/title"
+			android:src="@drawable/title"
+			android:layout_alignParentTop="true"
+			android:layout_centerHorizontal="true" />
 </RelativeLayout>

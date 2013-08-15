@@ -26,7 +26,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
@@ -41,135 +40,137 @@ import com.paypal.android.sdk.payments.PaymentConfirmation;
 import com.zion.htf.R;
 
 import org.json.JSONException;
+
 import java.math.BigDecimal;
 
 public class DonateActivity extends SherlockActivity implements SeekBar.OnSeekBarChangeListener{
-    private final static String PAYPAL_CLIENT_ID = "AQKx2xDBRhC4J1VzGsLXe13IBBqX3ivEnKlSkOc07dEOyBXGcGUcecqACL3W";
-    private final static String PAYPAL_ENVIRONMENT = PaymentActivity.ENVIRONMENT_SANDBOX;
-    private final static String PAYPAL_RECEIVER_EMAIL = "sbooob-facilitator@gmail.com";
-    private final static String PAYPAL_CURRENCY = "USD";
+	private final static String PAYPAL_CLIENT_ID      = "AQKx2xDBRhC4J1VzGsLXe13IBBqX3ivEnKlSkOc07dEOyBXGcGUcecqACL3W";
+	private final static String PAYPAL_ENVIRONMENT    = PaymentActivity.ENVIRONMENT_SANDBOX;
+	private final static String PAYPAL_RECEIVER_EMAIL = "sbooob-facilitator@gmail.com";
+	private final static String PAYPAL_CURRENCY       = "USD";
 
-    private final static String TAG = "AboutActivity";
-    private SeekBar seekBar;
-    private TextView amountTextView;
-    private String amount;
+	private final static String TAG = "AboutActivity";
+	private SeekBar  seekBar;
+	private TextView amountTextView;
+	private String   amount;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        this.setContentView(R.layout.activity_donate);
+	@Override
+	protected void onCreate(Bundle savedInstanceState){
+		super.onCreate(savedInstanceState);
+		this.setContentView(R.layout.activity_donate);
 
-        this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        this.seekBar = (SeekBar)this.findViewById(R.id.seekBar);
-        this.seekBar.setOnSeekBarChangeListener(this);
+		this.seekBar = (SeekBar)this.findViewById(R.id.seekBar);
+		this.seekBar.setOnSeekBarChangeListener(this);
 
-        this.amountTextView = (TextView)this.findViewById(R.id.amount);
+		this.amountTextView = (TextView)this.findViewById(R.id.amount);
 
-        Intent intent = new Intent(this, PayPalService.class);
+		Intent intent = new Intent(this, PayPalService.class);
 
-        intent.putExtra(PaymentActivity.EXTRA_PAYPAL_ENVIRONMENT, PAYPAL_ENVIRONMENT);
-        intent.putExtra(PaymentActivity.EXTRA_CLIENT_ID, PAYPAL_CLIENT_ID);
+		intent.putExtra(PaymentActivity.EXTRA_PAYPAL_ENVIRONMENT, PAYPAL_ENVIRONMENT);
+		intent.putExtra(PaymentActivity.EXTRA_CLIENT_ID, PAYPAL_CLIENT_ID);
 
-        startService(intent);
+		this.startService(intent);
 
-        this.onProgressChanged(this.seekBar, this.seekBar.getProgress(), false);
+		this.onProgressChanged(this.seekBar, this.seekBar.getProgress(), false);
 
-        final ScrollView scrollView = (ScrollView)this.findViewById(R.id.donate_scrollView);
-        ViewTreeObserver observer = scrollView.getViewTreeObserver();
-        if(observer != null){
-            observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    TextView donateJoke = (TextView) findViewById(R.id.donate_joke);
-                    int viewHeight = scrollView.getMeasuredHeight();
-                    LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-                    params.setMargins(0, viewHeight, 0, 0);
-                    donateJoke.setLayoutParams(params);
-                }
-            });
-        }
-    }
+		final ScrollView scrollView = (ScrollView)this.findViewById(R.id.donate_scrollView);
+		ViewTreeObserver observer = scrollView.getViewTreeObserver();
+		if(observer != null){
+			observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener(){
+				@Override
+				public void onGlobalLayout(){
+					TextView donateJoke = (TextView)com.zion.htf.activity.DonateActivity.this.findViewById(R.id.donate_joke);
+					int viewHeight = scrollView.getMeasuredHeight();
+					LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+					params.setMargins(0, viewHeight, 0, 0);
+					donateJoke.setLayoutParams(params);
+				}
+			});
+		}
+	}
 
-    public void toggleDonateJokeImage(View button){
-        ImageView image = (ImageView)this.findViewById(R.id.donate_joke_image);
-        image.setVisibility(image.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
-    }
+	public void toggleDonateJokeImage(View button){
+		ImageView image = (ImageView)this.findViewById(R.id.donate_joke_image);
+		image.setVisibility(image.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+	}
 
-    @Override
-    public void onDestroy() {
-        stopService(new Intent(this, PayPalService.class));
-        super.onDestroy();
-    }
+	@Override
+	public void onDestroy(){
+		this.stopService(new Intent(this, PayPalService.class));
+		super.onDestroy();
+	}
 
-    public void onDonatePressed(View pressed) {
-        Log.v(TAG, this.amount);
+	public void onDonatePressed(View pressed){
+		Log.v(TAG, this.amount);
 
-        PayPalPayment payment = new PayPalPayment(new BigDecimal(this.amount.replace(",", ".")), PAYPAL_CURRENCY, getString(R.string.donation_label));
+		PayPalPayment payment = new PayPalPayment(new BigDecimal(this.amount.replace(",", ".")), PAYPAL_CURRENCY, this.getString(R.string.donation_label));
 
-        Intent intent = new Intent(this, PaymentActivity.class);
-        intent.putExtra(PaymentActivity.EXTRA_PAYPAL_ENVIRONMENT, PAYPAL_ENVIRONMENT);
-        intent.putExtra(PaymentActivity.EXTRA_CLIENT_ID, PAYPAL_CLIENT_ID);
-        intent.putExtra(PaymentActivity.EXTRA_PAYER_ID, "<sbooob@gmail.com>");
-        intent.putExtra(PaymentActivity.EXTRA_RECEIVER_EMAIL, PAYPAL_RECEIVER_EMAIL);
-        intent.putExtra(PaymentActivity.EXTRA_PAYMENT, payment);
+		Intent intent = new Intent(this, PaymentActivity.class);
+		intent.putExtra(PaymentActivity.EXTRA_PAYPAL_ENVIRONMENT, PAYPAL_ENVIRONMENT);
+		intent.putExtra(PaymentActivity.EXTRA_CLIENT_ID, PAYPAL_CLIENT_ID);
+		intent.putExtra(PaymentActivity.EXTRA_PAYER_ID, "<sbooob@gmail.com>");
+		intent.putExtra(PaymentActivity.EXTRA_RECEIVER_EMAIL, PAYPAL_RECEIVER_EMAIL);
+		intent.putExtra(PaymentActivity.EXTRA_PAYMENT, payment);
 
-        startActivityForResult(intent, 0);
-    }
+		this.startActivityForResult(intent, 0);
+	}
 
-    @Override
-    protected void onActivityResult (int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
-            PaymentConfirmation confirm = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
-            if (confirm != null) {
-                try {
-                    Log.i(TAG, confirm.toJSONObject().toString(4));
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data){
+		if(resultCode == Activity.RESULT_OK){
+			PaymentConfirmation confirm = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
+			if(confirm != null){
+				try{
+					Log.i(TAG, confirm.toJSONObject().toString(4));
 
-                    // TODO: send 'confirm' to your server for verification.
-                    // see https://developer.paypal.com/webapps/developer/docs/integration/mobile/verify-mobile-payment/
-                    // for more details.
-                } catch (JSONException e) {
-                    Log.e(TAG, "an extremely unlikely failure occurred: ", e);
-                }
-            }
-        }
-        else if (resultCode == Activity.RESULT_CANCELED) {
-            Log.i(TAG, "The user canceled.");
-        }
-        else if (resultCode == PaymentActivity.RESULT_PAYMENT_INVALID) {
-            Log.e(TAG, "An invalid payment was submitted. Please see the docs.");
-        }
-    }
+					// TODO: send 'confirm' to your server for verification.
+					// see https://developer.paypal.com/webapps/developer/docs/integration/mobile/verify-mobile-payment/
+					// for more details.
+				}
+				catch(JSONException e){
+					Log.e(TAG, "an extremely unlikely failure occurred: ", e);
+				}
+			}
+		}
+		else if(resultCode == Activity.RESULT_CANCELED){
+			Log.i(TAG, "The user canceled.");
+		}
+		else if(resultCode == PaymentActivity.RESULT_PAYMENT_INVALID){
+			Log.e(TAG, "An invalid payment was submitted. Please see the docs.");
+		}
+	}
 
-    @Override
-    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser){
-        this.amount = String.format("%.2f", 0.2f + progress / 100f);
-        this.amountTextView.setText("$" + this.amount);
-    }
+	@Override
+	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser){
+		this.amount = String.format("%.2f", 0.2f + progress / 100f);
+		this.amountTextView.setText("$" + this.amount);
+	}
 
-    @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {
+	@Override
+	public void onStartTrackingTouch(SeekBar seekBar){
 
-    }
+	}
 
-    @Override
-    public void onStopTrackingTouch(SeekBar seekBar) {
+	@Override
+	public void onStopTrackingTouch(SeekBar seekBar){
 
-    }
+	}
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        boolean ret = true;
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item){
+		boolean ret = true;
 
-        switch(item.getItemId()){
-            case android.R.id.home:
-                this.finish();
-                break;
+		switch(item.getItemId()){
+			case android.R.id.home:
+				this.finish();
+				break;
 
-            default:
-                ret = false;
-        }
+			default:
+				ret = false;
+		}
 
-        return ret;
-    }
+		return ret;
+	}
 }

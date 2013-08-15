@@ -24,9 +24,9 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <com.hb.views.PinnedSectionListView
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:id="@+id/line_up_list"
-            android:layout_gravity="center"/>
+	<com.hb.views.PinnedSectionListView
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:id="@+id/line_up_list"
+			android:layout_gravity="center" />
 </LinearLayout>

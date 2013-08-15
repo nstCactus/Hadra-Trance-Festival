@@ -20,5 +20,10 @@
 -->
 
 <resources>
-    <color name="tint">#7f33b5e5</color>
+	<color name="tint">#7f33b5e5</color>
+	<color name="brand_yellow">#ffe4b82c</color>
+	<color name="brand_green">#ff4f8b24</color>
+	<color name="brand_orange">#ffd35d16</color>
+	<color name="brand_brown">#ff4d1008</color>
+	<color name="brand_black">#ff141312</color>
 </resources>

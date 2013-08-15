@@ -20,9 +20,10 @@
 -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/action_alarms"
-          android:title="@string/action_alarms"
-          android:orderInCategory="1"
-          android:showAsAction="ifRoom"
-          android:icon="@android:drawable/ic_lock_idle_alarm"/>
+	<item
+			android:id="@+id/action_alarms"
+			android:title="@string/action_alarms"
+			android:orderInCategory="1"
+			android:showAsAction="ifRoom"
+			android:icon="@android:drawable/ic_lock_idle_alarm" />
 </menu>

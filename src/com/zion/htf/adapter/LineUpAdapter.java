@@ -31,80 +31,90 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.hb.views.PinnedSectionListView;
+import com.zion.htf.Application;
 import com.zion.htf.Item;
 import com.zion.htf.R;
 import com.zion.htf.Set;
 import com.zion.htf.activity.ArtistDetailsActivity;
-import com.zion.htf.activity.LineUpActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
 public class LineUpAdapter<T> extends ArrayAdapter<T> implements PinnedSectionListView.PinnedSectionListAdapter, AdapterView.OnItemClickListener{
-    protected LayoutInflater layoutInflater = (LayoutInflater)this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    protected SimpleDateFormat simpleDateFormat = Locale.getDefault().getLanguage().equals("fr") ? new SimpleDateFormat("HH:mm") : new SimpleDateFormat("h:mm a");
+	protected LayoutInflater   layoutInflater   = (LayoutInflater)this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	protected SimpleDateFormat simpleDateFormat = Locale.getDefault().getLanguage().equals("fr") ? new SimpleDateFormat("HH:mm") : new SimpleDateFormat("h:mm a");
 
-    public LineUpAdapter(Context context, int resource, int textViewResourceId, List<T> objects){
-        super(context, resource, textViewResourceId, objects);
-    }
+	public LineUpAdapter(Context context, int resource, int textViewResourceId, List<T> objects){
+		super(context, resource, textViewResourceId, objects);
+	}
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent){
-        View view;
-        if(this.getItemViewType(position) == Item.TYPE_SECTION){
-            if(convertView == null){
-                view = this.layoutInflater.inflate(R.layout.section_line_up_list, parent, false);
-            }
-            else{
-                view = convertView;
-            }
+	@Override
+	public View getView(int position, View convertView, ViewGroup parent){
+		View view;
+		if(this.getItemViewType(position) == Item.TYPE_SECTION){
+			if(convertView == null){
+				view = this.layoutInflater.inflate(R.layout.section_line_up_list, parent, false);
+			}
+			else{
+				view = convertView;
+			}
 
-            TextView sectionHeader = (TextView)view.findViewById(R.id.list_item_section_header);
-            sectionHeader.setText(this.getItem(position).toString());
-        }
-        else{
-            Set set = (Set)this.getItem(position);
-            view = super.getView(position, convertView, parent);
+			TextView sectionHeader = (TextView)view.findViewById(R.id.list_item_section_header);
+			sectionHeader.setText(this.getItem(position).toString());
+		}
+		else{
+			Set set = (Set)this.getItem(position);
+			view = super.getView(position, convertView, parent);
 
-            TextView genreField = (TextView)view.findViewById(R.id.genre);
-            genreField.setText(set.getGenre());
+			TextView genreField = (TextView)view.findViewById(R.id.genre);
+			genreField.setText(set.getGenre());
 
-            TextView beginDateField = (TextView)view.findViewById(R.id.start_hour);
-            beginDateField.setText(simpleDateFormat.format(set.getBeginDate()));
+			TextView beginDateField = (TextView)view.findViewById(R.id.start_hour);
+			beginDateField.setText(this.simpleDateFormat.format(set.getBeginDate()));
 
-            TextView endDateField = (TextView)view.findViewById(R.id.end_hour);
-            endDateField.setText(simpleDateFormat.format(set.getEndDate()));
+			TextView endDateField = (TextView)view.findViewById(R.id.end_hour);
+			endDateField.setText(this.simpleDateFormat.format(set.getEndDate()));
 
-            ImageView artistPhoto = (ImageView)view.findViewById(R.id.artist_photo);
-            artistPhoto.setImageResource(view.getResources().getIdentifier(set.getPicture(), "drawable", this.getContext().getPackageName()));
+			ImageView artistPhoto = (ImageView)view.findViewById(R.id.artist_photo);
+			artistPhoto.setImageResource(this.getPhotoResourceId(set.getPhotoResourceName()));
 
-            ((ListView)parent).setOnItemClickListener(this);
-        }
-        return view;
-    }
+			((ListView)parent).setOnItemClickListener(this);
+		}
+		return view;
+	}
 
-    @Override public int getViewTypeCount(){
-        return 2;
-    }
+	@Override
+	public int getViewTypeCount(){
+		return 2;
+	}
 
-    @Override public int getItemViewType(int position) {
-        Item item = (Item)this.getItem(position);
-        return item.getType();
-    }
+	@Override
+	public int getItemViewType(int position){
+		Item item = (Item)this.getItem(position);
+		return item.getType();
+	}
 
-    @Override
-    public boolean isItemViewTypePinned(int viewType){
-        return viewType == Item.TYPE_SECTION;
-    }
+	@Override
+	public boolean isItemViewTypePinned(int viewType){
+		return viewType == Item.TYPE_SECTION;
+	}
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Item item = (Item)this.getItem(position);
-        if(item.getType() == Item.TYPE_ITEM){
-            Intent intent = new Intent(this.getContext(), ArtistDetailsActivity.class);
-            intent.putExtra("artist_id", ((Set)item).getArtistId());
-            this.getContext().startActivity(intent);
-        }
-    }
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position, long id){
+		Item item = (Item)this.getItem(position);
+		if(item.getType() == Item.TYPE_ITEM){
+			Intent intent = new Intent(this.getContext(), ArtistDetailsActivity.class);
+			intent.putExtra("artist_id", ((Set)item).getArtistId());
+			this.getContext().startActivity(intent);
+		}
+	}
+
+	public int getPhotoResourceId(String resourceName){
+		int ret = 0;
+		if(null != resourceName)
+			ret = Application.getContext().getResources().getIdentifier(resourceName, "drawable", this.getContext().getPackageName());
+		if(ret == 0) ret = R.drawable.no_image;
+		return ret;
+	}
 }
