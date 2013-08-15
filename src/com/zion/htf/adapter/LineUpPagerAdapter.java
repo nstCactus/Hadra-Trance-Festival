@@ -9,7 +9,7 @@ import android.util.SparseArray;
 import android.view.ViewGroup;
 
 import com.zion.htf.Application;
-import com.zion.htf.fragment.LineUpListFragment;
+import com.zion.htf.ui.LineUpListFragment;
 
 import org.michenux.android.db.sqlite.SQLiteDatabaseHelper;
 
@@ -24,13 +24,15 @@ public class LineUpPagerAdapter extends FragmentPagerAdapter{
 	public LineUpPagerAdapter(FragmentManager fm){
 		super(fm);
 
-		SQLiteDatabaseHelper dbHelper = Application.getDbHelper();
-		Cursor cursor = dbHelper.getReadableDatabase().rawQuery("SELECT * FROM lst__stages;", null);
-		while(cursor.moveToNext()){
-			LineUpPagerAdapter.stages.add(cursor.getString(0));
+		if(0 == LineUpPagerAdapter.stages.size()){
+			SQLiteDatabaseHelper dbHelper = Application.getDbHelper();
+			Cursor cursor = dbHelper.getReadableDatabase().rawQuery("SELECT * FROM lst__stages;", null);
+			while(cursor.moveToNext()){
+				LineUpPagerAdapter.stages.add(cursor.getString(0));
+			}
+			cursor.close();
+			dbHelper.close();
 		}
-		cursor.close();
-		dbHelper.close();
 	}
 
 	@Override
