@@ -17,7 +17,7 @@
     or see <http://www.gnu.org/licenses/>.
  */
 
-package com.zion.htf.activity;
+package com.zion.htf.ui;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -81,7 +81,7 @@ public class DonateActivity extends SherlockActivity implements SeekBar.OnSeekBa
 			observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener(){
 				@Override
 				public void onGlobalLayout(){
-					TextView donateJoke = (TextView)com.zion.htf.activity.DonateActivity.this.findViewById(R.id.donate_joke);
+					TextView donateJoke = (TextView)com.zion.htf.ui.DonateActivity.this.findViewById(R.id.donate_joke);
 					int viewHeight = scrollView.getMeasuredHeight();
 					LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 					params.setMargins(0, viewHeight, 0, 0);

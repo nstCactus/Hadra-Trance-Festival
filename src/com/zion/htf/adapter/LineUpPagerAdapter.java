@@ -9,7 +9,7 @@ import android.util.SparseArray;
 import android.view.ViewGroup;
 
 import com.zion.htf.Application;
-import com.zion.htf.fragment.LineUpListFragment;
+import com.zion.htf.ui.LineUpListFragment;
 
 import org.michenux.android.db.sqlite.SQLiteDatabaseHelper;
 

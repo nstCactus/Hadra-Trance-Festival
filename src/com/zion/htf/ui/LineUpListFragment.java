@@ -17,7 +17,7 @@
     or see <http://www.gnu.org/licenses/>.
  */
 
-package com.zion.htf.fragment;
+package com.zion.htf.ui;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -36,8 +36,6 @@ import com.zion.htf.Application;
 import com.zion.htf.Item;
 import com.zion.htf.R;
 import com.zion.htf.Set;
-import com.zion.htf.activity.ArtistDetailsActivity;
-import com.zion.htf.activity.LineUpActivity;
 import com.zion.htf.adapter.LineUpAdapter;
 
 import org.michenux.android.db.sqlite.SQLiteDatabaseHelper;
@@ -100,8 +98,7 @@ public class LineUpListFragment extends SherlockFragment implements AdapterView.
 					@SuppressWarnings("ConstantConditions")
 					@Override
 					public void onGlobalLayout(){
-						if(1 > listView.getChildCount())
-							throw new RuntimeException("No children found in ListView. This is most likely due to an empty result set for this.getAllSets()");
+						if(1 > listView.getChildCount())	throw new RuntimeException("No children found in ListView. This is most likely due to an empty result set for this.getAllSets()");
 						LineUpActivity.sectionHeaderHeight = listView.getChildAt(0).getMeasuredHeight();
 						if(Build.VERSION.SDK_INT >= 16) listView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
 						else							listView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
@@ -132,9 +129,7 @@ public class LineUpListFragment extends SherlockFragment implements AdapterView.
 	public static final LineUpListFragment newInstance(String stageName){
 		Bundle args = new Bundle(1);
 		args.putString(STAGE_NAME, stageName);
-		Log.v(TAG, "New instance whith stageName = " + stageName);
 		return new LineUpListFragment(args);
-
 	}
 
 	protected List<Item> getAllSets(){

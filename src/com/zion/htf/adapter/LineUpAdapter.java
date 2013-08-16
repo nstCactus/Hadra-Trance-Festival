@@ -32,6 +32,8 @@ import com.zion.htf.Application;
 import com.zion.htf.Item;
 import com.zion.htf.R;
 import com.zion.htf.Set;
+import com.zion.htf.bitmap.AsyncDrawable;
+import com.zion.htf.bitmap.Utils;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -107,6 +109,8 @@ public class LineUpAdapter<T> extends ArrayAdapter<T> implements PinnedSectionLi
 			holder.endHour.setText(this.simpleDateFormat.format(set.getEndDate()));
 			holder.genre.setText(set.getGenre());
 			holder.artistPhoto.setImageResource(this.getPhotoResourceId(set.getPhotoResourceName()));
+			int dim = Utils.dpToPx(64);// holder.artistPhoto.getWidth() can't be trusted...
+			AsyncDrawable.loadBitmap(this.getPhotoResourceId(set.getPhotoResourceName()), holder.artistPhoto, dim, dim);
 		}
 		return convertView;
 	}
