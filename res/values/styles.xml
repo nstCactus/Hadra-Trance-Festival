@@ -24,6 +24,8 @@
 	<style name="AppTheme" parent="Theme.Sherlock">
 		<item name="actionBarStyle">@style/Widget.Styled.ActionBar</item>
 		<item name="android:actionBarStyle">@style/Widget.Styled.ActionBar</item>
+		<item name="android:textColor">@color/brand_yellow</item>
+		<item name="android:windowBackground">@color/brand_black</item>
 	</style>
 
 	<!-- This is our ViewPagerIndicator theme. We inherit from the ABS theme -->
@@ -46,6 +48,10 @@
 	<style name="TitleText">
 		<item name="android:textColor">@android:color/darker_gray</item>
 		<item name="android:textSize">17dip</item>
+	</style>
+
+	<style name="MainActivity" parent="Theme.Sherlock.NoActionBar">
+		<item name="android:windowBackground">@color/brand_black</item>
 	</style>
 
 	<style name="imageButtons">

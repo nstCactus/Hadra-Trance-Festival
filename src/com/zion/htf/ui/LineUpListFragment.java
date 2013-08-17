@@ -33,6 +33,7 @@ import android.widget.ListView;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.zion.htf.Application;
+import com.zion.htf.BuildConfig;
 import com.zion.htf.Item;
 import com.zion.htf.R;
 import com.zion.htf.Set;
@@ -51,7 +52,6 @@ public class LineUpListFragment extends SherlockFragment implements AdapterView.
 
 	public static final String STAGE_NAME = "STAGE_NAME";
 
-	protected Item[] list;
 	protected String stage;
 
 	/* BEGIN Columns indexes for convenience */
@@ -65,6 +65,10 @@ public class LineUpListFragment extends SherlockFragment implements AdapterView.
 	protected final int COLUMN_ARTIST_ID = 7;
 	private ListView listView;
 	/* END Columns indexes for convenience */
+
+	public LineUpListFragment(){
+		super();
+	}
 
 	protected LineUpListFragment(Bundle args){
 		super();
@@ -80,7 +84,7 @@ public class LineUpListFragment extends SherlockFragment implements AdapterView.
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-		if(this.stage == null) Log.e(TAG, "stageName is null. You must instantiate this using LineUpListFragment.newInstance(String stageName).");
+		if(null == this.stage) Log.e(TAG, "stageName is null. You must instantiate this using LineUpListFragment.newInstance(String stageName).");
 
 		View view = inflater.inflate(R.layout.fragment_line_up_list, container, false);
 
@@ -90,7 +94,7 @@ public class LineUpListFragment extends SherlockFragment implements AdapterView.
 		if(LineUpActivity.sectionHeaderHeight == 0){
 			final ViewTreeObserver viewTreeObserver = this.listView.getViewTreeObserver();
 			if(null == viewTreeObserver){
-				Log.e(TAG, "Can't get a ViewTreeObserver to get the height of a ListView section header. Falling back to default value");
+				if(BuildConfig.DEBUG) Log.e(TAG, "Can't get a ViewTreeObserver to get the height of a ListView section header. Falling back to default value");
 				LineUpActivity.sectionHeaderHeight = 64;
 			}
 			else{
@@ -111,6 +115,11 @@ public class LineUpListFragment extends SherlockFragment implements AdapterView.
 
 		view.setTag(this.stage);
 		return view;
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle outstate){
+		outstate.putString(STAGE_NAME, this.stage);
 	}
 
 	@Override

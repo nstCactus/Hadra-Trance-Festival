@@ -19,14 +19,16 @@
     or see <http://www.gnu.org/licenses/>.
 -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:divider="@color/abs__background_holo_dark"
-              android:background="@color/abs__background_holo_dark">
+<LinearLayout
+		xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@color/abs__background_holo_dark"
+        android:background="@color/abs__background_holo_dark">
 
-	<include
+	<TextView
 			android:id="@+id/list_item_section_header"
-			layout="@android:layout/preference_category" />
+			style="?android:attr/listSeparatorTextViewStyle"
+			android:textColor="@color/brand_orange" />
 </LinearLayout>

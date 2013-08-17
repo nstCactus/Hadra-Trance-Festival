@@ -37,6 +37,7 @@ import com.paypal.android.sdk.payments.PayPalPayment;
 import com.paypal.android.sdk.payments.PayPalService;
 import com.paypal.android.sdk.payments.PaymentActivity;
 import com.paypal.android.sdk.payments.PaymentConfirmation;
+import com.zion.htf.BuildConfig;
 import com.zion.htf.R;
 
 import org.json.JSONException;
@@ -103,7 +104,7 @@ public class DonateActivity extends SherlockActivity implements SeekBar.OnSeekBa
 	}
 
 	public void onDonatePressed(View pressed){
-		Log.v(TAG, this.amount);
+		if(BuildConfig.DEBUG) Log.v(TAG, this.amount);
 
 		PayPalPayment payment = new PayPalPayment(new BigDecimal(this.amount.replace(",", ".")), PAYPAL_CURRENCY, this.getString(R.string.donation_label));
 
@@ -123,7 +124,7 @@ public class DonateActivity extends SherlockActivity implements SeekBar.OnSeekBa
 			PaymentConfirmation confirm = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
 			if(confirm != null){
 				try{
-					Log.i(TAG, confirm.toJSONObject().toString(4));
+					if(BuildConfig.DEBUG) Log.i(TAG, confirm.toJSONObject().toString(4));
 
 					// TODO: send 'confirm' to your server for verification.
 					// see https://developer.paypal.com/webapps/developer/docs/integration/mobile/verify-mobile-payment/
@@ -135,7 +136,7 @@ public class DonateActivity extends SherlockActivity implements SeekBar.OnSeekBa
 			}
 		}
 		else if(resultCode == Activity.RESULT_CANCELED){
-			Log.i(TAG, "The user canceled.");
+			if(BuildConfig.DEBUG) Log.i(TAG, "The user canceled.");
 		}
 		else if(resultCode == PaymentActivity.RESULT_PAYMENT_INVALID){
 			Log.e(TAG, "An invalid payment was submitted. Please see the docs.");

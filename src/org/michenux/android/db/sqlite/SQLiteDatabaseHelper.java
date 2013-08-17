@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.zion.htf.BuildConfig;
+
 import org.michenux.android.db.utils.SqlParser;
 import org.michenux.android.resources.AssetUtils;
 
@@ -29,7 +31,7 @@ public class SQLiteDatabaseHelper extends SQLiteOpenHelper{
 	@Override
 	public void onCreate(SQLiteDatabase db){
 		try{
-			Log.v(TAG, ("create database"));
+			if(BuildConfig.DEBUG) Log.v(TAG, ("create database"));
 			execSqlFile(CREATEFILE, db);
 		}
 		catch(IOException exception){
@@ -40,7 +42,7 @@ public class SQLiteDatabaseHelper extends SQLiteOpenHelper{
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
 		try{
-			Log.v(TAG, ("upgrade database from " + oldVersion + " to " + newVersion));
+			if(BuildConfig.DEBUG) Log.v(TAG, ("upgrade database from " + oldVersion + " to " + newVersion));
 			for(String sqlFile : AssetUtils.list(SQL_DIR, this.context.getAssets())){
 				if(sqlFile.startsWith(UPGRADEFILE_PREFIX)){
 					int fileVersion = Integer.parseInt(sqlFile.substring(UPGRADEFILE_PREFIX.length(), sqlFile.length() - UPGRADEFILE_SUFFIX.length()));
@@ -56,7 +58,7 @@ public class SQLiteDatabaseHelper extends SQLiteOpenHelper{
 	}
 
 	protected void execSqlFile(String sqlFile, SQLiteDatabase db) throws SQLException, IOException{
-		Log.v(TAG, ("  exec sql file: " + sqlFile));
+		if(BuildConfig.DEBUG) Log.v(TAG, ("  exec sql file: " + sqlFile));
 		for(String sqlInstruction : SqlParser.parseSqlFile(SQL_DIR + "/" + sqlFile, this.context.getAssets())){
 			db.execSQL(sqlInstruction);
 		}

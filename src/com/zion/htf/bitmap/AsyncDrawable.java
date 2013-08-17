@@ -24,29 +24,22 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v4.util.LruCache;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.zion.htf.Application;
+import com.zion.htf.BuildConfig;
 
 import java.lang.ref.WeakReference;
 
 public class AsyncDrawable extends BitmapDrawable{
-	private final WeakReference<BitmapWorkerTask> bitmapWorkerTaskReference;
-	private LruCache<String, Bitmap> memoryCache;
+	private static final String TAG = "ASyncDrawable";
+	private final  WeakReference<BitmapWorkerTask> bitmapWorkerTaskReference;
+	private static LruCache<Integer, Bitmap>        memoryCache;
 
 	public AsyncDrawable(Resources res, Bitmap bitmap, BitmapWorkerTask bitmapWorkerTask){
 		super(res, bitmap);
 		this.bitmapWorkerTaskReference = new WeakReference<BitmapWorkerTask>(bitmapWorkerTask);
-
-		// Initialize memory cache with a size equal to 1/8 of max available VM memory, in kB
-		final int maxMemory = (int)(Runtime.getRuntime().maxMemory() / 1024);
-		final int cacheSize = maxMemory / 8;
-		this.memoryCache = new LruCache<String, Bitmap>(cacheSize){
-			@Override
-			public int sizeOf(String key, Bitmap bitmap){
-				return bitmap.getByteCount() / 1024;
-			}
-		};
 	}
 
 	public BitmapWorkerTask getBitmapWorkerTask(){
@@ -54,7 +47,13 @@ public class AsyncDrawable extends BitmapDrawable{
 	}
 
 	public static void loadBitmap(int resId, ImageView imageView, int width, int height){
-		if(cancelPotentialWork(resId, imageView)){
+		final Bitmap bitmap = AsyncDrawable.getBitmapFromMemCache(resId);
+
+		if(null != bitmap){
+			imageView.setImageBitmap(bitmap);
+			if(BuildConfig.DEBUG) Log.v(TAG, "Memory cache hit.");
+		}
+		else{
 			final BitmapWorkerTask task = new BitmapWorkerTask(imageView);
 			final AsyncDrawable asyncDrawable = new AsyncDrawable(Application.getContext().getResources(), BitmapWorkerTask.placeHolderBitmap, task);
 			imageView.setImageDrawable(asyncDrawable);
@@ -95,13 +94,30 @@ public class AsyncDrawable extends BitmapDrawable{
 		return null;
 	}
 
-	public void addBitmapToMemoryCache(String key, Bitmap bitmap) {
+	public static void addBitmapToMemoryCache(int key, Bitmap bitmap) {
 		if (getBitmapFromMemCache(key) == null) {
-			this.memoryCache.put(key, bitmap);
+			AsyncDrawable.getMemoryCache().put(key, bitmap);
+			if(BuildConfig.DEBUG) Log.v(TAG, "Bitmap added to memory cache");
 		}
 	}
 
-	public Bitmap getBitmapFromMemCache(String key) {
-		return this.memoryCache.get(key);
+	public static Bitmap getBitmapFromMemCache(int key) {
+		return AsyncDrawable.getMemoryCache().get(key);
+	}
+
+	public static LruCache<Integer, Bitmap> getMemoryCache(){
+		if(null == AsyncDrawable.memoryCache){
+		// Initialize memory cache with a size equal to 1/8 of max available VM memory, in kB
+		final int maxMemory = (int)(Runtime.getRuntime().maxMemory() / 1024);
+			final int cacheSize = maxMemory / 8;
+			AsyncDrawable.memoryCache = new LruCache<Integer, Bitmap>(cacheSize){
+				@Override
+				public int sizeOf(Integer key, Bitmap bitmap){
+					return bitmap.getByteCount() / 1024;
+				}
+			};
+		}
+
+		return AsyncDrawable.memoryCache;
 	}
 }

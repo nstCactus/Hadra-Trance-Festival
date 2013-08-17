@@ -44,7 +44,7 @@ public class MainActivity extends SherlockActivity{
 	}
 
 	@Override
-	public boolean onMenuItemSelected(int featureId, MenuItem item){
+	public boolean onOptionsItemSelected(MenuItem item){
 		boolean ret = true;
 
 		switch(item.getItemId()){
@@ -76,7 +76,7 @@ public class MainActivity extends SherlockActivity{
 				intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.hadra.net/shop/new/category.php?id_category=6"));
 				break;
 			case R.id.button_infos:
-				intent = new Intent(this, AboutActivity.class);
+				intent = new Intent(this, InfoActivity.class);
 				break;
 			case R.id.button_facebook:
 				// Facebook needs special treatment if we want the mobile app to open

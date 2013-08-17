@@ -23,9 +23,11 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.zion.htf.Application;
+import com.zion.htf.BuildConfig;
 import com.zion.htf.R;
 
 import java.lang.ref.WeakReference;
@@ -43,21 +45,12 @@ public class BitmapWorkerTask extends AsyncTask<Integer, Void, Bitmap>{
 
 	@Override
 	protected Bitmap doInBackground(Integer... params){
-//		final String imageKey = String.valueOf(params[0]);
 		final int paramCount = params.length;
 		final int width = paramCount > 1 ? params[1] : 100;
 		final int height = paramCount > 2 ? params[2] : 100;
-//
-//		Bitmap bitmap = getBitmapFromDiskCache(imageKey);
-//
-//		if(null == bitmap){
-//			Log.v(TAG, String.format("Bitmap %d not found in cache", imageKey));
-//			bitmap = decodeSampledBitmapFromResource(getResources(), params[0], width, height);
-//		}
-//
-//		addBitmapToCache(bitmap);
-//		return bitmap;
-		return this.decodeSampledBitmapFromResource(Application.getContext().getResources(), params[0], width, height);
+		final Bitmap bitmap = this.decodeSampledBitmapFromResource(Application.getContext().getResources(), params[0], width, height);
+		AsyncDrawable.addBitmapToMemoryCache(params[0], bitmap);
+		return bitmap;
 	}
 
 	@Override
@@ -120,6 +113,7 @@ public class BitmapWorkerTask extends AsyncTask<Integer, Void, Bitmap>{
 
 		// Decode bitmap with inSampleSize set
 		options.inJustDecodeBounds = false;
+		if(BuildConfig.DEBUG) if(BuildConfig.DEBUG) Log.v(TAG, "Resampling resource");
 		return BitmapFactory.decodeResource(res, resId, options);
 	}
 
