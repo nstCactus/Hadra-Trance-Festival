@@ -9,6 +9,8 @@ import android.util.SparseArray;
 import android.view.ViewGroup;
 
 import com.zion.htf.Application;
+
+import com.zion.htf.BuildConfig;
 import com.zion.htf.ui.LineUpListFragment;
 
 import org.michenux.android.db.sqlite.SQLiteDatabaseHelper;
@@ -37,7 +39,7 @@ public class LineUpPagerAdapter extends FragmentPagerAdapter{
 
 	@Override
 	public Fragment getItem(int position){
-		Log.v(TAG, "Instantiating a new fragment for the viewPager");
+		if(BuildConfig.DEBUG) Log.v(TAG, "Instantiating a new fragment for the viewPager");
 
 		Fragment fragment = LineUpListFragment.newInstance(this.stages.get(position));
 

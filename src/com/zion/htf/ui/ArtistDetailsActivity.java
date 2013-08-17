@@ -17,7 +17,7 @@
     or see <http://www.gnu.org/licenses/>.
  */
 
-package com.zion.htf.activity;
+package com.zion.htf.ui;
 
 import android.content.Intent;
 import android.database.Cursor;

@@ -1,4 +1,4 @@
-package com.zion.htf.activity;
+package com.zion.htf.ui;
 
 import android.app.Activity;
 import android.os.Build;
