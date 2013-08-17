@@ -86,16 +86,8 @@
 
         <activity
                 android:name=".ui.ArtistDetailsActivity"
-                android:label="@string/title_activity_artist_details"
                 android:parentActivityName=".activity.LineUpActivity"
                 android:theme="@style/Theme.Sherlock" />
-
-        <activity
-                android:name=".ui.AboutActivity"
-                android:theme="@android:style/Theme.Dialog"
-                android:excludeFromRecents="true"
-                android:label="@string/action_about"
-                android:parentActivityName=".ui.MainActivity" />
 
 		<activity
 				android:name=".ui.DonateActivity"

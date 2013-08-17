@@ -45,9 +45,9 @@ import org.json.JSONException;
 import java.math.BigDecimal;
 
 public class DonateActivity extends SherlockActivity implements SeekBar.OnSeekBarChangeListener{
-	private final static String PAYPAL_CLIENT_ID      = "AQKx2xDBRhC4J1VzGsLXe13IBBqX3ivEnKlSkOc07dEOyBXGcGUcecqACL3W";
+	private final static String PAYPAL_CLIENT_ID      = "Aa7K9hAB02q0IqcXFns7aa9C3xcwkgWGMWg0YKgcJhmq7PhPs-CRwOr7tlRg";
 	private final static String PAYPAL_ENVIRONMENT    = PaymentActivity.ENVIRONMENT_SANDBOX;
-	private final static String PAYPAL_RECEIVER_EMAIL = "sbooob-facilitator@gmail.com";
+	private final static String PAYPAL_RECEIVER_EMAIL = "sbooob@gmail.com";
 	private final static String PAYPAL_CURRENCY       = "USD";
 
 	private final static String TAG = "AboutActivity";

@@ -17,7 +17,7 @@
     or see <http://www.gnu.org/licenses/>.
  */
 
-package com.zion.htf;
+package com.zion.htf.data;
 
 public class Item{
 	public static final int TYPE_ITEM    = 0;

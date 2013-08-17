@@ -37,11 +37,14 @@
 	<style name="Widget.Styled.ActionBar" parent="Widget.Sherlock.ActionBar">
 		<item name="titleTextStyle">@style/TitleText</item>
 		<item name="android:titleTextStyle">@style/TitleText</item>
+		<item name="background">@drawable/actionbar_background</item>
+		<item name="android:background">@drawable/actionbar_background</item>
 	</style>
 
 	<!-- "Implementation" of VPI theme. We just set the text size and color. -->
 	<style name="CustomTabPageIndicator" parent="Widget.TabPageIndicator">
 		<item name="android:textColor">#FFFFFFFF</item>
+		<item name="android:background">@drawable/tab_indicator_selector</item>
 	</style>
 
 	<!-- More customizations for ABS -->

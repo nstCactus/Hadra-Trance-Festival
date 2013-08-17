@@ -23,20 +23,16 @@
 	<string name="main_stage">Scène principale</string>
 
 	<string name="title_activity_map">Plan</string>
-	<string name="title_activity_artist_details">Détails sur l\'artiste</string>
 
 	<string name="error_database_creation">Impossible de créer la base de données</string>
-	<string name="error_failed_fetching_poi">Impossible de récupérer la listes des emplacements
-	</string>
+	<string name="error_failed_fetching_poi">Impossible de récupérer la listes des emplacements</string>
 
 	<string name="action_settings">Paramètres</string>
 	<string name="action_directions">Itinéraire</string>
-	<string name="action_legalNotices">Mentions légales</string>
 	<string name="action_onStage">À l\'écoute</string>
-	<string name="action_alarms">Alarmes</string>
 	<string name="action_donate">Faire un don</string>
 	<string name="action_about">À propos</string>
-	<string name="donation_label">Generous donation</string>
+	<string name="donation_label">Don généreux</string>
 	<string name="donation_text">Je développe cette application bénévolement, sur mon temps libre.
 		\n\nSi tu le souhaites tu peux soutenir cette démarche en donnant quelques dollars.
 	</string>
@@ -58,5 +54,11 @@
 	<string name="info_faq">FAQ</string>
 	<string name="info_about">À propos</string>
 	<string name="action_info">Infos pratiques</string>
+
+	<string name="remaining_time">Temps restant :</string>
+	<string name="before_opening">avant le début du festival</string>
+	<string name="daily_break">Pause quotidienne</string>
+	<string name="all_stages">Toutes les scènes</string>
+	<string name="festival_over">Le festival est terminé</string>
 
 </resources>

@@ -32,9 +32,9 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.hb.views.PinnedSectionListView;
 import com.viewpagerindicator.PageIndicator;
-import com.zion.htf.Item;
+import com.zion.htf.data.Item;
 import com.zion.htf.R;
-import com.zion.htf.Set;
+import com.zion.htf.data.Set;
 import com.zion.htf.adapter.LineUpPagerAdapter;
 
 import java.util.Date;

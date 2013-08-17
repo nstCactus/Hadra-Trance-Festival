@@ -89,10 +89,10 @@
 					android:layout_height="wrap_content"
 					android:text="@string/donate_joke"
 					android:id="@+id/donate_joke"
-					android:layout_marginTop="300dp"
+					android:layout_marginTop="30dp"
 					android:layout_toLeftOf="@+id/donate_joke_button"
 					android:layout_below="@+id/donate_button"
-					/>
+					android:paddingRight="20dp"/>
 
 			<com.zion.htf.widget.TintImageButton
 					android:id="@+id/donate_joke_button"

@@ -32,7 +32,6 @@ import android.widget.TextView;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.zion.htf.Application;
 import com.zion.htf.R;
@@ -98,7 +97,7 @@ public class ArtistDetailsActivity extends SherlockFragmentActivity implements V
 			TextView origin_field = (TextView)this.findViewById(R.id.origin);
 			origin_field.setText(cursor.getString(COLUMN_ORIGIN));
 
-			TextView genre_field = (TextView)this.findViewById(R.id.genre);
+			TextView genre_field = (TextView)this.findViewById(R.id.set_type);
 			genre_field.setText(cursor.getString(COLUMN_GENRE));
 
 			ImageButton website_button = (ImageButton)this.findViewById(R.id.website);
@@ -123,12 +122,6 @@ public class ArtistDetailsActivity extends SherlockFragmentActivity implements V
 		}
 		if(!cursor.isClosed()) cursor.close();
 		this.dbOpenHelper.close();
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu){
-		this.getSupportMenuInflater().inflate(R.menu.artist_details, menu);
-		return true;
 	}
 
 	@Override

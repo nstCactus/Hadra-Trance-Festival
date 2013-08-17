@@ -34,9 +34,9 @@ import android.widget.ListView;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.zion.htf.Application;
 import com.zion.htf.BuildConfig;
-import com.zion.htf.Item;
+import com.zion.htf.data.Item;
 import com.zion.htf.R;
-import com.zion.htf.Set;
+import com.zion.htf.data.Set;
 import com.zion.htf.adapter.LineUpAdapter;
 
 import org.michenux.android.db.sqlite.SQLiteDatabaseHelper;

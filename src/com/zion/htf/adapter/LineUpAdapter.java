@@ -29,9 +29,9 @@ import android.widget.TextView;
 
 import com.hb.views.PinnedSectionListView;
 import com.zion.htf.Application;
-import com.zion.htf.Item;
+import com.zion.htf.data.Item;
 import com.zion.htf.R;
-import com.zion.htf.Set;
+import com.zion.htf.data.Set;
 import com.zion.htf.bitmap.AsyncDrawable;
 import com.zion.htf.bitmap.Utils;
 
@@ -42,11 +42,10 @@ import java.util.Locale;
 public class LineUpAdapter<T> extends ArrayAdapter<T> implements PinnedSectionListView.PinnedSectionListAdapter{
 	static class ItemViewHolder {
 		ImageView artistPhoto;
-		TextView artistName;
-		TextView genre;
-		TextView startHour;
-		TextView endHour;
-
+		TextView  artistName;
+		TextView  setType;
+		TextView  startHour;
+		TextView  endHour;
 	}
 
 	static class SectionViewHolder{
@@ -93,7 +92,7 @@ public class LineUpAdapter<T> extends ArrayAdapter<T> implements PinnedSectionLi
 				// Get references to its fields and store them in the ViewHolder
 				holder = new ItemViewHolder();
 				holder.artistName = (TextView)convertView.findViewById(R.id.label);
-				holder.genre = (TextView)convertView.findViewById(R.id.genre);
+				holder.setType = (TextView)convertView.findViewById(R.id.set_type);
 				holder.startHour = (TextView)convertView.findViewById(R.id.start_hour);
 				holder.endHour = (TextView)convertView.findViewById(R.id.end_hour);
 				holder.artistPhoto = (ImageView)convertView.findViewById(R.id.artist_photo);
@@ -107,7 +106,7 @@ public class LineUpAdapter<T> extends ArrayAdapter<T> implements PinnedSectionLi
 			holder.artistName.setText(set.toString());
 			holder.startHour.setText(this.simpleDateFormat.format(set.getBeginDate()));
 			holder.endHour.setText(this.simpleDateFormat.format(set.getEndDate()));
-			holder.genre.setText(set.getGenre());
+			holder.setType.setText(set.getSetType());
 			holder.artistPhoto.setImageResource(this.getPhotoResourceId(set.getPhotoResourceName()));
 			int dim = Utils.dpToPx(64);// holder.artistPhoto.getWidth() can't be trusted...
 			AsyncDrawable.loadBitmap(this.getPhotoResourceId(set.getPhotoResourceName()), holder.artistPhoto, dim, dim);

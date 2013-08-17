@@ -42,12 +42,11 @@
 			android:paddingTop="20dp" />
 
 	<LinearLayout
+			xmlns:android="http://schemas.android.com/apk/res/android"
 			android:id="@+id/small_buttons"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_below="@drawable/title"
-			android:layout_centerInParent="true"
-			android:layout_marginTop="10dp">
+			android:layout_centerInParent="true">
 
 		<com.zion.htf.widget.TintImageButton
 				style="@style/smallButtons"
@@ -55,7 +54,7 @@
 				android:src="@drawable/button_facebook"
 				android:layout_below="@drawable/title"
 				android:layout_alignLeft="@drawable/title"
-				android:onClick="onButtonClicked" />
+				android:onClick="onButtonClicked"/>
 
 		<com.zion.htf.widget.TintImageButton
 				android:id="@+id/button_soundcloud"
@@ -63,7 +62,7 @@
 				android:layout_below="@drawable/title"
 				android:layout_alignLeft="@drawable/title"
 				style="@style/smallButtons"
-				android:onClick="onButtonClicked" />
+				android:onClick="onButtonClicked"/>
 
 		<com.zion.htf.widget.TintImageButton
 				android:id="@+id/button_youtube"
@@ -71,7 +70,7 @@
 				style="@style/smallButtons"
 				android:layout_below="@drawable/title"
 				android:layout_alignLeft="@drawable/title"
-				android:onClick="onButtonClicked" />
+				android:onClick="onButtonClicked"/>
 
 		<com.zion.htf.widget.TintImageButton
 				android:id="@+id/button_hadra"
@@ -79,7 +78,7 @@
 				style="@style/smallButtons"
 				android:layout_below="@drawable/title"
 				android:layout_alignLeft="@drawable/title"
-				android:onClick="onButtonClicked" />
+				android:onClick="onButtonClicked"/>
 
 		<com.zion.htf.widget.TintImageButton
 				android:id="@+id/button_music"
@@ -87,9 +86,8 @@
 				style="@style/smallButtons"
 				android:layout_below="@drawable/title"
 				android:layout_alignLeft="@drawable/title"
-				android:onClick="onButtonClicked" />
+				android:onClick="onButtonClicked"/>
 	</LinearLayout>
-
 	<LinearLayout
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
@@ -133,61 +131,5 @@
 				android:onClick="onButtonClicked" />
 
 	</LinearLayout>
-
-	<RelativeLayout
-			xmlns:android="http://schemas.android.com/apk/res/android"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_alignParentBottom="true"
-			android:layout_alignParentLeft="true"
-			android:id="@+id/relativeLayout">
-
-		<ImageView
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:id="@+id/speaker_left"
-				android:src="@drawable/speaker_left"
-				android:layout_alignParentLeft="true" />
-
-		<ImageView
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:id="@+id/speaker_right"
-				android:src="@drawable/speaker_right"
-				android:layout_alignParentRight="true" />
-
-		<LinearLayout
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:orientation="vertical"
-				android:layout_centerVertical="true"
-				android:layout_centerHorizontal="true"
-				android:gravity="center">
-
-			<TextView
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="Main stage"
-					android:id="@+id/stage"
-					style="@style/now_playing"
-					android:layout_above="@+id/artist_name" />
-
-			<TextView
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="Penta (live)"
-					android:id="@+id/artist_name"
-					style="@style/now_playing.artist"
-					android:layout_centerVertical="true" />
-
-			<TextView
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="20h - 22h30"
-					style="@style/now_playing"
-					android:id="@+id/hour"
-					android:layout_centerHorizontal="true"
-					android:layout_below="@id/artist_name" />
-		</LinearLayout>
-	</RelativeLayout>
+	<include layout="@layout/now_on_stage"/>
 </RelativeLayout>

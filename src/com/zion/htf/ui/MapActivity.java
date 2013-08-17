@@ -19,7 +19,6 @@
 
 package com.zion.htf.ui;
 
-import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.database.Cursor;
@@ -35,7 +34,6 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -151,14 +149,6 @@ public class MapActivity extends SherlockFragmentActivity implements ActionBar.O
 				Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?f=d&daddr=45.12465411273364,5.591188743710518"));
 				intent.setComponent(new ComponentName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity"));
 				this.startActivity(intent);
-				break;
-
-			case R.id.action_legalNotices:
-				String licenseInfo = GooglePlayServicesUtil.getOpenSourceSoftwareLicenseInfo(this.getApplicationContext());
-				AlertDialog.Builder licenseDialog = new AlertDialog.Builder(this);
-				licenseDialog.setTitle(this.getString(R.string.action_legalNotices));
-				licenseDialog.setMessage(licenseInfo);
-				licenseDialog.show();
 				break;
 
 			case android.R.id.home:

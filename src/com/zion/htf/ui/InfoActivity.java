@@ -43,7 +43,9 @@ public class InfoActivity extends SherlockListActivity implements AdapterView.On
 			context.getString(R.string.info_camp),
 			context.getString(R.string.info_dogs),
 			context.getString(R.string.info_faq),
-			context.getString(R.string.info_about)
+			context.getString(R.string.info_about),
+			context.getString(R.string.info_open_source),
+			context.getString(R.string.action_donate)
 	};
 
 	@Override
@@ -66,14 +68,18 @@ public class InfoActivity extends SherlockListActivity implements AdapterView.On
 		Intent intent = null;
 
 		int strId;
-		if(
-			item.equals(this.getString(strId = R.string.info_festival)) ||
-			item.equals(this.getString(strId = R.string.info_transport)) ||
-			item.equals(this.getString(strId = R.string.info_camp)) ||
-			item.equals(this.getString(strId = R.string.info_dogs)) ||
-			item.equals(this.getString(strId = R.string.info_faq)) ||
-			item.equals(this.getString(strId = R.string.info_about))
-		){
+		if(item.equals(this.getString(R.string.action_donate))){
+			intent = new Intent(this, DonateActivity.class);
+		}
+		else if(
+				item.equals(this.getString(strId = R.string.info_festival)) ||
+				item.equals(this.getString(strId = R.string.info_transport)) ||
+				item.equals(this.getString(strId = R.string.info_camp)) ||
+				item.equals(this.getString(strId = R.string.info_dogs)) ||
+				item.equals(this.getString(strId = R.string.info_faq)) ||
+				item.equals(this.getString(strId = R.string.info_about)) ||
+				item.equals(this.getString(strId = R.string.info_open_source))
+				){
 			try{
 				String name = this.getResources().getResourceEntryName(strId);
 				intent = new Intent(this, InfoDetailsActivity.class);

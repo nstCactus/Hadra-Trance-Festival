@@ -19,22 +19,69 @@
 
 package com.zion.htf.ui;
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.view.View;
 
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.zion.htf.R;
+import com.zion.htf.data.ArtistOnStageTask;
+
+import java.lang.ref.WeakReference;
+import java.util.Timer;
 
 public class MainActivity extends SherlockActivity{
+	private static final String TAG                             = "MainActivity";
+	private static final int 	ARTIST_ON_STAGE_UPDATE_INTERVAL = 10000;
+	protected Timer   	artistOnStageTimer;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
+
 		this.setContentView(R.layout.activity_main);
+	}
+
+	@Override
+	public View onCreateView(String name, Context context, AttributeSet attrs){
+		View view = super.onCreateView(name, context, attrs);
+
+		return view;
+	}
+
+	@Override
+	public void onPause(){
+		if(null != this.artistOnStageTimer){
+			this.artistOnStageTimer.cancel();
+			this.artistOnStageTimer.purge();
+		}
+		super.onPause();
+	}
+
+	@Override
+	public void onResume(){
+		super.onResume();
+		this.initNowOnStageTimer();
+	}
+
+	private void initNowOnStageTimer(){
+		if(null == this.artistOnStageTimer) this.artistOnStageTimer = null;
+		this.artistOnStageTimer = new Timer();
+		WeakReference<Activity> activityWeakReference = new WeakReference<Activity>(this);
+		this.artistOnStageTimer.schedule(new ArtistOnStageTask(activityWeakReference), 0, MainActivity.ARTIST_ON_STAGE_UPDATE_INTERVAL);
+	}
+
+	@Override
+	protected void onDestroy(){
+		if(null != this.artistOnStageTimer) this.artistOnStageTimer.cancel();
+		super.onDestroy();
 	}
 
 	@Override
@@ -50,10 +97,6 @@ public class MainActivity extends SherlockActivity{
 		switch(item.getItemId()){
 			case R.id.action_donate:
 				this.startActivity(new Intent(this, DonateActivity.class));
-				break;
-
-			case R.id.action_about:
-				this.startActivity(new Intent(this, AboutActivity.class));
 				break;
 
 			default:
@@ -103,5 +146,13 @@ public class MainActivity extends SherlockActivity{
 		}
 
 		if(null != intent) this.startActivity(intent);
+	}
+
+	public void onNowOnStageClicked(View view){
+		if(null != this.artistOnStageTimer){
+			this.artistOnStageTimer.cancel();
+			this.artistOnStageTimer.purge();
+		}
+		this.initNowOnStageTimer();
 	}
 }

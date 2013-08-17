@@ -26,10 +26,4 @@
 			android:orderInCategory="1"
 			android:showAsAction="ifRoom|withText"
 			android:icon="@android:drawable/ic_menu_directions" />
-	<item
-			android:id="@+id/action_legalNotices"
-			android:title="@string/action_legalNotices"
-			android:orderInCategory="1"
-			android:showAsAction="never"
-			android:icon="@android:drawable/ic_menu_info_details" />
 </menu>

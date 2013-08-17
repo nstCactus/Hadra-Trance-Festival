@@ -17,13 +17,13 @@
     or see <http://www.gnu.org/licenses/>.
  */
 
-package com.zion.htf;
+package com.zion.htf.data;
 
 import java.util.Date;
 
 public class Set extends Item{
 	protected String name;
-	protected int type = Item.TYPE_ITEM;
+	protected int type = TYPE_ITEM;
 
 	/* Sets table fields */
 	protected int    id;
