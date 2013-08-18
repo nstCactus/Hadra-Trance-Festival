@@ -52,6 +52,7 @@ public class ArtistDetailsActivity extends SherlockFragmentActivity implements V
 	private static final int    COLUMN_SOUNDCLOUD = 8;
 	private static final int    COLUMN_LABEL      = 9;
 	private static final int    COLUMN_BIO        = 11;// Column 10 is foreign key bios(id)
+	private static final int	COLUMN_BIO_ID	  = 12;
 	private String facebook_url;
 	private String website_url;
 	private String soundcloud_url;
@@ -70,7 +71,7 @@ public class ArtistDetailsActivity extends SherlockFragmentActivity implements V
 		int artist_id = this.getIntent().getIntExtra("artist_id", 0);
 
 		String langCode = Locale.getDefault().getLanguage().equals("fr") ? "fr" : "en";
-		final Cursor cursor = this.dbOpenHelper.getReadableDatabase().rawQuery(String.format("SELECT artists.*, bios.text FROM artists LEFT JOIN bios ON artists.bio = bios.id AND lang_code = '%s' WHERE artists.id = %d;", langCode, artist_id), null);
+		final Cursor cursor = this.dbOpenHelper.getReadableDatabase().rawQuery(String.format("SELECT artists.*, bios.text, bio FROM artists LEFT JOIN bios ON artists.bio = bios.id AND lang_code = '%s' WHERE artists.id = %d;", langCode, artist_id), null);
 
 		if(cursor.moveToNext()){
 			String artist_name = cursor.getString(COLUMN_NAME);
@@ -107,6 +108,10 @@ public class ArtistDetailsActivity extends SherlockFragmentActivity implements V
 
 			TextView bio_field = (TextView)this.findViewById(R.id.bio);
 			String bio = cursor.getString(COLUMN_BIO);
+			if(!cursor.isNull(COLUMN_BIO_ID) && (bio == null || bio.equals(""))){
+				Cursor bioCursor = this.dbOpenHelper.getReadableDatabase().rawQuery("SELECT text FROM bios WHERE id = ?;", new String[]{String.valueOf(cursor.getInt(COLUMN_BIO_ID))});
+				if(bioCursor.moveToNext()) bio = bioCursor.getString(0);
+			}
 			if(bio != null) bio_field.setText(bio);
 		}
 		else{
