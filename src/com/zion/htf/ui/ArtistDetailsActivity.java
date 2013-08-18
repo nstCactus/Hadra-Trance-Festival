@@ -73,32 +73,25 @@ public class ArtistDetailsActivity extends SherlockFragmentActivity implements V
 		final Cursor cursor = this.dbOpenHelper.getReadableDatabase().rawQuery(String.format("SELECT artists.*, bios.text FROM artists LEFT JOIN bios ON artists.bio = bios.id AND lang_code = '%s' WHERE artists.id = %d;", langCode, artist_id), null);
 
 		if(cursor.moveToNext()){
-			this.getSupportActionBar().setTitle(cursor.getString(COLUMN_NAME));
+			String artist_name = cursor.getString(COLUMN_NAME);
+			this.getSupportActionBar().setTitle(artist_name);
+
+			TextView artist_name_field = (TextView)this.findViewById(R.id.artist_name);
+			artist_name_field.setText(artist_name);
 
 			TextView label_field = (TextView)this.findViewById(R.id.label);
 			label_field.setText(cursor.getString(COLUMN_LABEL));
 
-			ImageView artist_cover_field = (ImageView)this.findViewById(R.id.artist_cover);
-			String cover = cursor.getString(COLUMN_COVER);
-			boolean hasCover = false;
-			if(!cursor.isNull(COLUMN_COVER)){
-				int resId = this.getResources().getIdentifier(cover, "drawable", "com.zion.htf");
-				if(resId != 0){
-					artist_cover_field.setImageResource(resId);
-					artist_cover_field.setScaleType(ImageView.ScaleType.CENTER_CROP);
-					hasCover = true;
-				}
+			ImageView artist_photo_field = (ImageView)this.findViewById(R.id.artist_photo);
+			int resId;
+			if(cursor.isNull(COLUMN_PICTURE) || 0 == (resId = this.getResources().getIdentifier(cursor.getString(COLUMN_PICTURE), "drawable", "com.zion.htf"))){
+				resId = R.drawable.no_image;
+				artist_photo_field.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
 			}
-			if(!hasCover && !cursor.isNull(COLUMN_PICTURE)){
-				int photoId = this.getResources().getIdentifier(cursor.getString(COLUMN_PICTURE), "drawable", "com.zion.htf");
-				if(photoId != 0) artist_cover_field.setImageResource(photoId);
-			}
+			artist_photo_field.setImageResource(resId);
 
 			TextView origin_field = (TextView)this.findViewById(R.id.origin);
 			origin_field.setText(cursor.getString(COLUMN_ORIGIN));
-
-			TextView genre_field = (TextView)this.findViewById(R.id.set_type);
-			genre_field.setText(cursor.getString(COLUMN_GENRE));
 
 			ImageButton website_button = (ImageButton)this.findViewById(R.id.website);
 			this.website_url = cursor.getString(COLUMN_WEBSITE);
@@ -115,7 +108,6 @@ public class ArtistDetailsActivity extends SherlockFragmentActivity implements V
 			TextView bio_field = (TextView)this.findViewById(R.id.bio);
 			String bio = cursor.getString(COLUMN_BIO);
 			if(bio != null) bio_field.setText(bio);
-			else bio_field.setText("No bio available");//TODO: ask Facebook for a bio
 		}
 		else{
 			Log.e(TAG, "No artist found matching id '" + artist_id + "'.");

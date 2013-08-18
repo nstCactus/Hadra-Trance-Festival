@@ -34,17 +34,18 @@ import android.widget.ListView;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.zion.htf.Application;
 import com.zion.htf.BuildConfig;
-import com.zion.htf.data.Item;
 import com.zion.htf.R;
-import com.zion.htf.data.Set;
 import com.zion.htf.adapter.LineUpAdapter;
+import com.zion.htf.data.Item;
+import com.zion.htf.data.Set;
 
 import org.michenux.android.db.sqlite.SQLiteDatabaseHelper;
 
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class LineUpListFragment extends SherlockFragment implements AdapterView.OnItemClickListener{
 	private static final String               TAG          = "LineUpListFragment";
@@ -148,13 +149,14 @@ public class LineUpListFragment extends SherlockFragment implements AdapterView.
 		Cursor cursor = LineUpListFragment.dbOpenHelper.getReadableDatabase().rawQuery(query, new String[]{this.stage});
 
 		long previousDate = 0;
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEE dd MMMM yyyy");
+		//SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Locale.getDefault().getLanguage().equals("fr") ? "EEEE dd MMMM YYYY" : "EEEE, MMMM DDTH, YYYY");
+		DateFormat dateFormat = Locale.getDefault().getLanguage().equals("fr") ? DateFormat.getDateInstance(DateFormat.FULL, Locale.FRANCE) : DateFormat.getDateInstance(DateFormat.FULL);
 		while(cursor.moveToNext()){
 			Date beginDate = new Date(cursor.getLong(COLUMN_BEGIN_DATE) * 1000);
 			long currentDate = beginDate.getTime() / 3600 / 24 / 1000;
 
 			if(currentDate > previousDate){
-				sets.add(new Item(simpleDateFormat.format(beginDate), Item.TYPE_SECTION));
+				sets.add(new Item(dateFormat.format(beginDate), Item.TYPE_SECTION));
 			}
 			previousDate = currentDate;
 

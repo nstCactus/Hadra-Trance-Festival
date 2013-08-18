@@ -24,28 +24,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hb.views.PinnedSectionListView;
 import com.zion.htf.Application;
-import com.zion.htf.data.Item;
 import com.zion.htf.R;
+import com.zion.htf.data.Item;
 import com.zion.htf.data.Set;
-import com.zion.htf.bitmap.AsyncDrawable;
-import com.zion.htf.bitmap.Utils;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Locale;
 
 public class LineUpAdapter<T> extends ArrayAdapter<T> implements PinnedSectionListView.PinnedSectionListAdapter{
 	static class ItemViewHolder {
-		ImageView artistPhoto;
 		TextView  artistName;
 		TextView  setType;
-		TextView  startHour;
-		TextView  endHour;
+		TextView  hour;
 	}
 
 	static class SectionViewHolder{
@@ -53,7 +47,7 @@ public class LineUpAdapter<T> extends ArrayAdapter<T> implements PinnedSectionLi
 	}
 
 	protected LayoutInflater   layoutInflater   = (LayoutInflater)this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-	protected SimpleDateFormat simpleDateFormat = Locale.getDefault().getLanguage().equals("fr") ? new SimpleDateFormat("HH:mm") : new SimpleDateFormat("h:mm a");
+	protected SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
 
 	public LineUpAdapter(Context context, int resource, int textViewResourceId, List<T> objects){
 		super(context, resource, textViewResourceId, objects);
@@ -93,9 +87,7 @@ public class LineUpAdapter<T> extends ArrayAdapter<T> implements PinnedSectionLi
 				holder = new ItemViewHolder();
 				holder.artistName = (TextView)convertView.findViewById(R.id.label);
 				holder.setType = (TextView)convertView.findViewById(R.id.set_type);
-				holder.startHour = (TextView)convertView.findViewById(R.id.start_hour);
-				holder.endHour = (TextView)convertView.findViewById(R.id.end_hour);
-				holder.artistPhoto = (ImageView)convertView.findViewById(R.id.artist_photo);
+				holder.hour = (TextView)convertView.findViewById(R.id.hour);
 
 				convertView.setTag(holder);
 			}
@@ -104,12 +96,8 @@ public class LineUpAdapter<T> extends ArrayAdapter<T> implements PinnedSectionLi
 			}
 
 			holder.artistName.setText(set.toString());
-			holder.startHour.setText(this.simpleDateFormat.format(set.getBeginDate()));
-			holder.endHour.setText(this.simpleDateFormat.format(set.getEndDate()));
+			holder.hour.setText(String.format("%s-%s", this.simpleDateFormat.format(set.getBeginDate()), this.simpleDateFormat.format(set.getEndDate())));
 			holder.setType.setText(set.getSetType());
-			holder.artistPhoto.setImageResource(this.getPhotoResourceId(set.getPhotoResourceName()));
-			int dim = Utils.dpToPx(64);// holder.artistPhoto.getWidth() can't be trusted...
-			AsyncDrawable.loadBitmap(this.getPhotoResourceId(set.getPhotoResourceName()), holder.artistPhoto, dim, dim);
 		}
 		return convertView;
 	}
