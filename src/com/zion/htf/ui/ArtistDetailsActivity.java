@@ -81,7 +81,12 @@ public class ArtistDetailsActivity extends SherlockFragmentActivity implements V
 			artist_name_field.setText(artist_name);
 
 			TextView label_field = (TextView)this.findViewById(R.id.label);
-			label_field.setText(cursor.getString(COLUMN_LABEL));
+			String label = cursor.getString(COLUMN_LABEL);
+			if(!cursor.isNull(COLUMN_ORIGIN)){
+				String origin = cursor.getString(COLUMN_ORIGIN);
+				if(origin.length() > 0) label = origin + " / " + label;
+			}
+			label_field.setText(label);
 
 			ImageView artist_photo_field = (ImageView)this.findViewById(R.id.artist_photo);
 			int resId;
@@ -90,9 +95,6 @@ public class ArtistDetailsActivity extends SherlockFragmentActivity implements V
 				artist_photo_field.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
 			}
 			artist_photo_field.setImageResource(resId);
-
-			TextView origin_field = (TextView)this.findViewById(R.id.origin);
-			origin_field.setText(cursor.getString(COLUMN_ORIGIN));
 
 			ImageButton website_button = (ImageButton)this.findViewById(R.id.website);
 			this.website_url = cursor.getString(COLUMN_WEBSITE);

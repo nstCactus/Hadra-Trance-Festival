@@ -31,88 +31,86 @@
 			android:layout_weight="4"
 			android:padding="10dp">
 		<ImageView
-				android:layout_width="match_parent"
-				android:layout_height="match_parent"
+				android:layout_width="160px"
+				android:layout_height="160px"
 				android:id="@+id/artist_photo"
-				android:layout_weight="1"
+				android:padding="2dp"
 				android:background="@drawable/yellow_border"
-				android:padding="1dp"
 				android:scaleType="centerCrop"/>
 
-		<LinearLayout
-				android:layout_width="match_parent"
-				android:layout_height="match_parent"
-				android:layout_weight="1"
-				android:orientation="vertical"
-				android:padding="10dp">
+		<TextView
+				android:layout_width="fill_parent"
+				android:layout_height="160px"
+				android:textAppearance="?android:attr/textAppearanceLarge"
+				android:id="@+id/artist_name"
+				android:textColor="@color/brand_orange"
+				android:gravity="center|center_horizontal"
+				/>
 
-			<TextView
-					android:layout_width="fill_parent"
-					android:layout_height="wrap_content"
-					android:textAppearance="?android:attr/textAppearanceLarge"
-					android:id="@+id/artist_name"
-					android:textColor="@color/brand_orange"
-					android:layout_weight="5"
-					android:gravity="center|center_horizontal"/>
-
-			<TextView
-					android:layout_width="fill_parent"
-					android:layout_height="wrap_content"
-					android:textAppearance="?android:attr/textAppearanceMedium"
-					android:id="@+id/label"
-					android:layout_weight="1"
-					android:gravity="center_horizontal"/>
-
-			<TextView
-					android:layout_width="fill_parent"
-					android:layout_height="wrap_content"
-					android:id="@+id/origin"
-					android:layout_weight="1"
-					android:gravity="center_horizontal"/>
-		</LinearLayout>
 	</LinearLayout>
 
-	<LinearLayout
+	<RelativeLayout
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:orientation="horizontal"
 			android:layout_gravity="center_horizontal"
-			android:layout_weight="1">
+			android:layout_weight="1"
+			android:layout_marginLeft="10dp"
+			android:layout_marginRight="10dp">
+
+		<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textAppearance="?android:attr/textAppearanceMedium"
+				android:id="@+id/label"
+				android:layout_alignBottom="@+id/facebook"
+				android:textColor="@color/brand_yellow"
+				android:layout_alignParentLeft="true"/>
 
 		<com.zion.htf.widget.TintImageButton
 				android:id="@+id/facebook"
 				android:src="@drawable/social_facebook"
 				android:onClick="onClick"
-				android:layout_margin="10dp"
-				style="@style/imageButtons" />
+				style="@style/imageButtons"
+				android:layout_gravity="center_vertical"
+				android:layout_alignTop="@+id/soundcloud"
+				android:layout_toLeftOf="@+id/soundcloud"/>
 
 		<com.zion.htf.widget.TintImageButton
 				android:id="@+id/soundcloud"
 				android:src="@drawable/social_soundcloud"
 				android:onClick="onClick"
-				android:layout_margin="10dp"
-				style="@style/imageButtons" />
+				style="@style/imageButtons"
+				android:layout_gravity="center_vertical"
+				android:layout_alignTop="@+id/website"
+				android:layout_toLeftOf="@+id/website"
+				android:layout_marginLeft="10dp"
+				android:layout_marginRight="10dp"/>
 
 		<com.zion.htf.widget.TintImageButton
 				android:id="@+id/website"
 				android:src="@drawable/social_www"
 				android:onClick="onClick"
-				android:layout_margin="10dp"
-				style="@style/imageButtons" />
+				style="@style/imageButtons"
+				android:layout_gravity="center_vertical"
+				android:layout_alignParentLeft="false"
+				android:layout_alignParentTop="true"
+				android:layout_alignParentRight="true"
+				/>
 
-	</LinearLayout>
+	</RelativeLayout>
 
 	<ScrollView
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:id="@+id/scrollView"
-			android:layout_margin="5dp"
-			android:padding="5dp"
+			android:layout_margin="10dp"
 			android:layout_weight="80">
 
 		<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:id="@+id/bio" />
+				android:id="@+id/bio"
+				android:textColor="@color/brand_yellow"/>
 	</ScrollView>
 </LinearLayout>

@@ -23,7 +23,8 @@
 		xmlns:android="http://schemas.android.com/apk/res/android"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:orientation="horizontal">
+		android:orientation="horizontal"
+		android:baselineAligned="false">
 	<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
@@ -31,28 +32,31 @@
 			android:layout_weight="1"
 			android:padding="10dp">
 
-		<LinearLayout
+		<RelativeLayout
 				android:layout_width="fill_parent"
 				android:layout_height="fill_parent"
 				android:layout_weight="1">
 
 			<ImageView
-					android:layout_width="fill_parent"
-					android:layout_height="fill_parent"
+					android:layout_width="160px"
+					android:layout_height="160px"
 					android:id="@+id/artist_photo"
-					android:layout_weight="5"
 					android:background="@drawable/yellow_border"
 					android:padding="2dp"
 					android:scaleType="centerCrop"
-					android:layout_gravity="center"/>
+					android:layout_gravity="center"
+					android:layout_alignParentLeft="true"
+					android:layout_alignParentTop="true"
+					/>
 
 			<LinearLayout
-					android:layout_width="fill_parent"
-					android:layout_height="fill_parent"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
 					android:orientation="vertical"
 					android:layout_gravity="center_vertical"
-					android:layout_weight="20"
-					android:gravity="center_vertical|center_horizontal">
+					android:layout_below="@+id/artist_photo"
+					android:layout_alignParentLeft="true"
+					android:layout_marginTop="10dp">
 
 				<com.zion.htf.widget.TintImageButton
 						android:id="@+id/facebook"
@@ -76,39 +80,37 @@
 						style="@style/imageButtons" />
 
 			</LinearLayout>
-		</LinearLayout>
 
-		<LinearLayout
-				android:layout_width="match_parent"
-				android:layout_height="fill_parent"
-				android:layout_weight="1"
-				android:orientation="vertical"
-				android:padding="10dp">
-
-			<TextView
-					android:layout_width="fill_parent"
+			<RelativeLayout
+					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:textAppearance="?android:attr/textAppearanceLarge"
-					android:id="@+id/artist_name"
-					android:textColor="@color/brand_orange"
-					android:layout_weight="5"
-					android:gravity="center|center_horizontal"/>
+					android:orientation="vertical"
+					android:padding="10dp"
+					android:layout_alignParentTop="false"
+					android:layout_toRightOf="@+id/artist_photo"
+					android:layout_alignTop="@+id/artist_photo"
+					android:layout_marginLeft="10dp">
 
-			<TextView
-					android:layout_width="fill_parent"
-					android:layout_height="wrap_content"
-					android:textAppearance="?android:attr/textAppearanceMedium"
-					android:id="@+id/label"
-					android:layout_weight="1"
-					android:gravity="center_horizontal"/>
+				<TextView
+						android:layout_width="fill_parent"
+						android:layout_height="wrap_content"
+						android:textAppearance="?android:attr/textAppearanceLarge"
+						android:id="@+id/artist_name"
+						android:textColor="@color/brand_orange"
+						android:layout_alignParentLeft="true"
+						/>
 
-			<TextView
-					android:layout_width="fill_parent"
-					android:layout_height="wrap_content"
-					android:id="@+id/origin"
-					android:layout_weight="1"
-					android:gravity="center_horizontal"/>
-		</LinearLayout>
+				<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:textAppearance="?android:attr/textAppearanceMedium"
+						android:id="@+id/label"
+						android:textColor="@color/brand_yellow"
+						android:layout_below="@+id/artist_name"
+						android:layout_alignParentLeft="true"/>
+
+			</RelativeLayout>
+		</RelativeLayout>
 
 	</LinearLayout>
 
@@ -123,6 +125,7 @@
 		<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:id="@+id/bio" />
+				android:id="@+id/bio"
+				android:textColor="@color/brand_yellow"/>
 	</ScrollView>
 </LinearLayout>

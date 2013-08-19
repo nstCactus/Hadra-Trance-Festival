@@ -89,17 +89,17 @@ INSERT INTO "lst__location_types" VALUES (0, 'Bar', 'marker_bar', 'fr');
 INSERT INTO "lst__location_types" VALUES (0, 'Bar', 'marker_bar', 'en');
 INSERT INTO "lst__location_types" VALUES (6, 'Eau potable', 'marker_water', 'fr');
 INSERT INTO "lst__location_types" VALUES (6, 'Drinkable water', 'marker_water', 'en');
-INSERT INTO "lst__location_types" VALUES (11, 'Prévention', 'marker_prevention', 'fr');
-INSERT INTO "lst__location_types" VALUES (11, 'Prevention', 'marker_prevention', 'en');
-INSERT INTO "lst__location_types" VALUES (7, 'Départ navette', 'marker_camp', 'fr');
-INSERT INTO "lst__location_types" VALUES (7, 'Shuttle', 'marker_camp', 'en');
+INSERT INTO "lst__location_types" VALUES (11, 'Prévention', 'marker_prevent', 'fr');
+INSERT INTO "lst__location_types" VALUES (11, 'Prevention', 'marker_prevent', 'en');
+INSERT INTO "lst__location_types" VALUES (7, 'Départ navette', 'marker_shuttle', 'fr');
+INSERT INTO "lst__location_types" VALUES (7, 'Shuttle', 'marker_shuttle', 'en');
 INSERT INTO "lst__location_types" VALUES (12, 'Forêt enchantée', 'marker_forest', 'fr');
 INSERT INTO "lst__location_types" VALUES (12, 'Psy forest', 'marker_forest', 'en');
 INSERT INTO "lst__location_types" VALUES (13, 'Déchetterie ', 'marker_garbage', 'fr');
 INSERT INTO "lst__location_types" VALUES (13, 'Garbage centre', 'marker_garbage', 'en');
 
-INSERT INTO "locations" VALUES (1, 45.1150476749639, 5.61031765810242, 4, NULL);
-INSERT INTO "locations" VALUES (2, 45.1126881428484, 5.60822144150734, 4, NULL);
+INSERT INTO "locations" VALUES (1, 45.1150476749639, 5.61031765810242, 4, 1);
+INSERT INTO "locations" VALUES (2, 45.1126881428484, 5.60822144150734, 4, 2);
 INSERT INTO "locations" VALUES (3, 45.1120540264325, 5.60971945524216, 2, NULL);
 INSERT INTO "locations" VALUES (4, 45.1144495482783, 5.61014599672546, 1, NULL);
 INSERT INTO "locations" VALUES (5, 45.1133327759784, 5.60861981979599, 3, NULL);
@@ -132,11 +132,6 @@ INSERT INTO "location_descriptions" VALUES (1, 'Scène principale', 'fr');
 INSERT INTO "location_descriptions" VALUES (1, 'Main stage', 'en');
 INSERT INTO "location_descriptions" VALUES (2, 'Scène alternative', 'fr');
 INSERT INTO "location_descriptions" VALUES (2, 'Alternative stage', 'en');
-INSERT INTO "location_descriptions" VALUES (3, 'Arrivée de la navette', 'fr');
-INSERT INTO "location_descriptions" VALUES (3, 'Shuttle arrival', 'en');
-INSERT INTO "location_descriptions" VALUES (4, 'Départ de la navette', 'fr');
-INSERT INTO "location_descriptions" VALUES (4, 'Shuttle departure', 'en');
-
 
 INSERT INTO lst__genres VALUES("Psytrance");
 INSERT INTO lst__genres VALUES("Progressive");
@@ -149,7 +144,6 @@ INSERT INTO lst__set_types VALUES("Live band");
 
 INSERT INTO lst__stages VALUES("Main stage");
 INSERT INTO lst__stages VALUES("Alternative stage");
-INSERT INTO lst__stages VALUES("Visuals stage");
 
 INSERT INTO "bios" VALUES (1, 'From a star system many light years away comes Merkaba, a forward thinking and inspiring light being incarnated into human form in Australia. Drawing musical influence from fusion jazz, funk, dub step, techno and break beat, Merkaba skilfully combines these to create his own style of psychedelic progressive trance and an epic dance floor journey of healing and awakening.', 'en');
 INSERT INTO "bios" VALUES (2, 'Humerous is a Professional Producer/Dj from South Africa who plays a fusion of Tech, Prog and Psy sets. With a wide range of sounds with mega Groove, Pads, Rhythm and melodic Leads. ', 'en');
@@ -487,8 +481,8 @@ INSERT INTO "artists" VALUES (3, 'Stretch', NULL, 'FR', 'ph_stretch', NULL, NULL
 INSERT INTO "artists" VALUES (4, 'Yamaga vs Manu', NULL, 'FR', 'ph_yamaga', NULL, 'https://soundcloud.com/yamaga-yann', NULL, 'https://soundcloud.com/manu-hadra', 'Hadra Records', 4);
 INSERT INTO "artists" VALUES (5, 'Malice In Wonderland', NULL, 'AT', 'ph_malice_in_wonderland', NULL, 'http://miw.snappages.com/', 'https://facebook.com/123409511028924', 'https://soundcloud.com/malice-in-wonderland', '2to6 Records', 5);
 INSERT INTO "artists" VALUES (6, 'Electrypnose', NULL, 'CH', 'ph_electrypnose', NULL, 'http://www.electrypnose.com', 'https://facebook.com/256314211128486', 'https://soundcloud.com/electrypnose', 'Electrypnosis Media', 6);
-INSERT INTO "artists" VALUES (7, 'Harmonic Rebel', NULL, 'GB', 'ph_harmonic_rebel', NULL, 'www.psynonrecords.com', 'https://facebook.com/222028371154090', 'https://soundcloud.com/harmonic-rebel', 'Psynon Records', 7);
-INSERT INTO "artists" VALUES (8, 'Shotu', NULL, 'FR', 'ph_shotu', NULL, 'www.hadra.net', 'https://facebook.com/137121816332052', 'https://soundcloud.com/shotu', 'Hadra Records', 8);
+INSERT INTO "artists" VALUES (7, 'Harmonic Rebel', NULL, 'GB', 'ph_harmonic_rebel', NULL, 'http://www.psynonrecords.com', 'https://facebook.com/222028371154090', 'https://soundcloud.com/harmonic-rebel', 'Psynon Records', 7);
+INSERT INTO "artists" VALUES (8, 'Shotu', NULL, 'FR', 'ph_shotu', NULL, 'http://www.hadra.net', 'https://facebook.com/137121816332052', 'https://soundcloud.com/shotu', 'Hadra Records', 8);
 INSERT INTO "artists" VALUES (9, 'Everblast', NULL, 'US – UK', 'ph_everblast', NULL, 'http://zero1-music.com', 'https://facebook.com/147794921934708', 'https://soundcloud.com/everblast', 'Zero 1 Music', 9);
 INSERT INTO "artists" VALUES (10, 'Earthspace', NULL, 'BR', 'ph_earthspace', NULL, NULL, 'https://facebook.com/165670406797175', 'https://soundcloud.com/earthspacelive ', 'Mosaico Records', 10);
 INSERT INTO "artists" VALUES (11, 'Gino', NULL, 'IT', 'ph_gino', NULL, NULL, NULL, 'https://soundcloud.com/twinlights', 'Sonica Recording', 11);
@@ -518,7 +512,7 @@ INSERT INTO "artists" VALUES (34, 'Cosmosophy', NULL, 'CH', 'ph_cosmosophy', NUL
 INSERT INTO "artists" VALUES (35, '! Fuckyeah !', NULL, 'BR', 'ph_fuckyeah', NULL, NULL, 'https://facebook.com/645286712', 'https://soundcloud.com/livefuckyeah', 'Nutek Records / Hadra Records', 35);
 INSERT INTO "artists" VALUES (36, 'Hoodwink', NULL, 'UK', 'ph_hoodwink', NULL, 'http://www.wildthingsrecords.co.uk', 'https://facebook.com/214454087948', 'https://soundcloud.com/hoodwinkwildthingsrecords', NULL, 36);
 INSERT INTO "artists" VALUES (37, 'Psyberpunk', NULL, 'CH', 'ph_psyberpunk', NULL, 'http://www.psyberpunk.ch', 'https://facebook.com/57443366816', 'https://soundcloud.com/psyberpunk-1/', NULL, 37);
-INSERT INTO "artists" VALUES (38, 'Cubic Spline', NULL, 'FR', 'ph_cubicspline', NULL, 'www.hadra.net', 'https://facebook.com/125368040871079', 'https://soundcloud.com/cubic_spline', 'Hadra Records', 38);
+INSERT INTO "artists" VALUES (38, 'Cubic Spline', NULL, 'FR', 'ph_cubicspline', NULL, 'http://www.hadra.net', 'https://facebook.com/125368040871079', 'https://soundcloud.com/cubic_spline', 'Hadra Records', 38);
 INSERT INTO "artists" VALUES (39, 'Vertical', NULL, 'FI', 'ph_vertical', NULL, 'http://parvati-records.com', 'https://facebook.com/139691559396860', 'https://soundcloud.com/vertical_parvati ', 'Parvati Records', 39);
 INSERT INTO "artists" VALUES (40, 'Zigganaut', NULL, 'ZA', 'ph_zigganaut', NULL, NULL, NULL, 'https://soundcloud.com/zigganaut-aka-wobblz', 'Alien Safari Records', 40);
 INSERT INTO "artists" VALUES (41, 'Dharma', NULL, 'IT', 'ph_dharma', NULL, NULL, NULL, 'https://soundcloud.com/pigiu ', NULL, 41);
