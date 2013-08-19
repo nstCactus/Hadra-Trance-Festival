@@ -81,10 +81,12 @@ public class ArtistDetailsActivity extends SherlockFragmentActivity implements V
 			artist_name_field.setText(artist_name);
 
 			TextView label_field = (TextView)this.findViewById(R.id.label);
-			String label = cursor.getString(COLUMN_LABEL);
+			String label = "";
+			if(!cursor.isNull(COLUMN_LABEL)) label = cursor.getString(COLUMN_LABEL);
 			if(!cursor.isNull(COLUMN_ORIGIN)){
 				String origin = cursor.getString(COLUMN_ORIGIN);
-				if(origin.length() > 0) label = origin + " / " + label;
+				if(label.length() > 0) label = origin + " / " + label;
+				else					label = origin;
 			}
 			label_field.setText(label);
 
