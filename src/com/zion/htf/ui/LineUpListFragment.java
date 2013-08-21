@@ -42,6 +42,7 @@ import com.zion.htf.data.Set;
 import org.michenux.android.db.sqlite.SQLiteDatabaseHelper;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -148,17 +149,16 @@ public class LineUpListFragment extends SherlockFragment implements AdapterView.
 		String query = "SELECT sets.id AS id, artists.name AS artist, artists.genre AS genre, begin_date, end_date, sets.type AS type, picture_name AS picture, artists.id AS artist_id FROM sets JOIN artists on sets.artist = artists.id WHERE stage = ? ORDER BY begin_date ASC;";
 		Cursor cursor = LineUpListFragment.dbOpenHelper.getReadableDatabase().rawQuery(query, new String[]{this.stage});
 
-		long previousDate = 0;
+		Date previousDate = new Date(0);
 		//SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Locale.getDefault().getLanguage().equals("fr") ? "EEEE dd MMMM YYYY" : "EEEE, MMMM DDTH, YYYY");
-		DateFormat dateFormat = Locale.getDefault().getLanguage().equals("fr") ? DateFormat.getDateInstance(DateFormat.FULL, Locale.FRANCE) : DateFormat.getDateInstance(DateFormat.FULL);
+		DateFormat dateFormat = Locale.getDefault().getLanguage().equals("fr") ? DateFormat.getDateInstance(DateFormat.FULL, Locale.FRENCH) : DateFormat.getDateInstance(DateFormat.FULL);
 		while(cursor.moveToNext()){
 			Date beginDate = new Date(cursor.getLong(COLUMN_BEGIN_DATE) * 1000);
-			long currentDate = beginDate.getTime() / 3600 / 24 / 1000;
 
-			if(currentDate > previousDate){
+			if(!areSameDay(previousDate, beginDate)){
 				sets.add(new Item(dateFormat.format(beginDate), Item.TYPE_SECTION));
 			}
-			previousDate = currentDate;
+			previousDate = beginDate;
 
 			Set set = new Set(cursor.getString(COLUMN_ARTIST));
 			set.setSetType(cursor.getString(COLUMN_TYPE))
@@ -176,5 +176,14 @@ public class LineUpListFragment extends SherlockFragment implements AdapterView.
 		LineUpListFragment.dbOpenHelper.close();
 
 		return sets;
+	}
+
+	private boolean areSameDay(Date date1, Date date2){
+		boolean ret = false;
+		if(null != date1 && null != date2){
+			DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+			ret = df.format(date1).equals(df.format(date2));
+		}
+		return ret;
 	}
 }
