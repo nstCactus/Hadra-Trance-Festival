@@ -53,6 +53,8 @@
 	<string name="info_dogs">Chiens interdits</string>
 	<string name="info_faq">FAQ</string>
 	<string name="info_about">À propos</string>
+	<string name="info_village">Le village</string>
+
 	<string name="action_info">Infos pratiques</string>
 
 	<string name="remaining_time">Temps restant :</string>
