@@ -38,15 +38,11 @@
 				android:layout_weight="1">
 
 			<ImageView
-					android:layout_width="160px"
-					android:layout_height="160px"
 					android:id="@+id/artist_photo"
-					android:background="@drawable/yellow_border"
-					android:padding="2dp"
-					android:scaleType="centerCrop"
 					android:layout_gravity="center"
 					android:layout_alignParentLeft="true"
 					android:layout_alignParentTop="true"
+					style="@style/artist_photo"
 					/>
 
 			<LinearLayout
@@ -89,7 +85,8 @@
 					android:layout_alignParentTop="false"
 					android:layout_toRightOf="@+id/artist_photo"
 					android:layout_alignTop="@+id/artist_photo"
-					android:layout_marginLeft="10dp">
+					android:layout_marginLeft="10dp"
+					android:layout_centerVertical="true">
 
 				<TextView
 						android:layout_width="fill_parent"

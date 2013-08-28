@@ -60,12 +60,13 @@ public class MapActivity extends SherlockFragmentActivity implements ActionBar.O
 	private static final String GOOGLE_MAP_ZOOM_LEVEL = "google_map_zoom_level";
 	private static final String GOOGLE_MAP_BEARING    = "google_map_bearing";
 	private static final String GOOGLE_MAP_TILT       = "google_map_tilt";
-	private static final String    GOOGLE_MAP_TYPE       = "google_map_type";
+	private static final String GOOGLE_MAP_TYPE       = "google_map_type";
 	private   GoogleMap map;
 	protected int       spinnerPosition;
 	private final String               TAG          = "MapActivity";
 	private       SQLiteDatabaseHelper dbOpenHelper = Application.getDbHelper();
-	private LocationManager locationManager;
+	private LocationManager  locationManager;
+	private String locationProviderName;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState){
@@ -101,13 +102,7 @@ public class MapActivity extends SherlockFragmentActivity implements ActionBar.O
 			Criteria criteria = new Criteria();
 
 			// Getting the name of the best provider
-			String provider = this.locationManager.getBestProvider(criteria, true);
-
-			// Getting Current Location
-			Location location = this.locationManager.getLastKnownLocation(provider);
-
-			this.locationManager.requestLocationUpdates(provider, 20000, 0, this);
-
+			this.locationProviderName = this.locationManager.getBestProvider(criteria, true);
 			// Initial location
 			this.map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(45.115137, 5.609024), 16.0f));
 
@@ -218,6 +213,27 @@ public class MapActivity extends SherlockFragmentActivity implements ActionBar.O
 	@Override
 	public void onProviderDisabled(String provider){
 
+	}
+
+	@Override
+	public void onResume(){
+		super.onResume();
+
+		// Getting Current Location
+		if(null != this.locationProviderName){
+			Location location = this.locationManager.getLastKnownLocation(this.locationProviderName);
+
+			this.locationManager.requestLocationUpdates(this.locationProviderName, 20000, 0, this);
+		}
+	}
+
+	@Override
+	public void onPause(){
+		if(null != this.locationProviderName){
+			this.locationManager.removeUpdates(this);
+		}
+
+		super.onPause();
 	}
 
 	@Override

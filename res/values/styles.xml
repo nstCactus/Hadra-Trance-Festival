@@ -82,4 +82,12 @@
 		<item name="android:textColor">@color/brand_yellow</item>
 		<item name="android:textSize">25sp</item>
 	</style>
+
+	<style name="artist_photo">
+		<item name="android:layout_width">@dimen/artist_photo</item>
+		<item name="android:layout_height">@dimen/artist_photo</item>
+		<item name="android:padding">2dp</item>
+		<item name="android:scaleType">centerCrop</item>
+		<item name="android:background">@drawable/yellow_border</item>
+	</style>
 </resources>
