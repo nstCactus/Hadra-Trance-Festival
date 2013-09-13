@@ -36,7 +36,8 @@
 
 		<RelativeLayout
 				android:layout_height="wrap_content"
-				android:layout_width="match_parent">
+				android:layout_width="match_parent"
+				android:gravity="center">
 
 
 			<TextView
@@ -44,20 +45,39 @@
 					android:layout_height="wrap_content"
 					android:textAppearance="?android:attr/textAppearanceMedium"
 					android:text="@string/donation_text"
-					android:id="@+id/textView"
+					android:id="@+id/donationText"
 					android:layout_alignParentTop="true"
-					android:layout_alignParentLeft="true" />
+					android:layout_alignParentLeft="true"
+                    android:focusableInTouchMode="true"
+                    android:focusable="true" />
 
-			<TextView
+			<LinearLayout
+					android:id="@+id/amountGroup"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:textAppearance="?android:attr/textAppearanceLarge"
-					android:text="$1"
-					android:id="@+id/amount"
-					android:layout_below="@+id/textView"
+					android:layout_below="@+id/donationText"
 					android:layout_centerHorizontal="true"
 					android:layout_marginTop="30dp"
-					android:layout_marginBottom="30dp" />
+					android:layout_marginBottom="30dp">
+
+				<EditText
+						android:layout_width="wrap_content"
+						android:layout_height="fill_parent"
+						android:textAppearance="?android:attr/textAppearanceLarge"
+						android:text="1"
+						android:id="@+id/amount"
+						android:inputType="numberDecimal"
+						android:layout_gravity="center"
+						android:textColor="@color/brand_yellow"
+                    />
+
+				<Spinner
+						android:layout_width="wrap_content"
+						android:layout_height="fill_parent"
+						android:id="@+id/currencySpinner"
+						android:layout_gravity="left|center_vertical"
+						/>
+			</LinearLayout>
 
 			<SeekBar
 					android:layout_width="fill_parent"
@@ -66,8 +86,8 @@
 					android:progress="80"
 					android:secondaryProgress="980"
 					android:max="980"
-					android:layout_below="@+id/amount"
-					android:layout_alignLeft="@+id/textView" />
+					android:layout_below="@+id/amountGroup"
+					android:layout_alignLeft="@+id/donationText" />
 
 			<ImageButton
 					android:layout_width="wrap_content"

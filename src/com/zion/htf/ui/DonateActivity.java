@@ -22,13 +22,18 @@ package com.zion.htf.ui;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockActivity;
@@ -43,19 +48,37 @@ import com.zion.htf.R;
 import org.json.JSONException;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Locale;
 
-public class DonateActivity extends SherlockActivity implements SeekBar.OnSeekBarChangeListener{
-	private final static String PAYPAL_CLIENT_ID      = BuildConfig.DEBUG ? "AQKx2xDBRhC4J1VzGsLXe13IBBqX3ivEnKlSkOc07dEOyBXGcGUcecqACL3W" : "Aa7K9hAB02q0IqcXFns7aa9C3xcwkgWGMWg0YKgcJhmq7PhPs-CRwOr7tlRg";
-	private final static String PAYPAL_ENVIRONMENT    = BuildConfig.DEBUG ? PaymentActivity.ENVIRONMENT_SANDBOX : PaymentActivity.ENVIRONMENT_LIVE;
-	private final static String PAYPAL_RECEIVER_EMAIL = BuildConfig.DEBUG ? "sbooob-facilitator@gmail.com" : "sbooob@gmail.com";
-	private final static String PAYPAL_CURRENCY       = "USD";
+public class DonateActivity extends SherlockActivity implements SeekBar.OnSeekBarChangeListener, TextWatcher{
+	private final static String PAYPAL_CLIENT_ID        = BuildConfig.DEBUG ? "AQKx2xDBRhC4J1VzGsLXe13IBBqX3ivEnKlSkOc07dEOyBXGcGUcecqACL3W" : "Aa7K9hAB02q0IqcXFns7aa9C3xcwkgWGMWg0YKgcJhmq7PhPs-CRwOr7tlRg";
+	private final static String PAYPAL_ENVIRONMENT      = BuildConfig.DEBUG ? PaymentActivity.ENVIRONMENT_SANDBOX : PaymentActivity.ENVIRONMENT_LIVE;
+	private final static String PAYPAL_RECEIVER_EMAIL   = BuildConfig.DEBUG ? "sbooob-facilitator@gmail.com" : "sbooob@gmail.com";
+	private final static String PAYPAL_DEFAULT_CURRENCY = "EUR";
+
+    private final static int SEEKBAR_MIN = 20;
+    private final static int SEEKBAR_MAX = 980;
+    private final static int MIN_DONATION = DonateActivity.SEEKBAR_MIN;
+    private final static int MAX_DONATION = DonateActivity.SEEKBAR_MAX + DonateActivity.SEEKBAR_MIN;
 
 	private final static String TAG = "AboutActivity";
-	private SeekBar  seekBar;
-	private TextView amountTextView;
-	private String   amount;
 
-	@Override
+    private static CurrencySet currencySet = null;
+
+	private SeekBar     seekBar;
+    private EditText    amountEditText;
+    private Spinner     currencySpinner;
+
+    /** The sum to donate, in cents */
+	private int amount;
+
+    /** Timestamp (in milliseconds) of the latest controls update */
+    private long lastUpdate = 0;
+
+    @Override
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.activity_donate);
@@ -64,8 +87,10 @@ public class DonateActivity extends SherlockActivity implements SeekBar.OnSeekBa
 
 		this.seekBar = (SeekBar)this.findViewById(R.id.seekBar);
 		this.seekBar.setOnSeekBarChangeListener(this);
+		this.seekBar.setMax(DonateActivity.SEEKBAR_MAX);
 
-		this.amountTextView = (TextView)this.findViewById(R.id.amount);
+        this.amountEditText = (EditText) this.findViewById(R.id.amount);
+		this.amountEditText.addTextChangedListener(this);
 
 		Intent intent = new Intent(this, PayPalService.class);
 
@@ -74,7 +99,9 @@ public class DonateActivity extends SherlockActivity implements SeekBar.OnSeekBa
 
 		this.startService(intent);
 
-		this.onProgressChanged(this.seekBar, this.seekBar.getProgress(), false);
+        // Initializes the amountEditText to reflects the internal value of amount
+        this.amount = this.seekBar.getProgress() + SEEKBAR_MIN;
+        this.updateControls();
 
 		final ScrollView scrollView = (ScrollView)this.findViewById(R.id.donate_scrollView);
 		ViewTreeObserver observer = scrollView.getViewTreeObserver();
@@ -90,6 +117,18 @@ public class DonateActivity extends SherlockActivity implements SeekBar.OnSeekBa
 				}
 			});
 		}
+
+		if(null == DonateActivity.currencySet){
+			DonateActivity.currencySet = new CurrencySet();
+			DonateActivity.currencySet.add(new Currency("US", "USD", "$"));
+			DonateActivity.currencySet.add(new Currency("CA", "CAD", "$CA"));
+			DonateActivity.currencySet.add(new Currency("GB", "GBP", "£"));
+			DonateActivity.currencySet.add(new Currency("EU", "EUR", "€"), true);
+		}
+
+		this.currencySpinner = (Spinner)this.findViewById(R.id.currencySpinner);
+		this.currencySpinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, DonateActivity.currencySet.getLabelArray()));
+		this.currencySpinner.setSelection(DonateActivity.currencySet.findPositionByCountryCode(Locale.getDefault().getCountry()));
 	}
 
 	public void toggleDonateJokeImage(View button){
@@ -104,9 +143,12 @@ public class DonateActivity extends SherlockActivity implements SeekBar.OnSeekBa
 	}
 
 	public void onDonatePressed(View pressed){
-		if(BuildConfig.DEBUG) Log.v(TAG, this.amount);
+		if(BuildConfig.DEBUG) Log.v(TAG, String.valueOf(this.amount));
 
-		PayPalPayment payment = new PayPalPayment(new BigDecimal(this.amount.replace(",", ".")), PAYPAL_CURRENCY, this.getString(R.string.donation_label));
+		int selectedIndex = this.currencySpinner.getSelectedItemPosition();
+		String currencyCode = (selectedIndex >= 0 && selectedIndex < DonateActivity.currencySet.size()) ? DonateActivity.currencySet.get(selectedIndex).currencyCode : PAYPAL_DEFAULT_CURRENCY;
+
+		PayPalPayment payment = new PayPalPayment(BigDecimal.valueOf(this.amount / 100f), currencyCode, this.getString(R.string.donation_label));
 
 		Intent intent = new Intent(this, PaymentActivity.class);
 		intent.putExtra(PaymentActivity.EXTRA_PAYPAL_ENVIRONMENT, PAYPAL_ENVIRONMENT);
@@ -143,20 +185,71 @@ public class DonateActivity extends SherlockActivity implements SeekBar.OnSeekBa
 		}
 	}
 
-	@Override
+    private void updateControls(){
+        this.seekBar.setProgress(this.amount - SEEKBAR_MIN);
+        this.amountEditText.setText(String.format("%.2f", this.amount / 100f));
+    }
+
+    @Override
 	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser){
-		this.amount = String.format("%.2f", 0.2f + progress / 100f);
-		this.amountTextView.setText("$" + this.amount);
+        if(fromUser){
+		    this.amount = DonateActivity.SEEKBAR_MIN + progress;
+            // Limits to roughly 30 updates per second to avoid IInputConnectionWrapper warning flood
+            long now = new Date().getTime();
+            if(now - this.lastUpdate > 0.3f){
+                this.lastUpdate = now;
+                this.updateControls();
+            }
+        }
 	}
 
-	@Override
+    @Override
 	public void onStartTrackingTouch(SeekBar seekBar){
 
 	}
 
 	@Override
 	public void onStopTrackingTouch(SeekBar seekBar){
+        // Forces update on seekbar release to ensure that displayed amount reflects internal value
+        this.updateControls();
+	}
 
+	@Override
+	public void beforeTextChanged(CharSequence s, int start, int count, int after){
+
+	}
+
+	@Override
+	public void onTextChanged(CharSequence s, int start, int before, int count){
+
+	}
+
+	@Override
+	public void afterTextChanged(Editable s){
+        int previousAmount = this.amount;
+        int value;
+        try{
+            value = (int)(Float.valueOf(s.toString().replace(',', '.')) * 100);
+        }
+        catch (NumberFormatException e){
+            value = 0;
+        }
+
+        if(value < DonateActivity.MIN_DONATION){
+            this.amount = DonateActivity.MIN_DONATION;
+            previousAmount = -1;// Forces controls update
+        }
+        else if(value > DonateActivity.MAX_DONATION){
+            this.amount = DonateActivity.MAX_DONATION;
+            previousAmount = -1;// Forces controls update
+        }
+        else{
+            this.amount = value;
+        }
+
+        int cursorPosition = this.amountEditText.getSelectionStart();
+        if(previousAmount != this.amount ) this.updateControls();
+        if(cursorPosition < this.amountEditText.length()) this.amountEditText.setSelection(cursorPosition);
 	}
 
 	@Override
@@ -173,5 +266,77 @@ public class DonateActivity extends SherlockActivity implements SeekBar.OnSeekBa
 		}
 
 		return ret;
+	}
+
+	class Currency{
+		public String countryCode;
+		public String currencyCode;
+		public String symbol;
+
+		public Currency(String countryCode, String currencyCode, String symbol){
+			this.countryCode = countryCode;
+			this.currencyCode = currencyCode;
+			this.symbol = symbol;
+		}
+
+		@Override
+		public boolean equals(Object o){
+			return o instanceof Currency
+				   && ((Currency)o).symbol.equals(this.symbol)
+				   && ((Currency)o).currencyCode.equals(this.currencyCode)
+				   && ((Currency)o).countryCode.equals(this.countryCode);
+		}
+	}
+
+	class CurrencySet extends ArrayList<Currency>{
+		private int defaultCurrencyPosition = -1;
+
+		public boolean add(Currency currency, boolean isDefault){
+			boolean ret = false;
+
+			if(!this.contains(currency)){
+				ret = super.add(currency);
+				if(isDefault) this.defaultCurrencyPosition = this.size() - 1;
+			}
+			return ret;
+		}
+
+		@Override
+		public void add(int index, Currency object){
+			throw new UnsupportedOperationException("Calling this method could potentially mess with the defaultCurrencyPosition. No time to write useless but safe implementation for this method.");
+		}
+
+
+		public int findPositionByCountryCode(String countryCode){
+			return this.findPositionByCountryCode(countryCode, true);
+		}
+
+		public int findPositionByCountryCode(String countryCode, boolean returnDefault){
+			boolean found = false;
+			int position = -1;
+
+			Currency item;
+			Iterator<Currency> iterator = this.iterator();
+			while(!found && iterator.hasNext()){
+				item = iterator.next();
+				position++;
+				if(item.countryCode.equals(countryCode)){
+					found = true;
+				}
+			}
+
+			return position == -1 && returnDefault ? this.defaultCurrencyPosition : position;
+		}
+
+		public String[] getLabelArray(){
+			String[] labels = new String[this.size()];
+
+			for(int i = 0; i < this.size(); i++){
+				Currency currentItem = this.get(i);
+				labels[i] = currentItem.symbol;
+			}
+
+			return labels;
+		}
 	}
 }
