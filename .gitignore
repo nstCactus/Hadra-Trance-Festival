@@ -9,16 +9,15 @@
 *.class
 
 # generated files
-bin/
-gen/
-build/
+build/*
+libs/*
 
-# Local configuration file (sdk path, etc)
-local.properties
+# local gradle wrapper
+.gradle
 
-# Eclipse project files
-.classpath
-.project
-*.iml
-Logo.png
-libs
+# private stuff
+/.idea/workspace.xml
+/local.properties
+
+# Finder's crap
+.DS_Store

@@ -127,7 +127,7 @@ public class DonateActivity extends SherlockActivity implements SeekBar.OnSeekBa
 		}
 
 		this.currencySpinner = (Spinner)this.findViewById(R.id.currencySpinner);
-		this.currencySpinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, DonateActivity.currencySet.getLabelArray()));
+		//this.currencySpinner.setAdapter(new ArrayAdapter<String>(this, R.layout.simple_spinner_dropdown_item, DonateActivity.currencySet.getLabelArray()));
 		this.currencySpinner.setSelection(DonateActivity.currencySet.findPositionByCountryCode(Locale.getDefault().getCountry()));
 	}
 
@@ -148,7 +148,7 @@ public class DonateActivity extends SherlockActivity implements SeekBar.OnSeekBa
 		int selectedIndex = this.currencySpinner.getSelectedItemPosition();
 		String currencyCode = (selectedIndex >= 0 && selectedIndex < DonateActivity.currencySet.size()) ? DonateActivity.currencySet.get(selectedIndex).currencyCode : PAYPAL_DEFAULT_CURRENCY;
 
-		PayPalPayment payment = new PayPalPayment(BigDecimal.valueOf(this.amount / 100f), currencyCode, this.getString(R.string.donation_label));
+		PayPalPayment payment = new PayPalPayment(new BigDecimal(String.format(Locale.US, "%.2f", this.amount / 100f)), currencyCode, this.getString(R.string.donation_label));
 
 		Intent intent = new Intent(this, PaymentActivity.class);
 		intent.putExtra(PaymentActivity.EXTRA_PAYPAL_ENVIRONMENT, PAYPAL_ENVIRONMENT);
@@ -257,9 +257,9 @@ public class DonateActivity extends SherlockActivity implements SeekBar.OnSeekBa
 		boolean ret = true;
 
 		switch(item.getItemId()){
-			case android.R.id.home:
-				this.finish();
-				break;
+//			case R.id.home:
+//				this.finish();
+//				break;
 
 			default:
 				ret = false;

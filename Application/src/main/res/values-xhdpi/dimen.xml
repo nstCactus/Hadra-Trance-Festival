@@ -19,5 +19,5 @@
   -->
 
 <resources>
-	<dimen name="artist_photo">60px</dimen>
+	<dimen type="dimen" name="artist_photo">160px</dimen>
 </resources>
