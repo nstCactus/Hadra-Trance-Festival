@@ -118,7 +118,7 @@ public class InfoDetailsActivity extends SherlockActivity{
 	//Play closing animation when activity is closed (using back button for instance)
 	public void finish(){
 		super.finish();
-		this.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+		this.overridePendingTransition(R.anim.slide_and_fade_in_left, R.anim.slide_and_fade_out_right);
 	}
 
 	@Override
@@ -129,7 +129,7 @@ public class InfoDetailsActivity extends SherlockActivity{
 			case android.R.id.home:
 				//Play closing animation on homeAsUp
 				NavUtils.navigateUpFromSameTask(this);
-				this.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+				this.overridePendingTransition(R.anim.slide_and_fade_in_left, R.anim.slide_and_fade_out_right);
 				ret = true;
 				break;
 		}

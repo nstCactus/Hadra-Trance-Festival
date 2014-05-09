@@ -40,7 +40,7 @@ import java.util.Timer;
 public class MainActivity extends SherlockActivity{
 	private static final String TAG                             = "MainActivity";
 	private static final int 	ARTIST_ON_STAGE_UPDATE_INTERVAL = 10000;
-	protected Timer   	artistOnStageTimer;
+	protected Timer   	        artistOnStageTimer;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState){

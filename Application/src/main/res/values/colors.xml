@@ -21,9 +21,9 @@
 
 <resources>
 	<color name="tint">#7f33b5e5</color>
-	<color name="brand_yellow">#fff4b901</color>
-	<color name="brand_green">#ff008c0b</color>
-	<color name="brand_orange">#fff25d01</color>
-	<color name="brand_brown">#ff590801</color>
+	<color name="brand_yellow">#FFF6B900</color>
+	<color name="brand_green">#FF009E6A</color>
+	<color name="brand_orange">#FFF30015</color>
+	<color name="brand_purple">#FF5B072D</color>
 	<color name="brand_black">#ff0d0b0a</color>
 </resources>

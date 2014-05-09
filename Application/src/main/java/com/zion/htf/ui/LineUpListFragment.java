@@ -132,6 +132,7 @@ public class LineUpListFragment extends SherlockFragment implements AdapterView.
 				Intent intent = new Intent(this.getActivity(), ArtistDetailsActivity.class);
 				intent.putExtra("artist_id", ((Set)item).getArtistId());
 				this.getActivity().startActivity(intent);
+                this.getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 			}
 		}
 	}

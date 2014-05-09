@@ -1,7 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<!--
-    Copyright 2013 Yohann Bianchi
+/*
+    Copyright 2014 Yohann Bianchi
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,18 +15,19 @@
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
     or see <http://www.gnu.org/licenses/>.
--->
+ */
+package com.zion.htf.receiver;
 
-<LinearLayout
-		xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="@color/brand_yellow"
-        android:background="@color/brand_orange">
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 
-	<TextView
-			android:id="@+id/list_item_section_header"
-			style="?android:attr/listSeparatorTextViewStyle"
-			android:textColor="@color/brand_yellow" />
-</LinearLayout>
+public class AlarmReceiver extends BroadcastReceiver
+{
+    @Override
+    public void onReceive(Context context, Intent intent)
+    {
+        //TODO: Ring + vibrate as set up & display a notification
+    }
+
+}

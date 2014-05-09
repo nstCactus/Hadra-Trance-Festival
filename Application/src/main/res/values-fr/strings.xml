@@ -32,7 +32,9 @@
 	<string name="action_onStage">À l\'écoute</string>
 	<string name="action_donate">Faire un don</string>
 	<string name="action_about">À propos</string>
-	<string name="donation_label">Don généreux</string>
+    <string name="action_addAlarm">Ajouter une alarme</string>
+
+    <string name="donation_label">Don généreux</string>
 	<string name="donation_text">Je développe cette application bénévolement, sur mon temps libre.
 		\n\nSi tu le souhaites tu peux soutenir cette démarche par un petit don.
 	</string>

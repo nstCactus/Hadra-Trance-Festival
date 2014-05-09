@@ -41,6 +41,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="com.zion.htf.permission.MAPS_RECEIVE"/>
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
 
     <!-- PayPal -->
     <!-- for card.io card scanning -->
@@ -79,7 +80,7 @@
             android:name=".ui.LineUpActivity"
             android:label="@string/title_activity_line_up"
             android:parentActivityName=".ui.MainActivity"
-            android:theme="@style/Theme.VPI" />
+            android:theme="@style/Theme.LineUp" />
 
         <activity
             android:name=".ui.MapActivity"
@@ -88,8 +89,7 @@
 
         <activity
             android:name=".ui.ArtistDetailsActivity"
-            android:parentActivityName=".ui.LineUpActivity"
-            android:theme="@style/Theme.Sherlock" />
+            android:parentActivityName=".ui.LineUpActivity" />
 
         <activity
             android:name=".ui.DonateActivity"
@@ -106,6 +106,9 @@
             android:label="@string/action_info"
             android:parentActivityName=".ui.InfoActivity"
             android:theme="@style/FullscreenActivity" />
+
+        <!-- Alarms -->
+        <receiver android:name=".receiver.AlarmReceiver"/>
 
         <!-- PayPal -->
         <service android:name="com.paypal.android.sdk.payments.PayPalService" android:exported="false"/>

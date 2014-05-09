@@ -127,7 +127,7 @@ public class DonateActivity extends SherlockActivity implements SeekBar.OnSeekBa
 		}
 
 		this.currencySpinner = (Spinner)this.findViewById(R.id.currencySpinner);
-		//this.currencySpinner.setAdapter(new ArrayAdapter<String>(this, R.layout.simple_spinner_dropdown_item, DonateActivity.currencySet.getLabelArray()));
+		this.currencySpinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, DonateActivity.currencySet.getLabelArray()));
 		this.currencySpinner.setSelection(DonateActivity.currencySet.findPositionByCountryCode(Locale.getDefault().getCountry()));
 	}
 
@@ -257,9 +257,9 @@ public class DonateActivity extends SherlockActivity implements SeekBar.OnSeekBa
 		boolean ret = true;
 
 		switch(item.getItemId()){
-//			case R.id.home:
-//				this.finish();
-//				break;
+			case android.R.id.home:
+				this.finish();
+				break;
 
 			default:
 				ret = false;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--
-    Copyright 2013 Yohann Bianchi
+    Copyright 2014 Yohann Bianchi
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,16 +19,11 @@
     or see <http://www.gnu.org/licenses/>.
 -->
 
-<LinearLayout
-		xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="@color/brand_yellow"
-        android:background="@color/brand_orange">
-
-	<TextView
-			android:id="@+id/list_item_section_header"
-			style="?android:attr/listSeparatorTextViewStyle"
-			android:textColor="@color/brand_yellow" />
-</LinearLayout>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_addAlarm"
+        android:title="@string/action_addAlarm"
+        android:orderInCategory="1"
+        android:showAsAction="ifRoom|withText"
+        android:icon="@android:drawable/ic_popup_reminder" />
+</menu>

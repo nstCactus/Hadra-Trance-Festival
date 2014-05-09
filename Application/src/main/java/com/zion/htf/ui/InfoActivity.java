@@ -94,7 +94,7 @@ public class InfoActivity extends SherlockListActivity implements AdapterView.On
 
 		if(null != intent){
 			this.startActivity(intent);
-			this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+			this.overridePendingTransition(R.anim.slide_and_fade_in_right, R.anim.slide_and_fade_out_left);
 		}
 	}
 }

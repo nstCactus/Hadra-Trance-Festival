@@ -30,23 +30,30 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                tools:context=".MainActivity">
+                tools:context=".MainActivity"
+    android:background="@drawable/background"
+    android:clickable="false">
 
 	<ImageView
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
 			android:id="@+id/title"
 			android:src="@drawable/title"
 			android:layout_alignParentTop="true"
-			android:layout_centerHorizontal="true"
-			android:paddingTop="20dp" />
+        android:paddingTop="20dp"
+        android:layout_above="@+id/small_buttons"
+        android:layout_centerInParent="true" />
 
 	<LinearLayout
 			xmlns:android="http://schemas.android.com/apk/res/android"
 			android:id="@+id/small_buttons"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_centerInParent="true">
+            android:layout_above="@+id/row1"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+        android:importantForAccessibility="noHideDescendants"
+        android:padding="10dp">
 
 		<com.zion.htf.widget.TintImageButton
 				style="@style/smallButtons"
@@ -89,31 +96,35 @@
 				android:onClick="onButtonClicked"/>
 	</LinearLayout>
 	<LinearLayout
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_centerHorizontal="true"
-			android:layout_below="@+id/small_buttons"
-			android:id="@+id/linearLayout">
+		android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+        android:id="@+id/row1"
+        android:layout_above="@+id/row2"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentLeft="false"
+        android:importantForAccessibility="noHideDescendants">
 
 		<ImageButton
-				style="@style/bigButtons"
-				android:id="@+id/button_lineup"
-				android:onClick="onButtonClicked"
-				android:src="@drawable/button_lineup_selector" />
+			style="@style/bigButtons"
+			android:id="@+id/button_lineup"
+			android:onClick="onButtonClicked"
+			android:src="@drawable/button_lineup_selector"
+            android:layout_width="wrap_content" />
 
 		<ImageButton
-				style="@style/bigButtons"
-				android:id="@+id/button_tickets"
-				android:src="@drawable/button_tickets_selector"
-				android:layout_toRightOf="@id/button_lineup"
-				android:onClick="onButtonClicked" />
+			style="@style/bigButtons"
+			android:id="@+id/button_tickets"
+			android:src="@drawable/button_tickets_selector"
+			android:layout_toRightOf="@id/button_lineup"				android:onClick="onButtonClicked" />
 	</LinearLayout>
 
 	<LinearLayout
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_below="@+id/linearLayout"
-			android:layout_alignLeft="@+id/linearLayout">
+		android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+        android:id="@+id/row2"
+        android:layout_above="@+id/include"
+        android:layout_centerHorizontal="true"
+        android:importantForAccessibility="noHideDescendants">
 
 		<ImageButton
 				style="@style/bigButtons"
@@ -131,5 +142,6 @@
 				android:onClick="onButtonClicked" />
 
 	</LinearLayout>
-	<include layout="@layout/now_on_stage"/>
+	<include layout="@layout/fragment_now_on_stage"
+        android:id="@+id/include" />
 </RelativeLayout>

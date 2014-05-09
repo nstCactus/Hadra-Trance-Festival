@@ -22,24 +22,31 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 	<!-- This is our main ActionBarSherlock theme -->
 	<style name="AppTheme" parent="Theme.Sherlock">
-		<item name="actionBarStyle">@style/Widget.Styled.ActionBar</item>
-		<item name="android:actionBarStyle">@style/Widget.Styled.ActionBar</item>
+		<item name="actionBarStyle">@style/ActionBar</item>
+		<item name="android:actionBarStyle">@style/ActionBar</item>
 		<item name="android:textColor">@color/brand_yellow</item>
 		<item name="android:windowBackground">@color/brand_black</item>
-	</style>
+        <item name="vpiTabPageIndicatorStyle">@style/TabStyle</item>
+    </style>
 
-	<!-- This is our ViewPagerIndicator theme. We inherit from the ABS theme -->
-	<style name="Theme.VPI" parent="AppTheme">
-		<item name="vpiTabPageIndicatorStyle">@style/CustomTabPageIndicator</item>
-	</style>
+    <!-- Theme for LinupUpActivity -->
+    <style name="Theme.LineUp" parent="AppTheme">
+        <item name="vpiTabPageIndicatorStyle">@style/CustomTabPageIndicator</item>
+    </style>
 
 	<!-- "Implementation" of our ABS custom theme -->
-	<style name="Widget.Styled.ActionBar" parent="Widget.Sherlock.ActionBar">
+	<style name="ActionBar" parent="Widget.Sherlock.ActionBar">
 		<item name="titleTextStyle">@style/TitleText</item>
 		<item name="android:titleTextStyle">@style/TitleText</item>
 		<item name="background">@drawable/actionbar_background</item>
 		<item name="android:background">@drawable/actionbar_background</item>
 	</style>
+
+    <!-- ActionBar title style -->
+    <style name="TitleText">
+        <item name="android:textColor">@color/brand_yellow</item>
+        <item name="android:textSize">17dip</item>
+    </style>
 
 	<!-- "Implementation" of VPI theme. We just set the text size and color. -->
 	<style name="CustomTabPageIndicator" parent="Widget.TabPageIndicator">
@@ -47,11 +54,15 @@
 		<item name="android:background">@drawable/tab_indicator_selector</item>
 	</style>
 
-	<!-- More customizations for ABS -->
-	<style name="TitleText">
-		<item name="android:textColor">@android:color/darker_gray</item>
-		<item name="android:textSize">17dip</item>
-	</style>
+    <style name="TabStyle" parent="Widget.TabPageIndicator">
+        <item name="android:textColor">#FF33AA33</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">italic</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:fadingEdge">horizontal</item>
+        <item name="android:fadingEdgeLength">8dp</item>
+    </style>
 
 	<style name="FullscreenActivity" parent="Theme.Sherlock.NoActionBar">
 		<item name="android:windowBackground">@color/brand_black</item>
@@ -90,4 +101,20 @@
 		<item name="android:scaleType">centerCrop</item>
 		<item name="android:background">@drawable/yellow_border</item>
 	</style>
+
+    <style name="artistName">
+        <item name="android:textSize">22sp</item>
+        <item name="android:textColor">@color/brand_orange</item>
+    </style>
+
+    <style name="artistLabel">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/brand_yellow</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="artistBio">
+        <item name="android:textColor">@color/brand_yellow</item>
+        <item name="android:textSize">18sp</item>
+    </style>
 </resources>

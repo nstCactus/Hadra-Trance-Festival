@@ -23,7 +23,8 @@
 		xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-		android:orientation="vertical">
+		android:orientation="vertical"
+        android:background="@drawable/background_blur">
 	<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
@@ -37,11 +38,9 @@
 		<TextView
 				android:layout_width="fill_parent"
 				android:layout_height="@dimen/artist_photo"
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:id="@+id/artist_name"
-				android:textColor="@color/brand_orange"
-				android:gravity="center|center_horizontal"
-				/>
+            android:id="@+id/artist_name"
+            android:gravity="center|center_horizontal"
+            style="@style/artistName" />
 
 	</LinearLayout>
 
@@ -57,13 +56,12 @@
 		<TextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:textAppearance="?android:attr/textAppearanceMedium"
-				android:id="@+id/label"
-				android:textColor="@color/brand_yellow"
-				android:layout_alignParentLeft="true"
+                android:id="@+id/label"
+                android:layout_alignParentLeft="true"
 				android:text="UK / Damaru Records, Free radical records"
 				android:layout_toLeftOf="@+id/facebook"
-				android:layout_alignTop="@+id/facebook"/>
+				android:layout_alignTop="@+id/facebook"
+                style="@style/artistLabel" />
 
 		<com.zion.htf.widget.TintImageButton
 				android:id="@+id/facebook"
@@ -109,6 +107,6 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:id="@+id/bio"
-				android:textColor="@color/brand_yellow"/>
+                style="@style/artistBio" />
 	</ScrollView>
 </LinearLayout>

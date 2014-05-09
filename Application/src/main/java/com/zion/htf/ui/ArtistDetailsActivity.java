@@ -24,6 +24,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -32,9 +33,11 @@ import android.widget.TextView;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.zion.htf.Application;
 import com.zion.htf.R;
+import com.zion.htf.ui.fragment.TimeToPickerFragment;
 
 import org.michenux.android.db.sqlite.SQLiteDatabaseHelper;
 
@@ -125,7 +128,13 @@ public class ArtistDetailsActivity extends SherlockFragmentActivity implements V
 		this.dbOpenHelper.close();
 	}
 
-	@Override
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        this.getSupportMenuInflater().inflate(R.menu.artist_details, menu);
+        return true;
+    }
+
+    @Override
 	public void onClick(View v){
 		Intent intent = null;
 
@@ -164,7 +173,10 @@ public class ArtistDetailsActivity extends SherlockFragmentActivity implements V
 			case android.R.id.home:
 				this.finish();
 				break;
-
+            case R.id.action_addAlarm:
+                // Open the add alarm popup
+                this.showAddAlarmDialog();
+                break;
 			default:
 				ret = false;
 		}
@@ -172,7 +184,19 @@ public class ArtistDetailsActivity extends SherlockFragmentActivity implements V
 		return ret;
 	}
 
-	private void disable(ImageButton iv){
+    @Override
+    //Play closing animation when activity is closed (using back button for instance)
+    public void finish(){
+        super.finish();
+        this.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+    }
+
+    private void showAddAlarmDialog() {
+        DialogFragment newFragment = new TimeToPickerFragment();
+        newFragment.show(this.getSupportFragmentManager(), "timeToPicker");
+    }
+
+    private void disable(ImageButton iv){
 		iv.setClickable(false);
 		if(Build.VERSION.SDK_INT >= 16) iv.setImageAlpha(64);
 		else iv.setAlpha(64);

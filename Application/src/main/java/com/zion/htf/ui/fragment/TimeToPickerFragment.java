@@ -1,7 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<!--
-    Copyright 2013 Yohann Bianchi
+/*
+    Copyright 2014 Yohann Bianchi
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,18 +15,21 @@
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
     or see <http://www.gnu.org/licenses/>.
--->
+ */
+package com.zion.htf.ui.fragment;
 
-<LinearLayout
-		xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="@color/brand_yellow"
-        android:background="@color/brand_orange">
+import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
-	<TextView
-			android:id="@+id/list_item_section_header"
-			style="?android:attr/listSeparatorTextViewStyle"
-			android:textColor="@color/brand_yellow" />
-</LinearLayout>
+import com.zion.htf.R;
+
+public class TimeToPickerFragment extends DialogFragment{
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+        View view = inflater.inflate(R.layout.fragment_now_on_stage,  container, false);
+        return view;
+    }
+}
