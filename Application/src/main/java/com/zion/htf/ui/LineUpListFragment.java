@@ -50,11 +50,11 @@ import java.util.Locale;
 
 public class LineUpListFragment extends SherlockFragment implements AdapterView.OnItemClickListener{
 	private static final String               TAG          = "LineUpListFragment";
+    public static  final String               STAGE_NAME   = "STAGE_NAME";
 	private static       SQLiteDatabaseHelper dbOpenHelper = Application.getDbHelper();
 
-	public static final String STAGE_NAME = "STAGE_NAME";
-
-	protected String stage;
+	protected   String      stage;
+    private     ListView    listView;
 
 	/* BEGIN Columns indexes for convenience */
 	protected final int COLUMN_ID         = 0;
@@ -64,8 +64,7 @@ public class LineUpListFragment extends SherlockFragment implements AdapterView.
 	protected final int COLUMN_END_DATE   = 4;
 	protected final int COLUMN_TYPE       = 5;
 	protected final int COLUMN_PICTURE    = 6;
-	protected final int COLUMN_ARTIST_ID = 7;
-	private ListView listView;
+	protected final int COLUMN_ARTIST_ID  = 7;
 	/* END Columns indexes for convenience */
 
 	public LineUpListFragment(){

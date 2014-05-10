@@ -64,5 +64,6 @@
 	<string name="daily_break">Pause quotidienne</string>
 	<string name="all_stages">Toutes les scènes</string>
 	<string name="festival_over">Le festival est terminé</string>
+    <string name="title_activity_artist_list">Liste des artistes</string>
 
 </resources>

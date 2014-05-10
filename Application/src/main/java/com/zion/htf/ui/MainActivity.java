@@ -115,6 +115,9 @@ public class MainActivity extends SherlockActivity{
 			case R.id.button_lineup:
 				intent = new Intent(this, LineUpActivity.class);
 				break;
+            case R.id.button_artists:
+                intent = new Intent(this, ArtistListActivity.class);
+                break;
 			case R.id.button_tickets:
 				intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.hadra.net/shop/new/category.php?id_category=6"));
 				break;

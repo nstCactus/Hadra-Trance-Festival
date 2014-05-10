@@ -65,4 +65,5 @@
 	<string name="festival_over">Festival is over</string>
 	<string name="info_village">The village</string>
     <string name="action_addAlarm">Add an alarm</string>
+    <string name="title_activity_artist_list">Artist list</string>
 </resources>
