@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<!--
+  ~ Copyright 2013 Yohann Bianchi
+  ~
+  ~ This program is free software; you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation; either version 2 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License along
+  ~ with this program; if not, write to the Free Software Foundation, Inc.,
+  ~ 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+  ~ or see <http://www.gnu.org/licenses/>.
+  -->
+
+<RelativeLayout
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+		android:layout_alignParentLeft="true"
+		android:id="@+id/relativeLayout"
+		android:onClick="onNowOnStageClicked"
+    android:background="#CC10020D"
+    android:clickable="false">
+
+	<ImageView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:id="@+id/speaker_left"
+			android:src="@drawable/speaker_left"
+			android:layout_alignParentLeft="true"/>
+
+	<ImageView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:id="@+id/speaker_right"
+			android:src="@drawable/speaker_right"
+			android:layout_alignParentRight="true"/>
+
+	<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="vertical"
+			android:layout_centerVertical="true"
+        android:gravity="center"
+        android:layout_toLeftOf="@+id/speaker_right"
+        android:layout_toRightOf="@+id/speaker_left"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp">
+
+        <com.mobsandgeeks.ui.TypefaceTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Penta (live)"
+            android:id="@+id/artist_name"
+            style="@style/now_playing.artist" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <com.mobsandgeeks.ui.TypefaceTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Main stage"
+                android:id="@+id/stage"
+                style="@style/now_playing" />
+
+            <com.mobsandgeeks.ui.TypefaceTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="  –  "
+                style="@style/now_playing" />
+
+            <com.mobsandgeeks.ui.TypefaceTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="20h - 22h30"
+                style="@style/now_playing"
+                android:id="@+id/hour" />
+
+        </LinearLayout>
+	</LinearLayout>
+</RelativeLayout>

@@ -19,7 +19,8 @@
     or see <http://www.gnu.org/licenses/>.
 -->
 
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
+<resources
+    xmlns:android="http://schemas.android.com/apk/res/android">
 	<!-- This is our main ActionBarSherlock theme -->
 	<style name="AppTheme" parent="Theme.Sherlock">
 		<item name="actionBarStyle">@style/ActionBar</item>
@@ -38,8 +39,8 @@
 	<style name="ActionBar" parent="Widget.Sherlock.ActionBar">
 		<item name="titleTextStyle">@style/TitleText</item>
 		<item name="android:titleTextStyle">@style/TitleText</item>
-		<item name="background">@drawable/actionbar_background</item>
-		<item name="android:background">@drawable/actionbar_background</item>
+		<item name="background">@drawable/actionbar_bg</item>
+		<item name="android:background">@drawable/actionbar_bg</item>
 	</style>
 
     <!-- ActionBar title style -->
@@ -84,9 +85,11 @@
 	</style>
 
 	<style name="now_playing">
+        <item name="android:fontFamily">Arial Rounded MT Bold</item>
 		<item name="android:layout_centerHorizontal">true</item>
 		<item name="android:textColor">@color/brand_orange</item>
 		<item name="android:textSize">17sp</item>
+        <item name="customTypeface">fonts/ArialRoundedMTBold.ttf</item>
 	</style>
 
 	<style name="now_playing.artist" parent="now_playing">
@@ -94,7 +97,11 @@
 		<item name="android:textSize">25sp</item>
 	</style>
 
-	<style name="artist_photo">
+    <style name="artist">
+
+    </style>
+
+	<style name="artist.photo">
 		<item name="android:layout_width">@dimen/artist_photo</item>
 		<item name="android:layout_height">@dimen/artist_photo</item>
 		<item name="android:padding">2dp</item>
@@ -102,13 +109,14 @@
 		<item name="android:background">@drawable/yellow_border</item>
 	</style>
 
-    <style name="artistName">
-        <item name="android:textSize">22sp</item>
+    <style name="artist.name">
+        <item name="android:textSize">26sp</item>
         <item name="android:textColor">@color/brand_orange</item>
+        <item name="customTypeface">fonts/ArialRoundedMTBold.ttf</item>
     </style>
 
-    <style name="artistLabel">
-        <item name="android:textSize">18sp</item>
+    <style name="artist.label">
+        <item name="android:textSize">20sp</item>
         <item name="android:textColor">@color/brand_yellow</item>
         <item name="android:textStyle">bold</item>
     </style>

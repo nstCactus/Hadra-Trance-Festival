@@ -40,8 +40,6 @@
 		free time.
 		\n\nYou may support this with a donation.
 	</string>
-	<string name="donate_joke">And remember: everytime you don\'t donate, a kid gets a mullet!
-	</string>
 	<string name="error_too_early_title">Too early...</string>
 	<string name="error_too_early_message">Hadra Trance Festival has not begun yet.
 		\nPlease retry after thursday, august 22nd at 9pm.
@@ -66,4 +64,10 @@
 	<string name="info_village">The village</string>
     <string name="action_addAlarm">Add an alarm</string>
     <string name="title_activity_artist_list">Artist list</string>
+    <string name="title_new_alarm_dialog">New alarm</string>
+
+    <string-array name="time_units">
+        <item>Hours</item>
+        <item>Minutes</item>
+    </string-array>
 </resources>

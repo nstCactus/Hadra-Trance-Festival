@@ -23,13 +23,35 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.NumberPicker;
+import android.widget.Spinner;
 
 import com.zion.htf.R;
 
 public class TimeToPickerFragment extends DialogFragment{
+    Spinner unitSpinner;
+    NumberPicker timePicker;
+
+    public TimeToPickerFragment(){
+
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        View view = inflater.inflate(R.layout.fragment_now_on_stage,  container, false);
+        this.getDialog().setTitle(R.string.title_new_alarm_dialog);
+        View view = inflater.inflate(R.layout.fragment_time_to_picker,  container, false);
+        this.unitSpinner = (Spinner)view.findViewById(R.id.unitSpinner);
+        this.timePicker = (NumberPicker)view.findViewById(R.id.time_picker);
+
+        if(null == this.unitSpinner) throw new NullPointerException("Couldn't find unitSpinner");
+        if(null == this.timePicker) throw new NullPointerException("Couldn't find timePicker");
+
+        this.timePicker.setMinValue(0);
+        this.timePicker.setMaxValue(500);
+        this.timePicker.setValue(60);
+
+        this.unitSpinner.setSelection(1);
+
         return view;
     }
 }

@@ -57,18 +57,18 @@ public class InfoDetailsActivity extends SherlockActivity{
 		}
 
 		this.webView = new WebView(this);
-		this.webView.loadDataWithBaseURL("plop", this.readTextFromResource(resourceName), "text/html", "utf-8", null);
+		this.webView.loadDataWithBaseURL("/", this.readTextFromResource(resourceName), "text/html", "utf-8", null);
 		this.webView.setBackgroundColor(Color.argb(1, 0, 0, 0));
-		if(resourceName.equals("info_about")) this.webView.setWebViewClient(new WebViewClient(){
+		if(resourceName.equals("info_about") || resourceName.equals("info_open_source")) this.webView.setWebViewClient(new WebViewClient(){
 			@Override
 			public boolean shouldOverrideUrlLoading(WebView view, String url){
 				Log.v(TAG, url);
 				boolean ret = false;
-				if(-1 != url.indexOf("github.com/sbooob")){
-					startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/sbooob/Hadra-Trance-Festival")));
+				if(-1 != url.indexOf("github.com/nstCactus")){
+					startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/nstCactus/Hadra-Trance-Festival")));
 					ret = true;
 				}
-				else if(-1 != url.indexOf("perdu.com")){
+				else if(-1 != url.indexOf("donate.me")){
 					startActivity(new Intent(context, DonateActivity.class));
 					ret = true;
 				}

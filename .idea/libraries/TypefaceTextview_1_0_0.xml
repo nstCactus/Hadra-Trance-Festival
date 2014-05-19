@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="TypefaceTextview-1.0.0">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/Application/build/exploded-aar/com.mobsandgeeks.ui.library/TypefaceTextview/1.0.0/classes.jar!/" />
+      <root url="file://$PROJECT_DIR$/Application/build/exploded-aar/com.mobsandgeeks.ui.library/TypefaceTextview/1.0.0/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

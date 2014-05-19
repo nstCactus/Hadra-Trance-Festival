@@ -57,7 +57,7 @@
 					android:id="@+id/small_buttons"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:layout_above="@+id/linearLayout"
+					android:layout_above="@+id/row1"
 					android:layout_centerInParent="true">
 
 				<com.zion.htf.widget.TintImageButton
@@ -104,12 +104,20 @@
 			<LinearLayout
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:id="@+id/linearLayout"
-					android:layout_centerInParent="true"
+					android:id="@+id/row1"
+					android:layout_above="@id/row2"
 					android:layout_marginTop="10dp"
 					android:layout_marginBottom="10dp">
 
-				<ImageButton
+                <ImageButton
+                    style="@style/bigButtons"
+                    android:id="@+id/button_artists"
+                    android:onClick="onButtonClicked"
+                    android:src="@drawable/button_artists_selector"
+                    android:layout_width="wrap_content" />
+
+                <ImageButton
+                        android:visibility="gone"
 						style="@style/bigButtons"
 						android:id="@+id/button_lineup"
 						android:onClick="onButtonClicked"
@@ -119,31 +127,29 @@
 						style="@style/bigButtons"
 						android:id="@+id/button_tickets"
 						android:src="@drawable/button_tickets_selector"
-						android:layout_toRightOf="@id/button_lineup"
-						android:onClick="onButtonClicked"/>
+                    android:onClick="onButtonClicked"/>
 			</LinearLayout>
 
 			<LinearLayout
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:id="@+id/linearLayout2"
-					android:layout_centerInParent="true"
-					android:layout_below="@+id/linearLayout">
+					android:id="@+id/row2"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true">
 
 				<ImageButton
 						style="@style/bigButtons"
 						android:id="@+id/button_map"
 						android:onClick="onButtonClicked"
-						android:src="@drawable/button_map_selector"
-						android:layout_below="@id/button_lineup"/>
+						android:src="@drawable/button_map_selector" />
 
 				<ImageButton
 						style="@style/bigButtons"
 						android:id="@+id/button_infos"
 						android:src="@drawable/button_infos_selector"
 						android:layout_below="@id/button_tickets"
-						android:layout_toRightOf="@id/button_map"
-						android:onClick="onButtonClicked"/>
+                    android:onClick="onButtonClicked"/>
 
 			</LinearLayout>
 		</RelativeLayout>

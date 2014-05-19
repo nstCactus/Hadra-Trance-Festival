@@ -26,15 +26,10 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.RelativeLayout.LayoutParams;
-import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.MenuItem;
@@ -103,21 +98,6 @@ public class DonateActivity extends SherlockActivity implements SeekBar.OnSeekBa
         this.amount = this.seekBar.getProgress() + SEEKBAR_MIN;
         this.updateControls();
 
-		final ScrollView scrollView = (ScrollView)this.findViewById(R.id.donate_scrollView);
-		ViewTreeObserver observer = scrollView.getViewTreeObserver();
-		if(observer != null){
-			observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener(){
-				@Override
-				public void onGlobalLayout(){
-					TextView donateJoke = (TextView)com.zion.htf.ui.DonateActivity.this.findViewById(R.id.donate_joke);
-					int viewHeight = scrollView.getMeasuredHeight();
-					LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-					params.setMargins(0, viewHeight, 0, 0);
-					donateJoke.setLayoutParams(params);
-				}
-			});
-		}
-
 		if(null == DonateActivity.currencySet){
 			DonateActivity.currencySet = new CurrencySet();
 			DonateActivity.currencySet.add(new Currency("US", "USD", "$"));
@@ -129,11 +109,6 @@ public class DonateActivity extends SherlockActivity implements SeekBar.OnSeekBa
 		this.currencySpinner = (Spinner)this.findViewById(R.id.currencySpinner);
 		this.currencySpinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, DonateActivity.currencySet.getLabelArray()));
 		this.currencySpinner.setSelection(DonateActivity.currencySet.findPositionByCountryCode(Locale.getDefault().getCountry()));
-	}
-
-	public void toggleDonateJokeImage(View button){
-		ImageView image = (ImageView)this.findViewById(R.id.donate_joke_image);
-		image.setVisibility(image.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
 	}
 
 	@Override
@@ -194,7 +169,7 @@ public class DonateActivity extends SherlockActivity implements SeekBar.OnSeekBa
 	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser){
         if(fromUser){
 		    this.amount = DonateActivity.SEEKBAR_MIN + progress;
-            // Limits to roughly 30 updates per second to avoid IInputConnectionWrapper warning flood
+            // Limits to roughly 30 updates per second to avoid InputConnectionWrapper warning flood
             long now = new Date().getTime();
             if(now - this.lastUpdate > 0.3f){
                 this.lastUpdate = now;

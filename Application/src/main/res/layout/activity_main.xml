@@ -104,14 +104,13 @@
         android:layout_alignParentLeft="false"
         android:importantForAccessibility="noHideDescendants">
 
-        <!--
         <ImageButton
+            android:visibility="gone"
             style="@style/bigButtons"
             android:id="@+id/button_lineup"
             android:onClick="onButtonClicked"
             android:src="@drawable/button_lineup_selector"
             android:layout_width="wrap_content" />
-        -->
 
         <ImageButton
             style="@style/bigButtons"

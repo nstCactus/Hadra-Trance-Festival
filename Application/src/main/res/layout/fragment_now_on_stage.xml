@@ -53,29 +53,26 @@
 			android:layout_centerHorizontal="true"
 			android:gravity="center">
 
-		<TextView
+		<com.mobsandgeeks.ui.TypefaceTextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:text="Main stage"
 				android:id="@+id/stage"
-				style="@style/now_playing"
-				android:layout_above="@+id/artist_name"/>
+				style="@style/now_playing" />
 
-		<TextView
+		<com.mobsandgeeks.ui.TypefaceTextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:text="Penta (live)"
 				android:id="@+id/artist_name"
-				style="@style/now_playing.artist"
-				android:layout_centerVertical="true"/>
+				style="@style/now_playing.artist" />
 
-		<TextView
+		<com.mobsandgeeks.ui.TypefaceTextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:text="20h - 22h30"
 				style="@style/now_playing"
 				android:id="@+id/hour"
-				android:layout_centerHorizontal="true"
-				android:layout_below="@id/artist_name"/>
+				android:layout_centerHorizontal="true" />
 	</LinearLayout>
 </RelativeLayout>

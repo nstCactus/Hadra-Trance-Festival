@@ -77,7 +77,6 @@ public class ArtistOnStageTask extends TimerTask{
 		Date bound;
 		if(currentDate.before(bound = this.getFestivalStartDate())){
 			Log.v(TAG, "Pas commencé. Début à " + bound.toString());
-			StringBuilder remainingTime = new StringBuilder();
 			int secondsFromStart = (int)(bound.getTime() / 1000 - currentDate.getTime() / 1000);
 			int daysFromStart = secondsFromStart / 86400;
 			int remainingSeconds = secondsFromStart % 86400;

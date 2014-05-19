@@ -19,124 +19,77 @@
     or see <http://www.gnu.org/licenses/>.
 -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
+              android:layout_height="wrap_content"
               android:paddingLeft="@dimen/activity_horizontal_margin"
               android:paddingRight="@dimen/activity_horizontal_margin"
               android:paddingTop="@dimen/activity_vertical_margin"
               android:paddingBottom="@dimen/activity_vertical_margin"
               tools:context=".activity.DonateActivity">
 
-	<ScrollView
-			android:id="@+id/donate_scrollView"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent">
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/donation_text"
+            android:id="@+id/donationText"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+android:focusableInTouchMode="true"
+android:focusable="true" />
 
-		<RelativeLayout
-				android:layout_height="wrap_content"
-				android:layout_width="match_parent"
-				android:gravity="center">
+    <LinearLayout
+            android:id="@+id/amountGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/donationText"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="30dp">
 
+        <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="1"
+                android:id="@+id/amount"
+                android:inputType="numberDecimal"
+                android:layout_gravity="center"
+                android:textColor="@color/brand_yellow"
+/>
 
-			<TextView
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:textAppearance="?android:attr/textAppearanceMedium"
-					android:text="@string/donation_text"
-					android:id="@+id/donationText"
-					android:layout_alignParentTop="true"
-					android:layout_alignParentLeft="true"
-                    android:focusableInTouchMode="true"
-                    android:focusable="true" />
+        <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:id="@+id/currencySpinner"
+                android:layout_gravity="left|center_vertical"
+                />
+    </LinearLayout>
 
-			<LinearLayout
-					android:id="@+id/amountGroup"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_below="@+id/donationText"
-					android:layout_centerHorizontal="true"
-					android:layout_marginTop="30dp"
-					android:layout_marginBottom="30dp">
+    <SeekBar
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/seekBar"
+            android:progress="80"
+            android:secondaryProgress="980"
+            android:max="980"
+            android:layout_below="@+id/amountGroup"
+            android:layout_alignLeft="@+id/donationText" />
 
-				<EditText
-						android:layout_width="wrap_content"
-						android:layout_height="fill_parent"
-						android:textAppearance="?android:attr/textAppearanceLarge"
-						android:text="1"
-						android:id="@+id/amount"
-						android:inputType="numberDecimal"
-						android:layout_gravity="center"
-						android:textColor="@color/brand_yellow"
-                    />
-
-				<Spinner
-						android:layout_width="wrap_content"
-						android:layout_height="fill_parent"
-						android:id="@+id/currencySpinner"
-						android:layout_gravity="left|center_vertical"
-						/>
-			</LinearLayout>
-
-			<SeekBar
-					android:layout_width="fill_parent"
-					android:layout_height="wrap_content"
-					android:id="@+id/seekBar"
-					android:progress="80"
-					android:secondaryProgress="980"
-					android:max="980"
-					android:layout_below="@+id/amountGroup"
-					android:layout_alignLeft="@+id/donationText" />
-
-			<ImageButton
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:id="@+id/donate_button"
-					android:onClick="onDonatePressed"
-					android:background="@drawable/button_paypal"
-					android:singleLine="false"
-					android:textColor="#000"
-					android:paddingRight="10dp"
-					android:paddingLeft="10dp"
-					android:layout_marginTop="30dp"
-					android:layout_below="@+id/seekBar"
-					android:layout_centerHorizontal="true"
-					android:focusableInTouchMode="false" />
-
-			<TextView
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="@string/donate_joke"
-					android:id="@+id/donate_joke"
-					android:layout_marginTop="30dp"
-					android:layout_toLeftOf="@+id/donate_joke_button"
-					android:layout_below="@+id/donate_button"
-					android:paddingRight="20dp"/>
-
-			<com.zion.htf.widget.TintImageButton
-					android:id="@+id/donate_joke_button"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:src="@android:drawable/ic_menu_more"
-					android:layout_alignTop="@+id/donate_joke"
-					android:layout_alignParentRight="false"
-					android:background="#00000000"
-					android:onClick="toggleDonateJokeImage"
-					android:layout_alignParentEnd="true"
-					android:layout_marginLeft="10dp" />
-
-
-			<ImageView
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:id="@+id/donate_joke_image"
-					android:layout_centerHorizontal="true"
-					android:layout_below="@+id/donate_joke"
-					android:visibility="gone"
-					android:src="@drawable/mullet"
-					android:layout_marginTop="30dp" />
-
-		</RelativeLayout>
-	</ScrollView>
-</LinearLayout>
+    <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/donate_button"
+            android:onClick="onDonatePressed"
+            android:background="@drawable/button_paypal"
+            android:singleLine="false"
+            android:textColor="#000"
+            android:paddingRight="10dp"
+            android:paddingLeft="10dp"
+            android:layout_marginTop="30dp"
+            android:layout_below="@+id/seekBar"
+            android:layout_centerHorizontal="true"
+            android:focusableInTouchMode="false" />
+</RelativeLayout>

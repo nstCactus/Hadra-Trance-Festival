@@ -43,7 +43,7 @@
 					android:layout_gravity="center"
 					android:layout_alignParentLeft="true"
 					android:layout_alignParentTop="true"
-					style="@style/artist_photo"
+					style="@style/artist.photo"
 					/>
 
 			<LinearLayout
@@ -89,8 +89,8 @@
 					android:layout_marginLeft="10dp"
 					android:layout_centerVertical="true">
 
-				<TextView
-						android:layout_width="fill_parent"
+				<com.mobsandgeeks.ui.TypefaceTextView
+                        android:layout_width="fill_parent"
 						android:layout_height="wrap_content"
 						android:textAppearance="?android:attr/textAppearanceLarge"
 						android:id="@+id/artist_name"

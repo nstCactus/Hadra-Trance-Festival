@@ -32,15 +32,15 @@
 			android:layout_weight="1"
 			android:padding="10dp">
 		<ImageView
-				style="@style/artist_photo"
+				style="@style/artist.photo"
 				android:id="@+id/artist_photo" />
 
-		<TextView
-				android:layout_width="fill_parent"
-				android:layout_height="@dimen/artist_photo"
+		<com.mobsandgeeks.ui.TypefaceTextView
+			android:layout_width="fill_parent"
+			android:layout_height="@dimen/artist_photo"
             android:id="@+id/artist_name"
             android:gravity="center|center_horizontal"
-            style="@style/artistName" />
+            style="@style/artist.name" />
 
 	</LinearLayout>
 
@@ -61,7 +61,7 @@
 				android:text="UK / Damaru Records, Free radical records"
 				android:layout_toLeftOf="@+id/facebook"
 				android:layout_alignTop="@+id/facebook"
-                style="@style/artistLabel" />
+                style="@style/artist.label" />
 
 		<com.zion.htf.widget.TintImageButton
 				android:id="@+id/facebook"

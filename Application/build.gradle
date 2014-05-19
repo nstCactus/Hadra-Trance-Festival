@@ -11,6 +11,11 @@ apply plugin: 'android'
 
 repositories {
     mavenCentral()
+    repositories{
+        flatDir {
+            dirs 'libs'
+        }
+    }
 }
 
 android {
@@ -21,11 +26,34 @@ android {
         minSdkVersion 10
         targetSdkVersion 19
     }
+
+    signingConfigs {
+        release{
+            storeFile file(System.getenv("HOME") + "/.android/release.keystore")
+            storePassword "dummy"
+            keyAlias "sbooob"
+            keyPassword "dummy"
+        }
+    }
+
     buildTypes {
         release {
+            zipAlign true
             runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            signingConfig signingConfigs.release
         }
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
+
+    packagingOptions {
+        exclude 'AndroidManifest.xml'
     }
 }
 
@@ -33,6 +61,22 @@ dependencies {
     compile 'com.google.android.gms:play-services:4.3.23'
     compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
     compile 'com.viewpagerindicator:library:2.4.1@aar'
+    compile 'net.simonvt:android-numberpicker:1.0.0'
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile files('libs/PayPalAndroidSDK.jar')
+    compile 'com.mobsandgeeks.ui.library:TypefaceTextview:1.0.0@aar'
+}
+
+task askForPasswords << {
+    def storePwd = new String(System.console().readPassword("\n\$ Enter store password: "))
+    def keyPwd = new String(System.console().readPassword("\n\$ Enter key password: "))
+
+    android.signingConfigs.release.storePassword = storePwd
+    android.signingConfigs.release.keyPassword = keyPwd
+}
+
+tasks.whenTaskAdded { theTask ->
+    if(theTask.name.equals("packageRelease")) {
+        theTask.dependsOn("askForPasswords")
+    }
 }

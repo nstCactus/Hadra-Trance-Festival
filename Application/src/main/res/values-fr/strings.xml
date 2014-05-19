@@ -38,9 +38,6 @@
 	<string name="donation_text">Je développe cette application bénévolement, sur mon temps libre.
 		\n\nSi tu le souhaites tu peux soutenir cette démarche par un petit don.
 	</string>
-	<string name="donate_joke">Et souviens-toi : à chaque fois que tu refuse de faire un don, un
-		enfant se fait une coupe mullet !
-	</string>
 	<string name="error_too_early_title">Ne sois pas si impatient...</string>
 	<string name="error_too_early_message">L\'Hadra Trance Festival n\'a pas encore commencé.
 		\nRé-essaie à partir du jeudi 22 août à 21h.
@@ -65,5 +62,6 @@
 	<string name="all_stages">Toutes les scènes</string>
 	<string name="festival_over">Le festival est terminé</string>
     <string name="title_activity_artist_list">Liste des artistes</string>
+    <string name="title_new_alarm_dialog">Nouvelle alarme</string>
 
 </resources>

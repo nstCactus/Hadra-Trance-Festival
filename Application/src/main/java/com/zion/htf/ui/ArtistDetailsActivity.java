@@ -36,6 +36,7 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.zion.htf.Application;
+import com.zion.htf.BuildConfig;
 import com.zion.htf.R;
 import com.zion.htf.ui.fragment.TimeToPickerFragment;
 
@@ -95,10 +96,22 @@ public class ArtistDetailsActivity extends SherlockFragmentActivity implements V
 
 			ImageView artist_photo_field = (ImageView)this.findViewById(R.id.artist_photo);
 			int resId;
-			if(cursor.isNull(COLUMN_PICTURE) || 0 == (resId = this.getResources().getIdentifier(cursor.getString(COLUMN_PICTURE), "drawable", "com.zion.htf"))){
+
+            if(BuildConfig.DEBUG) Log.v(TAG, "Photo (DB): " + cursor.getString(COLUMN_PICTURE));
+
+            String picResName = cursor.getString(COLUMN_PICTURE);
+            if(!cursor.isNull(COLUMN_PICTURE)){
+                // Sanitize picture resource name
+                picResName = picResName.replaceAll("\\.(?:jpe?g|png|gif)$", "");// Remove the extension if present in DB
+                picResName = picResName.replace(".", "_");
+                if(BuildConfig.DEBUG) Log.v(TAG, "Photo (clean): " + picResName);
+            }
+
+			if(cursor.isNull(COLUMN_PICTURE) || 0 == (resId = this.getResources().getIdentifier(picResName, "drawable", "com.zion.htf"))){
 				resId = R.drawable.no_image;
 				artist_photo_field.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-			}
+                if(BuildConfig.DEBUG) Log.w(TAG, "Not found: " + picResName);
+            }
 			artist_photo_field.setImageResource(resId);
 
 			ImageButton website_button = (ImageButton)this.findViewById(R.id.website);
@@ -130,7 +143,9 @@ public class ArtistDetailsActivity extends SherlockFragmentActivity implements V
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
-        this.getSupportMenuInflater().inflate(R.menu.artist_details, menu);
+        if(BuildConfig.DEBUG){// FIXME: Remove this condition when alarms are ready
+            this.getSupportMenuInflater().inflate(R.menu.artist_details, menu);
+        }
         return true;
     }
 

@@ -17,7 +17,7 @@
     or see <http://www.gnu.org/licenses/>.
  */
 
-package com.zion.htf.ui;
+package com.zion.htf.ui.fragment;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -38,6 +38,8 @@ import com.zion.htf.R;
 import com.zion.htf.adapter.LineUpAdapter;
 import com.zion.htf.data.Item;
 import com.zion.htf.data.Set;
+import com.zion.htf.ui.ArtistDetailsActivity;
+import com.zion.htf.ui.LineUpActivity;
 
 import org.michenux.android.db.sqlite.SQLiteDatabaseHelper;
 
