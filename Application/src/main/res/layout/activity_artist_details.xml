@@ -19,12 +19,22 @@
     or see <http://www.gnu.org/licenses/>.
 -->
 
-<LinearLayout
+<RelativeLayout
 		xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
 		android:orientation="vertical"
         android:background="@drawable/background_blur">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:orientation="vertical"
+        android:id="@+id/header">
+
 	<LinearLayout
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
@@ -33,13 +43,15 @@
 			android:padding="10dp">
 		<ImageView
 				style="@style/artist.photo"
-				android:id="@+id/artist_photo" />
+				android:id="@+id/artist_photo"
+                tools:src="@drawable/ph_bytherain"/>
 
 		<com.mobsandgeeks.ui.TypefaceTextView
 			android:layout_width="fill_parent"
 			android:layout_height="@dimen/artist_photo"
             android:id="@+id/artist_name"
             android:gravity="center|center_horizontal"
+            tools:text="By the rain"
             style="@style/artist.name" />
 
 	</LinearLayout>
@@ -58,8 +70,8 @@
 				android:layout_height="wrap_content"
                 android:id="@+id/label"
                 android:layout_alignParentLeft="true"
-				android:text="UK / Damaru Records, Free radical records"
-				android:layout_toLeftOf="@+id/facebook"
+                tools:text="TR / Epic Tribe/ BMMS/Trimurti"
+                android:layout_toLeftOf="@+id/facebook"
 				android:layout_alignTop="@+id/facebook"
                 style="@style/artist.label" />
 
@@ -96,17 +108,27 @@
 
 	</RelativeLayout>
 
-	<ScrollView
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:id="@+id/scrollView"
-			android:layout_margin="10dp"
-			android:layout_weight="80">
+    </LinearLayout>
 
-		<TextView
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:id="@+id/bio"
-                style="@style/artistBio" />
-	</ScrollView>
-</LinearLayout>
+    <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/scrollView"
+            android:layout_margin="10dp"
+        android:layout_below="@id/header">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/bio"
+                tools:text="By The Rain is a music project by Burak Ozsoy.
+Burak was born in turkey, but since he has lived in many countries such as Australia, Bahrain, Malaysia, Thailand, Singapore, USA, Turkey; sharing his music and art.
+
+It was long ago when he started music with bands and rocking heavy tunes.
+In the last few years, he has been actively in the psychedelic scene with his live chill out project By The Rain and blasting psytrance dj sets, Releasing By The Rain Music on records such as; Trimurti records,Microcosmos records, Altar records, Spiritech records, Speed sounds records &amp; various other label compilations.
+Burak has been an active part of Epic Tribe in Malaysia, creating most artworks for the psychedelic community and managing Belantara’s Alternative / chill out stage for the last 2 gatherings.
+
+Burak is also a part of &quot;Art of Nabura&quot; which is an art project with his partner Nabeela."
+style="@style/artistBio" />
+    </ScrollView>
+</RelativeLayout>

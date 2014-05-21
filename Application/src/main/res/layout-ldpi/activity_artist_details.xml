@@ -20,93 +20,105 @@
 -->
 <ScrollView
 		xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:id="@+id/scrollView"
 		android:layout_margin="10dp"
     android:background="@drawable/background_blur">
 
-<LinearLayout
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:orientation="vertical">
-	<LinearLayout
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:orientation="horizontal"
-			android:padding="10dp">
-		<ImageView
-				style="@style/artist.photo"
-				android:id="@+id/artist_photo" />
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-        <com.mobsandgeeks.ui.TypefaceTextView
-                android:layout_width="fill_parent"
-				android:layout_height="@dimen/artist_photo"
-				android:textAppearance="?android:attr/textAppearanceLarge"
-				android:id="@+id/artist_name"
-				android:textColor="@color/brand_orange"
-				android:gravity="center|center_horizontal"
-				/>
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10dp">
+            <ImageView
+                    style="@style/artist.photo"
+                    android:id="@+id/artist_photo"
+                    tools:src="@drawable/ph_bytherain"/>
 
-	</LinearLayout>
+            <com.mobsandgeeks.ui.TypefaceTextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="@dimen/artist_photo"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:id="@+id/artist_name"
+                    android:textColor="@color/brand_orange"
+                    android:gravity="center|center_horizontal"
+                    tools:text="By the rain" />
 
-	<RelativeLayout
-			android:layout_width="wrap_content"
-			android:layout_height="fill_parent"
-			android:orientation="horizontal"
-			android:layout_gravity="center_horizontal"
-			android:layout_marginLeft="10dp"
-			android:layout_marginRight="10dp">
+        </LinearLayout>
 
-		<TextView
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:textAppearance="?android:attr/textAppearanceMedium"
-				android:id="@+id/label"
-				android:textColor="@color/brand_yellow"
-				android:layout_alignParentLeft="true"
-				android:text="UK / Damaru Records, Free radical records"
-				android:layout_toLeftOf="@+id/facebook"
-				android:layout_alignTop="@+id/facebook"/>
+        <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:orientation="horizontal"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp">
 
-		<com.zion.htf.widget.TintImageButton
-				android:id="@+id/facebook"
-				android:src="@drawable/social_facebook"
-				android:onClick="onClick"
-				style="@style/imageButtons"
-				android:layout_gravity="center_vertical"
-				android:layout_alignTop="@+id/soundcloud"
-				android:layout_toLeftOf="@+id/soundcloud"/>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/label"
+                    android:textColor="@color/brand_yellow"
+                    android:layout_alignParentLeft="true"
+                    tools:text="TR / Epic Tribe/ BMMS/Trimurti"
+                    android:layout_toLeftOf="@+id/facebook"
+                    android:layout_alignTop="@+id/facebook"/>
 
-		<com.zion.htf.widget.TintImageButton
-				android:id="@+id/soundcloud"
-				android:src="@drawable/social_soundcloud"
-				android:onClick="onClick"
-				style="@style/imageButtons"
-				android:layout_gravity="center_vertical"
-				android:layout_alignTop="@+id/website"
-				android:layout_toLeftOf="@+id/website"
-				android:layout_marginLeft="10dp"
-				android:layout_marginRight="10dp"/>
+            <com.zion.htf.widget.TintImageButton
+                    android:id="@+id/facebook"
+                    android:src="@drawable/social_facebook"
+                    android:onClick="onClick"
+                    style="@style/imageButtons"
+                    android:layout_gravity="center_vertical"
+                    android:layout_alignTop="@+id/soundcloud"
+                    android:layout_toLeftOf="@+id/soundcloud"/>
 
-		<com.zion.htf.widget.TintImageButton
-				android:id="@+id/website"
-				android:src="@drawable/social_www"
-				android:onClick="onClick"
-				style="@style/imageButtons"
-				android:layout_gravity="center_vertical"
-				android:layout_alignParentLeft="false"
-				android:layout_alignParentTop="true"
-				android:layout_alignParentRight="true"
-				/>
+            <com.zion.htf.widget.TintImageButton
+                    android:id="@+id/soundcloud"
+                    android:src="@drawable/social_soundcloud"
+                    android:onClick="onClick"
+                    style="@style/imageButtons"
+                    android:layout_gravity="center_vertical"
+                    android:layout_alignTop="@+id/website"
+                    android:layout_toLeftOf="@+id/website"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"/>
 
-	</RelativeLayout>
+            <com.zion.htf.widget.TintImageButton
+                    android:id="@+id/website"
+                    android:src="@drawable/social_www"
+                    android:onClick="onClick"
+                    style="@style/imageButtons"
+                    android:layout_gravity="center_vertical"
+                    android:layout_alignParentLeft="false"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"
+                    />
 
-		<TextView
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:id="@+id/bio"
-				android:textColor="@color/brand_yellow"
-				android:layout_weight="80"/>
-</LinearLayout>
+        </RelativeLayout>
+
+        <TextView
+                android:layout_margin="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:id="@+id/bio"
+                android:textColor="@color/brand_yellow"
+                android:layout_weight="80"
+                tools:text="By The Rain is a music project by Burak Ozsoy.
+Burak was born in turkey, but since he has lived in many countries such as Australia, Bahrain, Malaysia, Thailand, Singapore, USA, Turkey; sharing his music and art.
+
+It was long ago when he started music with bands and rocking heavy tunes.
+In the last few years, he has been actively in the psychedelic scene with his live chill out project By The Rain and blasting psytrance dj sets, Releasing By The Rain Music on records such as; Trimurti records,Microcosmos records, Altar records, Spiritech records, Speed sounds records &amp; various other label compilations.
+Burak has been an active part of Epic Tribe in Malaysia, creating most artworks for the psychedelic community and managing Belantara’s Alternative / chill out stage for the last 2 gatherings.
+
+Burak is also a part of &quot;Art of Nabura&quot; which is an art project with his partner Nabeela."/>
+    </LinearLayout>
 </ScrollView>
