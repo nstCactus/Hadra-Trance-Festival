@@ -142,9 +142,12 @@ public class MainActivity extends SherlockActivity{
 			case R.id.button_youtube:
 				intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/user/hadrarecords"));
 				break;
-			case R.id.button_music:
-				intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/music/album?id=Bzgehxymgika5tgar5nlhfjkhqq"));
-				break;
+            case R.id.button_music:
+                intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/music/album?id=Bzgehxymgika5tgar5nlhfjkhqq"));
+                break;
+            case R.id.button_flickr:
+                intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.flickr.com/photos/118919035@N06/sets/"));
+                break;
 			default:
 		}
 

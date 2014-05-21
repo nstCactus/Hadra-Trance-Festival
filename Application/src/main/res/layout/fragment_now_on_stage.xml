@@ -21,15 +21,16 @@
   -->
 
 <RelativeLayout
-		xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_alignParentBottom="true"
 		android:layout_alignParentLeft="true"
 		android:id="@+id/relativeLayout"
 		android:onClick="onNowOnStageClicked"
-    android:background="#CC10020D"
-    android:clickable="false">
+        android:background="#CC10020D"
+        android:clickable="false">
 
 	<ImageView
 			android:layout_width="wrap_content"
@@ -56,21 +57,21 @@
 		<com.mobsandgeeks.ui.TypefaceTextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="Main stage"
+				tools:text="Main stage"
 				android:id="@+id/stage"
 				style="@style/now_playing" />
 
 		<com.mobsandgeeks.ui.TypefaceTextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="Penta (live)"
+				tools:text="Penta (live)"
 				android:id="@+id/artist_name"
 				style="@style/now_playing.artist" />
 
 		<com.mobsandgeeks.ui.TypefaceTextView
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:text="20h - 22h30"
+				tools:text="20h - 22h30"
 				style="@style/now_playing"
 				android:id="@+id/hour"
 				android:layout_centerHorizontal="true" />

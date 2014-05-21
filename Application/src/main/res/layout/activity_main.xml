@@ -59,41 +59,37 @@
 				style="@style/smallButtons"
 				android:id="@+id/button_facebook"
 				android:src="@drawable/button_facebook"
-				android:layout_below="@drawable/title"
-				android:layout_alignLeft="@drawable/title"
-				android:onClick="onButtonClicked"/>
+            android:onClick="onButtonClicked"/>
 
 		<com.zion.htf.widget.TintImageButton
 				android:id="@+id/button_soundcloud"
 				android:src="@drawable/button_soundcloud"
-				android:layout_below="@drawable/title"
-				android:layout_alignLeft="@drawable/title"
-				style="@style/smallButtons"
+            style="@style/smallButtons"
 				android:onClick="onButtonClicked"/>
 
 		<com.zion.htf.widget.TintImageButton
 				android:id="@+id/button_youtube"
 				android:src="@drawable/button_youtube"
 				style="@style/smallButtons"
-				android:layout_below="@drawable/title"
-				android:layout_alignLeft="@drawable/title"
-				android:onClick="onButtonClicked"/>
+            android:onClick="onButtonClicked"/>
 
 		<com.zion.htf.widget.TintImageButton
 				android:id="@+id/button_hadra"
 				android:src="@drawable/button_hadra"
 				style="@style/smallButtons"
-				android:layout_below="@drawable/title"
-				android:layout_alignLeft="@drawable/title"
-				android:onClick="onButtonClicked"/>
+            android:onClick="onButtonClicked"/>
 
-		<com.zion.htf.widget.TintImageButton
-				android:id="@+id/button_music"
-				android:src="@drawable/button_music"
-				style="@style/smallButtons"
-				android:layout_below="@drawable/title"
-				android:layout_alignLeft="@drawable/title"
-				android:onClick="onButtonClicked"/>
+        <com.zion.htf.widget.TintImageButton
+            android:id="@+id/button_music"
+            android:src="@drawable/button_music"
+            style="@style/smallButtons"
+            android:onClick="onButtonClicked"/>
+
+        <com.zion.htf.widget.TintImageButton
+            android:id="@+id/button_flickr"
+            android:src="@drawable/button_flickr"
+            style="@style/smallButtons"
+            android:onClick="onButtonClicked"/>
 	</LinearLayout>
 	<LinearLayout
 		android:layout_width="wrap_content"
