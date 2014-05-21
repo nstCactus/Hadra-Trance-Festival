@@ -42,10 +42,10 @@
 	</string>
 	<string name="error_too_early_title">Too early...</string>
 	<string name="error_too_early_message">Hadra Trance Festival has not begun yet.
-		\nPlease retry after thursday, august 22nd at 9pm.
+		\nPlease retry after thursday, august 21st at 9pm.
 	</string>
 	<string name="error_too_late_title">Too late...</string>
-	<string name="error_too_late_message">Hadra Trance Festival is over since sunday, august 25th at 6pm.
+	<string name="error_too_late_message">Hadra Trance Festival is over since sunday, august 24th at 6pm.
 		\nSee you next year!
 	</string>
 	<string name="info_festival">Festival</string>

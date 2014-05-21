@@ -38,12 +38,12 @@
 	<string name="donation_text">Je développe cette application bénévolement, sur mon temps libre.
 		\n\nSi tu le souhaites tu peux soutenir cette démarche par un petit don.
 	</string>
-	<string name="error_too_early_title">Ne sois pas si impatient...</string>
+	<string name="error_too_early_title">Ne sois pas si impatient…</string>
 	<string name="error_too_early_message">L\'Hadra Trance Festival n\'a pas encore commencé.
-		\nRé-essaie à partir du jeudi 22 août à 21h.
+		\nRé-essaie à partir du jeudi 21 août à 21h.
 	</string>
-	<string name="error_too_late_title">Trop tard...</string>
-	<string name="error_too_late_message">L\'Hadra Trance Festival est terminé depuis le dimanche 25 août à 18h.
+	<string name="error_too_late_title">Trop tard…</string>
+	<string name="error_too_late_message">L\'Hadra Trance Festival est terminé depuis le dimanche 24 août à 18h.
 		\nÀ l\'an prochain !
 	</string>
 	<string name="info_festival">Festival</string>

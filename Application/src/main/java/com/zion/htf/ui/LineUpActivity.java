@@ -98,10 +98,10 @@ public class LineUpActivity extends SherlockFragmentActivity{
 
 		Date now = new Date();
 
-		if(now.before(new Date(1377205200000l))){
+		if(now.before(new Date(1408645800000l))){
 			this.displayErrorMessage(CAUSE_TOO_EARLY);
 		}
-		else if(now.after(new Date(1377453600000l))){
+		else if(now.after(new Date(1408896000000l))){
 			this.displayErrorMessage(CAUSE_TOO_LATE);
 		}
 		else{
