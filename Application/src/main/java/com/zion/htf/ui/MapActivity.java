@@ -74,7 +74,7 @@ public class MapActivity extends SherlockFragmentActivity implements ActionBar.O
 		this.setContentView(R.layout.activity_map);
 
 		// Getting Google Play availability status
-		int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getBaseContext());
+		int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this.getBaseContext());
 
 		// Showing status
 		if(status != ConnectionResult.SUCCESS){ // Google Play Services are not available
