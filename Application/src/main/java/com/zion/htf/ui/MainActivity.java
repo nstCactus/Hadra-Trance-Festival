@@ -86,7 +86,8 @@ public class MainActivity extends SherlockActivity{
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu){
-		this.getSupportMenuInflater().inflate(R.menu.main, menu);
+        this.getSupportMenuInflater().inflate(R.menu.main, menu);
+        this.getSupportMenuInflater().inflate(R.menu.main_debug, menu);
 		return true;
 	}
 
@@ -98,6 +99,10 @@ public class MainActivity extends SherlockActivity{
 			case R.id.action_donate:
 				this.startActivity(new Intent(this, DonateActivity.class));
 				break;
+
+            case R.id.action_lineUp:
+                this.onButtonClicked(this.findViewById(R.id.button_lineup));
+                break;
 
 			default:
 				ret = false;
