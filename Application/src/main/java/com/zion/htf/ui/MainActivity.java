@@ -31,6 +31,7 @@ import android.view.View;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.zion.htf.BuildConfig;
 import com.zion.htf.R;
 import com.zion.htf.data.ArtistOnStageTask;
 
@@ -87,7 +88,7 @@ public class MainActivity extends SherlockActivity{
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu){
         this.getSupportMenuInflater().inflate(R.menu.main, menu);
-        this.getSupportMenuInflater().inflate(R.menu.main_debug, menu);
+        if(BuildConfig.DEBUG) this.getSupportMenuInflater().inflate(R.menu.main_debug, menu);
 		return true;
 	}
 

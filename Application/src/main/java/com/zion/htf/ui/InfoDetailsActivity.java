@@ -56,6 +56,8 @@ public class InfoDetailsActivity extends SherlockActivity{
 			throw new RuntimeException("This requires a 'name' parameter in its starting intent.");
 		}
 
+        this.setTitle(this.getString(this.getResources().getIdentifier(resourceName, "string", "com.zion.htf")));
+
 		this.webView = new WebView(this);
 		this.webView.loadDataWithBaseURL("/", this.readTextFromResource(resourceName), "text/html", "utf-8", null);
 		this.webView.setBackgroundColor(Color.argb(1, 0, 0, 0));
@@ -136,5 +138,4 @@ public class InfoDetailsActivity extends SherlockActivity{
 
 		return ret;
 	}
-
 }

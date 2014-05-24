@@ -48,20 +48,24 @@
 	<string name="error_too_late_message">Hadra Trance Festival is over since sunday, august 24th at 6pm.
 		\nSee you next year!
 	</string>
-	<string name="info_festival">Festival</string>
+    <string name="info_edito">Edito</string>
+    <string name="info_news">News</string>
+    <string name="info_volonteers">Volonteers</string>
+    <string name="info_partners">Partners</string>
 	<string name="info_transport">How to come ?</string>
 	<string name="info_camp">Camping</string>
 	<string name="info_dogs">No dogs</string>
 	<string name="info_faq">FAQ</string>
 	<string name="info_about">About</string>
+    <string name="info_open_source">Open source</string>
+    <string name="info_village">The village</string>
+
 	<string name="action_info">Useful information</string>
-	<string name="info_open_source">Open source</string>
 	<string name="remaining_time">Remaining time:</string>
 	<string name="before_opening">before the opening of the festival</string>
 	<string name="daily_break">Daily break on all stages</string>
 	<string name="all_stages">All stages</string>
 	<string name="festival_over">Festival is over</string>
-	<string name="info_village">The village</string>
     <string name="action_addAlarm">Add an alarm</string>
     <string name="title_activity_artist_list">Artist list</string>
     <string name="title_new_alarm_dialog">New alarm</string>

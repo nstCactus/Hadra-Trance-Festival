@@ -109,8 +109,7 @@
         <activity
             android:name=".ui.InfoDetailsActivity"
             android:label="@string/action_info"
-            android:parentActivityName=".ui.InfoActivity"
-            android:theme="@style/FullscreenActivity" />
+            android:parentActivityName=".ui.InfoActivity" />
 
         <!-- Alarms -->
         <receiver android:name=".receiver.AlarmReceiver"/>

@@ -1,7 +1,3 @@
-// --------------------------------
-// PLEASE DO NOT MODIFY THIS FILE !
-// --------------------------------
-
 html {
     margin: 0;
 }
@@ -11,14 +7,15 @@ body {
     padding: 10px;
     padding-top: 5px;
     font-family: Helvetica,sans-serif;
-    color: #f4b201;
-    background-color: #0d0b0a;
+    color: #F6B900;
+    background-color: #10020D;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
+    text-align: justify;
 }
 
 a, a:hover, a:visited {
-    color: #f25d01;
+    color: #F30015;
     font-weight: bold;
 }
 
@@ -27,25 +24,41 @@ p, pre {
     font-size: inherit;
     margin-bottom: 20px;
     margin-top: 0;
-    padding-top: 0;
+    padding: 0;
+}
+
+.list p::first-letter{
+    font-weight: bold;
+    font-size: 120%;
 }
 
 pre {
     white-space: pre-line;
 }
 
+h1, h2 {
+    color: #F30015;
+}
+
 h1 {
-    color: #f25d01;
-    font-size: 20px;
+    font-size: 200%;
+}
+
+h2 {
+    font-size: 160%;
+}
+
+h3 {
+    font-size: 120%;
+}
+
+.faq h1,
+.partners h1{
+    font-size: 120%;
 }
 
 h1 a {
     text-decoration: none;
-}
-
-h2 {
-    color: #f25d01;
-    font-size: 16px;
 }
 
 .alt {
@@ -72,4 +85,23 @@ h2 {
 .v-center {
     display: table-cell;
     vertical-align: middle;
+}
+
+.quote{
+    font-family: serif;
+    font-style: italic;
+}
+
+.logos > span,
+.logos > a{
+    display: block;
+    width: 160px;
+    height: 160px;
+    text-align: center;
+    float: left;
+    margin: 10px;
+}
+
+.partners h1{
+    clear: both;
 }

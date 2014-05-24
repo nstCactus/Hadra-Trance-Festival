@@ -38,12 +38,15 @@ public class InfoActivity extends SherlockListActivity implements AdapterView.On
 	private ListAdapter listAdapter;
 	private static Context  context = Application.getContext();
 	private static String[] items   = new String[]{
-			context.getString(R.string.info_festival),
+            context.getString(R.string.info_edito),
+            context.getString(R.string.info_news),
 			context.getString(R.string.info_transport),
 			context.getString(R.string.info_camp),
 			context.getString(R.string.info_village),
-			context.getString(R.string.info_dogs),
-			context.getString(R.string.info_faq),
+            context.getString(R.string.info_dogs),
+            context.getString(R.string.info_volonteers),
+            context.getString(R.string.info_partners),
+            context.getString(R.string.info_faq),
 			context.getString(R.string.info_about),
 			context.getString(R.string.info_open_source),
 			context.getString(R.string.action_donate)
@@ -73,15 +76,18 @@ public class InfoActivity extends SherlockListActivity implements AdapterView.On
 			intent = new Intent(this, DonateActivity.class);
 		}
 		else if(
-				item.equals(this.getString(strId = R.string.info_festival)) ||
+                item.equals(this.getString(strId = R.string.info_edito)) ||
+                item.equals(this.getString(strId = R.string.info_news)) ||
 				item.equals(this.getString(strId = R.string.info_transport)) ||
 				item.equals(this.getString(strId = R.string.info_camp)) ||
 				item.equals(this.getString(strId = R.string.info_dogs)) ||
 				item.equals(this.getString(strId = R.string.info_faq)) ||
 				item.equals(this.getString(strId = R.string.info_about)) ||
-				item.equals(this.getString(strId = R.string.info_open_source))||
+                item.equals(this.getString(strId = R.string.info_volonteers))||
+                item.equals(this.getString(strId = R.string.info_partners))||
+                item.equals(this.getString(strId = R.string.info_open_source))||
 				item.equals(this.getString(strId = R.string.info_village))
-				){
+	    ){
 			try{
 				String name = this.getResources().getResourceEntryName(strId);
 				intent = new Intent(this, InfoDetailsActivity.class);
