@@ -133,10 +133,10 @@ public class MainActivity extends SherlockActivity{
 			case R.id.button_facebook:
 				// Facebook needs special treatment if we want the mobile app to open
 				try{
-					this.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("fb://profile/353173845932")));
+					this.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("fb://profile/327380017292731")));
 				}
 				catch(ActivityNotFoundException e){
-					this.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/Hadra.official")));
+					this.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/hadratrancefestival")));
 				}
 				break;
 			case R.id.button_hadra:
