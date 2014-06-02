@@ -22,17 +22,17 @@ package com.zion.htf.ui;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.MenuItem;
 import com.paypal.android.sdk.payments.PayPalPayment;
 import com.paypal.android.sdk.payments.PayPalService;
 import com.paypal.android.sdk.payments.PaymentActivity;
@@ -48,7 +48,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
 
-public class DonateActivity extends SherlockActivity implements SeekBar.OnSeekBarChangeListener, TextWatcher{
+public class DonateActivity extends ActionBarActivity implements SeekBar.OnSeekBarChangeListener, TextWatcher{
 	private final static String PAYPAL_CLIENT_ID        = BuildConfig.DEBUG ? "AQKx2xDBRhC4J1VzGsLXe13IBBqX3ivEnKlSkOc07dEOyBXGcGUcecqACL3W" : "Aa7K9hAB02q0IqcXFns7aa9C3xcwkgWGMWg0YKgcJhmq7PhPs-CRwOr7tlRg";
 	private final static String PAYPAL_ENVIRONMENT      = BuildConfig.DEBUG ? PaymentActivity.ENVIRONMENT_SANDBOX : PaymentActivity.ENVIRONMENT_LIVE;
 	private final static String PAYPAL_RECEIVER_EMAIL   = BuildConfig.DEBUG ? "sbooob-facilitator@gmail.com" : "sbooob@gmail.com";

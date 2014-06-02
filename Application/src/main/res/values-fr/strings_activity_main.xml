@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="action_settings">Paramètres</string>
+    <string name="action_donate">Faire un don</string>
+    <string name="action_about">À propos</string>
+    <string name="action_bookmarks">Favoris</string>
+    <string name="action_alarms">Rappels</string>
+    <string name="action_info">Infos pratiques</string>
+    <string name="action_help">Aide</string>
+</resources>

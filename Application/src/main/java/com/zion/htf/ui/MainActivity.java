@@ -25,12 +25,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.AttributeSet;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 import com.zion.htf.BuildConfig;
 import com.zion.htf.R;
 import com.zion.htf.data.ArtistOnStageTask;
@@ -38,7 +38,7 @@ import com.zion.htf.data.ArtistOnStageTask;
 import java.lang.ref.WeakReference;
 import java.util.Timer;
 
-public class MainActivity extends SherlockActivity{
+public class MainActivity extends ActionBarActivity{
 	private static final String TAG                             = "MainActivity";
 	private static final int 	ARTIST_ON_STAGE_UPDATE_INTERVAL = 10000;
 	protected Timer   	        artistOnStageTimer;
@@ -87,8 +87,8 @@ public class MainActivity extends SherlockActivity{
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu){
-        this.getSupportMenuInflater().inflate(R.menu.main, menu);
-        if(BuildConfig.DEBUG) this.getSupportMenuInflater().inflate(R.menu.main_debug, menu);
+        this.getMenuInflater().inflate(R.menu.main, menu);
+        if(BuildConfig.DEBUG) this.getMenuInflater().inflate(R.menu.main_debug, menu);
 		return true;
 	}
 
@@ -105,7 +105,11 @@ public class MainActivity extends SherlockActivity{
                 this.onButtonClicked(this.findViewById(R.id.button_lineup));
                 break;
 
-			default:
+            case R.id.action_settings:
+                this.startActivity(new Intent(this, SettingsActivity.class));
+                break;
+
+            default:
 				ret = false;
 		}
 

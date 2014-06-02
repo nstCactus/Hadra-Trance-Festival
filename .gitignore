@@ -22,3 +22,4 @@ libs/*
 # Finder's crap
 .DS_Store
 codeStyleSettings.xml
+.idea/dictionaries/*

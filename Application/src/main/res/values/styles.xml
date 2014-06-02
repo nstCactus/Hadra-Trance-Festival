@@ -19,10 +19,8 @@
     or see <http://www.gnu.org/licenses/>.
 -->
 
-<resources
-    xmlns:android="http://schemas.android.com/apk/res/android">
-	<!-- This is our main ActionBarSherlock theme -->
-	<style name="AppTheme" parent="Theme.Sherlock">
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+	<style name="AppTheme" parent="Theme.AppCompat">
 		<item name="actionBarStyle">@style/ActionBar</item>
 		<item name="android:actionBarStyle">@style/ActionBar</item>
 		<item name="android:textColor">@color/brand_yellow</item>
@@ -35,12 +33,14 @@
         <item name="vpiTabPageIndicatorStyle">@style/CustomTabPageIndicator</item>
     </style>
 
-	<!-- "Implementation" of our ABS custom theme -->
-	<style name="ActionBar" parent="Widget.Sherlock.ActionBar">
-		<item name="titleTextStyle">@style/TitleText</item>
+    <!-- ActionBar style -->
+	<style name="ActionBar" parent="Widget.AppCompat.ActionBar">
 		<item name="android:titleTextStyle">@style/TitleText</item>
-		<item name="background">@drawable/actionbar_bg</item>
 		<item name="android:background">@drawable/actionbar_bg</item>
+
+        <!-- Support library compatibility  -->
+		<item name="titleTextStyle">@style/TitleText</item>
+		<item name="background">@drawable/actionbar_bg</item>
 	</style>
 
     <!-- ActionBar title style -->
@@ -49,7 +49,7 @@
         <item name="android:textSize">17dip</item>
     </style>
 
-	<!-- "Implementation" of VPI theme. We just set the text size and color. -->
+	<!-- ViewPagerIndicator theme -->
 	<style name="CustomTabPageIndicator" parent="Widget.TabPageIndicator">
 		<item name="android:textColor">@color/brand_orange</item>
 		<item name="android:background">@drawable/tab_indicator_selector</item>
@@ -65,9 +65,9 @@
         <item name="android:fadingEdgeLength">8dp</item>
     </style>
 
-	<style name="FullscreenActivity" parent="Theme.Sherlock.NoActionBar">
+	<!--<style name="FullscreenActivity" parent="Theme.Sherlock.NoActionBar">
 		<item name="android:windowBackground">@color/brand_black</item>
-	</style>
+	</style>-->
 
 	<style name="imageButtons">
 		<item name="android:background">#00FFFFFF</item>

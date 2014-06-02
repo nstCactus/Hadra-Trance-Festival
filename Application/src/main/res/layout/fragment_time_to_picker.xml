@@ -6,22 +6,21 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <NumberPicker
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/time_picker"
-         />
 
     <EditText
         android:layout_width="98dp"
         android:layout_height="wrap_content"
-        android:inputType="number"
-        android:ems="10"
-        android:id="@+id/numberPicker"
-        android:layout_gravity="center_vertical" />
+        android:inputType="numberSigned"
+        android:ems="3"
+        android:id="@+id/numberBox"
+        android:layout_weight="1"
+        android:layout_gravity="center_vertical"
+        android:editable="true"
+        android:enabled="true"
+        android:focusable="true" />
 
     <Spinner
-        android:layout_width="wrap_content"
+        android:layout_width="246dp"
         android:layout_height="wrap_content"
         android:id="@+id/unitSpinner"
         android:layout_gravity="center_vertical"

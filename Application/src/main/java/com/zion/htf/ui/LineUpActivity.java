@@ -25,21 +25,21 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 import com.hb.views.PinnedSectionListView;
 import com.viewpagerindicator.PageIndicator;
-import com.zion.htf.data.Item;
 import com.zion.htf.R;
-import com.zion.htf.data.Set;
 import com.zion.htf.adapter.LineUpPagerAdapter;
+import com.zion.htf.data.Item;
+import com.zion.htf.data.Set;
 
 import java.util.Date;
 
-public class LineUpActivity extends SherlockFragmentActivity{
+public class LineUpActivity extends ActionBarActivity {
 	private static final int CAUSE_TOO_EARLY = 0;
 	private static final int CAUSE_TOO_LATE  = 1;
 
@@ -69,7 +69,7 @@ public class LineUpActivity extends SherlockFragmentActivity{
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu){
-		this.getSupportMenuInflater().inflate(R.menu.line_up, menu);
+		this.getMenuInflater().inflate(R.menu.line_up, menu);
 		return true;
 	}
 

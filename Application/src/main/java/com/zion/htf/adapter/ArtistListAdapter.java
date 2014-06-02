@@ -20,20 +20,14 @@
 package com.zion.htf.adapter;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.hb.views.PinnedSectionListView;
-import com.zion.htf.Application;
 import com.zion.htf.R;
 import com.zion.htf.data.Artist;
-import com.zion.htf.data.Item;
-import com.zion.htf.data.Set;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class ArtistListAdapter<T> extends ArrayAdapter<T>{

@@ -11,7 +11,7 @@ apply plugin: 'android'
 
 repositories {
     mavenCentral()
-    repositories{
+    repositories {
         flatDir {
             dirs 'libs'
         }
@@ -28,7 +28,7 @@ android {
     }
 
     signingConfigs {
-        release{
+        release {
             storeFile file(System.getenv("HOME") + "/.android/release.keystore")
             storePassword "dummy"
             keyAlias "sbooob"
@@ -58,13 +58,15 @@ android {
 }
 
 dependencies {
-    compile 'com.google.android.gms:play-services:4.3.23'
-    compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
-    compile 'com.viewpagerindicator:library:2.4.1@aar'
-    compile 'net.simonvt:android-numberpicker:1.0.0'
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile files('libs/PayPalAndroidSDK.jar')
+    compile 'com.google.android.gms:play-services:4.3.23'
+    //compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
+    compile 'com.viewpagerindicator:library:2.4.1@aar'
+    compile 'net.simonvt:android-numberpicker:1.0.0'
     compile 'com.mobsandgeeks.ui.library:TypefaceTextview:1.0.0@aar'
+    compile 'com.android.support:support-v4:19.+'
+    compile 'com.android.support:appcompat-v7:19.+'
 }
 
 task askForPasswords << {
@@ -75,8 +77,10 @@ task askForPasswords << {
     android.signingConfigs.release.keyPassword = keyPwd
 }
 
+
+
 tasks.whenTaskAdded { theTask ->
-    if(theTask.name.equals("packageRelease")) {
+    if (theTask.name.equals("packageRelease")) {
         theTask.dependsOn("askForPasswords")
     }
 }

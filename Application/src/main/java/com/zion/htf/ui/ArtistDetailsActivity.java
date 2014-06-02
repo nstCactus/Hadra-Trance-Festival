@@ -20,49 +20,38 @@
 package com.zion.htf.ui;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-import com.zion.htf.Application;
 import com.zion.htf.BuildConfig;
 import com.zion.htf.R;
+import com.zion.htf.data.Artist;
 import com.zion.htf.ui.fragment.TimeToPickerFragment;
-
-import org.michenux.android.db.sqlite.SQLiteDatabaseHelper;
 
 import java.util.Locale;
 
-public class ArtistDetailsActivity extends SherlockFragmentActivity implements View.OnClickListener{
-	private static final String TAG               = "ArtistDetailsActivity";
-	private static final int    COLUMN_NAME       = 1;
-	private static final int    COLUMN_GENRE      = 2;
-	private static final int    COLUMN_ORIGIN     = 3;
-	private static final int    COLUMN_PICTURE    = 4;
-	private static final int    COLUMN_COVER      = 5;
-	private static final int    COLUMN_WEBSITE    = 6;
-	private static final int    COLUMN_FACEBOOK   = 7;
-	private static final int    COLUMN_SOUNDCLOUD = 8;
-	private static final int    COLUMN_LABEL      = 9;
-	private static final int    COLUMN_BIO        = 11;// Column 10 is foreign key bios(id)
-	private static final int	COLUMN_BIO_ID	  = 12;
+public class ArtistDetailsActivity extends ActionBarActivity implements View.OnClickListener{
+	private static final String TAG = "ArtistDetailsActivity";
 	private String facebook_url;
 	private String website_url;
 	private String soundcloud_url;
-	private SQLiteDatabaseHelper dbOpenHelper = Application.getDbHelper();
+    private int setId;
 
-	@Override
+    private Artist artist;
+
+    //TODO: Refactor this Activity so that it holds an instance of Artist with all needed info
+
+    @Override
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.activity_artist_details);
@@ -71,80 +60,61 @@ public class ArtistDetailsActivity extends SherlockFragmentActivity implements V
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		actionBar.setHomeButtonEnabled(true);
 
+        this.setId = this.getIntent().getIntExtra("set_id", 0);
 
-		int artist_id = this.getIntent().getIntExtra("artist_id", 0);
+        try {
+            this.artist = Artist.getBySetId(this.setId);
 
-		String langCode = Locale.getDefault().getLanguage().equals("fr") ? "fr" : "en";
-		final Cursor cursor = this.dbOpenHelper.getReadableDatabase().rawQuery(String.format("SELECT artists.*, bios.text, bio FROM artists LEFT JOIN bios ON artists.bio = bios.id AND lang_code = '%s' WHERE artists.id = %d;", langCode, artist_id), null);
+            this.getSupportActionBar().setTitle(this.artist.getArtistName());
 
-		if(cursor.moveToNext()){
-			String artist_name = cursor.getString(COLUMN_NAME);
-			this.getSupportActionBar().setTitle(artist_name);
+            // Display artist name
+            TextView artist_name_field = (TextView)this.findViewById(R.id.artist_name);
+            artist_name_field.setText(this.artist.getArtistName());
 
-			TextView artist_name_field = (TextView)this.findViewById(R.id.artist_name);
-			artist_name_field.setText(artist_name);
+            // Display label
+            TextView label_field = (TextView)this.findViewById(R.id.label);
+            String label = this.artist.getLabel();
+            String origin = this.artist.getOrigin();
+            if(0 < label.length())  label = origin + " / " + label;
+            else					label = origin;
+            label_field.setText(label);
 
-			TextView label_field = (TextView)this.findViewById(R.id.label);
-			String label = "";
-			if(!cursor.isNull(COLUMN_LABEL)) label = cursor.getString(COLUMN_LABEL);
-			if(!cursor.isNull(COLUMN_ORIGIN)){
-				String origin = cursor.getString(COLUMN_ORIGIN);
-				if(label.length() > 0) label = origin + " / " + label;
-				else					label = origin;
-			}
-			label_field.setText(label);
+            // Display picture
+            ImageView artist_photo_field = (ImageView)this.findViewById(R.id.artist_photo);
+            int resId = this.artist.getPictureResourceId();
+            if(R.drawable.no_image == resId) artist_photo_field.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            artist_photo_field.setImageResource(resId);
 
-			ImageView artist_photo_field = (ImageView)this.findViewById(R.id.artist_photo);
-			int resId;
+            // Handle website button
+            ImageButton website_button = (ImageButton)this.findViewById(R.id.website);
+            this.website_url = this.artist.getWebsite();
+            if(0 == this.website_url.length()) this.disable(website_button);
 
-            if(BuildConfig.DEBUG) Log.v(TAG, "Photo (DB): " + cursor.getString(COLUMN_PICTURE));
+            // Handle facebook button
+            ImageButton facebook_button = (ImageButton)this.findViewById(R.id.facebook);
+            this.facebook_url = this.artist.getFacebook();
+            if(0 == this.facebook_url.length()) this.disable(facebook_button);
 
-            String picResName = cursor.getString(COLUMN_PICTURE);
-            if(!cursor.isNull(COLUMN_PICTURE)){
-                // Sanitize picture resource name
-                picResName = picResName.replaceAll("\\.(?:jpe?g|png|gif)$", "");// Remove the extension if present in DB
-                picResName = picResName.replace(".", "_");
-                if(BuildConfig.DEBUG) Log.v(TAG, "Photo (clean): " + picResName);
-            }
+            // Handle soundcloud button
+            ImageButton soundcloud_button = (ImageButton)this.findViewById(R.id.soundcloud);
+            this.soundcloud_url = this.artist.getSoundcloud();
+            if(0 == this.soundcloud_url.length()) this.disable(soundcloud_button);
 
-			if(cursor.isNull(COLUMN_PICTURE) || 0 == (resId = this.getResources().getIdentifier(picResName, "drawable", "com.zion.htf"))){
-				resId = R.drawable.no_image;
-				artist_photo_field.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                if(BuildConfig.DEBUG) Log.w(TAG, "Not found: " + picResName);
-            }
-			artist_photo_field.setImageResource(resId);
-
-			ImageButton website_button = (ImageButton)this.findViewById(R.id.website);
-			this.website_url = cursor.getString(COLUMN_WEBSITE);
-			if(null == this.website_url || this.website_url.length() == 0) this.disable(website_button);
-
-			ImageButton facebook_button = (ImageButton)this.findViewById(R.id.facebook);
-			this.facebook_url = cursor.getString(COLUMN_FACEBOOK);
-			if(null == this.facebook_url || this.facebook_url.length() == 0) this.disable(facebook_button);
-
-			ImageButton soundcloud_button = (ImageButton)this.findViewById(R.id.soundcloud);
-			this.soundcloud_url = cursor.getString(COLUMN_SOUNDCLOUD);
-			if(null == this.soundcloud_url || this.soundcloud_url.length() == 0) this.disable(soundcloud_button);
-
-			TextView bio_field = (TextView)this.findViewById(R.id.bio);
-			String bio = cursor.getString(COLUMN_BIO);
-			if(!cursor.isNull(COLUMN_BIO_ID) && (bio == null || bio.equals(""))){
-				Cursor bioCursor = this.dbOpenHelper.getReadableDatabase().rawQuery("SELECT text FROM bios WHERE id = ?;", new String[]{String.valueOf(cursor.getInt(COLUMN_BIO_ID))});
-				if(bioCursor.moveToNext()) bio = bioCursor.getString(0);
-			}
-			if(bio != null) bio_field.setText(bio);
-		}
-		else{
-			Log.e(TAG, "No artist found matching id '" + artist_id + "'.");
-		}
-		if(!cursor.isClosed()) cursor.close();
-		this.dbOpenHelper.close();
+            // Display bio
+            TextView bio_field = (TextView)this.findViewById(R.id.bio);
+            String bio = this.artist.getBio("fr".equals(Locale.getDefault().getLanguage()) ? "fr" : "en");
+            bio_field.setText(bio);
+        }
+        catch (Exception e){
+            //TODO: Handle this properly
+            e.printStackTrace();
+        }
 	}
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         if(BuildConfig.DEBUG){// FIXME: Remove this condition when alarms are ready
-            this.getSupportMenuInflater().inflate(R.menu.artist_details, menu);
+            this.getMenuInflater().inflate(R.menu.artist_details, menu);
         }
         return true;
     }
@@ -176,12 +146,11 @@ public class ArtistDetailsActivity extends SherlockFragmentActivity implements V
 
 				break;
 		}
-
-		if(intent != null) this.startActivity(intent);
+		if(null != intent) this.startActivity(intent);
 	}
 
 	@Override
-	public boolean onMenuItemSelected(int featureId, MenuItem item){
+	public boolean onOptionsItemSelected(MenuItem item){
 		boolean ret = true;
 
 		switch(item.getItemId()){
@@ -206,14 +175,24 @@ public class ArtistDetailsActivity extends SherlockFragmentActivity implements V
         this.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
-    private void showAddAlarmDialog() {
-        DialogFragment newFragment = new TimeToPickerFragment();
+    /**
+     * Displays a dialog to configure a new reminder for the current artist
+     */
+    private void showAddAlarmDialog(){
+        Bundle args = new Bundle();
+        args.putLong("timestamp", this.artist.getSetBeginDate());
+        args.putInt("set_id", this.setId);
+        DialogFragment newFragment = TimeToPickerFragment.newInstance(args);
         newFragment.show(this.getSupportFragmentManager(), "timeToPicker");
     }
 
-    private void disable(ImageButton iv){
-		iv.setClickable(false);
-		if(Build.VERSION.SDK_INT >= 16) iv.setImageAlpha(64);
-		else iv.setAlpha(64);
+    /**
+     * Disable an button (remove the onclick listener and set its alpha to 0.5)
+     * @param imageButton The ImageButton to disable
+     */
+    private void disable(ImageButton imageButton){
+		imageButton.setClickable(false);
+		if(Build.VERSION.SDK_INT >= 16) imageButton.setImageAlpha(64);
+		else imageButton.setAlpha(64);
 	}
 }

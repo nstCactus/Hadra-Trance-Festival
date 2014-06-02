@@ -27,17 +27,11 @@
 	<string name="error_database_creation">Impossible de créer la base de données</string>
 	<string name="error_failed_fetching_poi">Impossible de récupérer la listes des emplacements</string>
 
-	<string name="action_settings">Paramètres</string>
 	<string name="action_directions">Itinéraire</string>
 	<string name="action_onStage">À l\'écoute</string>
-	<string name="action_donate">Faire un don</string>
-	<string name="action_about">À propos</string>
     <string name="action_addAlarm">Ajouter une alarme</string>
 
     <string name="donation_label">Don généreux</string>
-	<string name="donation_text">Je développe cette application bénévolement, sur mon temps libre.
-		\n\nSi tu le souhaites tu peux soutenir cette démarche par un petit don.
-	</string>
 	<string name="error_too_early_title">Ne sois pas si impatient…</string>
 	<string name="error_too_early_message">L\'Hadra Trance Festival n\'a pas encore commencé.
 		\nRé-essaie à partir du jeudi 21 août à 21h.
@@ -58,8 +52,6 @@
 	<string name="info_about">À propos</string>
 	<string name="info_village">Le village</string>
 
-	<string name="action_info">Infos pratiques</string>
-
 	<string name="remaining_time">Temps restant :</string>
 	<string name="before_opening">avant le début du festival</string>
 	<string name="daily_break">Pause quotidienne</string>
@@ -67,5 +59,15 @@
 	<string name="festival_over">Le festival est terminé</string>
     <string name="title_activity_artist_list">Liste des artistes</string>
     <string name="title_new_alarm_dialog">Nouvelle alarme</string>
+    <string name="alarm_set">Programmer</string>
+    <string name="alarm_cancel">Annuler</string>
+    <string name="alarm_notification">%1$s joue sur %2$s à %3$s</string>
+    <string name="preferences_ringtone_title">Ringtone</string>
+    <string name="pref_notifications">Notifications</string>
+
+    <string-array name="time_units">
+        <item>Heures</item>
+        <item>Minutes</item>
+    </string-array>
 
 </resources>

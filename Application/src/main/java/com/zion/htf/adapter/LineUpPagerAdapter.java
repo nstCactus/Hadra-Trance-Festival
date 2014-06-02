@@ -9,7 +9,6 @@ import android.util.SparseArray;
 import android.view.ViewGroup;
 
 import com.zion.htf.Application;
-
 import com.zion.htf.BuildConfig;
 import com.zion.htf.ui.fragment.LineUpListFragment;
 

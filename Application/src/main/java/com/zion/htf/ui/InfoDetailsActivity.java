@@ -27,19 +27,19 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.MenuItem;
 import com.zion.htf.R;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class InfoDetailsActivity extends SherlockActivity{
+public class InfoDetailsActivity extends ActionBarActivity{
 	private static final String TAG  = "InfoDetailsActivity";
 	public static        String name = "name";
 	public WebView webView;

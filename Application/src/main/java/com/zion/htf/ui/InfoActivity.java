@@ -23,21 +23,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
+import android.widget.ListView;
 
-import com.actionbarsherlock.app.SherlockListActivity;
 import com.zion.htf.Application;
 import com.zion.htf.R;
 
-public class InfoActivity extends SherlockListActivity implements AdapterView.OnItemClickListener{
+public class InfoActivity extends ActionBarActivity implements AdapterView.OnItemClickListener{
 	private static final String TAG = "InfoActivity";
 	private ListAdapter listAdapter;
 	private static Context  context = Application.getContext();
-	private static String[] items   = new String[]{
+	private static String[] items   = new String[]{//TODO: Move this to an XML res file
             context.getString(R.string.info_edito),
             context.getString(R.string.info_news),
 			context.getString(R.string.info_transport),
@@ -51,18 +52,21 @@ public class InfoActivity extends SherlockListActivity implements AdapterView.On
 			context.getString(R.string.info_open_source),
 			context.getString(R.string.action_donate)
 	};
+    private ListView listview;
 
 	@Override
 	public void onCreate(Bundle savedState){
 		super.onCreate(savedState);
+        this.setContentView(R.layout.activity_info);
 
-		// Set up ActionBar
+        // Set up ActionBar
 		this.getSupportActionBar().setHomeButtonEnabled(true);
 
 		// Set up ListView
 		this.listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, InfoActivity.items);
-		this.setListAdapter(this.listAdapter);
-		this.getListView().setOnItemClickListener(this);
+        this.listview = (ListView)this.findViewById(R.id.info_listview);
+		this.listview.setAdapter(this.listAdapter);
+		this.listview.setOnItemClickListener(this);
 	}
 
 	@Override

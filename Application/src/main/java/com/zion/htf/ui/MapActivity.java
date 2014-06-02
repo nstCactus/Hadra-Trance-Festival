@@ -30,14 +30,14 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -54,7 +54,7 @@ import org.michenux.android.db.sqlite.SQLiteDatabaseHelper;
 
 import java.util.Locale;
 
-public class MapActivity extends SherlockFragmentActivity implements ActionBar.OnNavigationListener, LocationListener{
+public class MapActivity extends ActionBarActivity implements ActionBar.OnNavigationListener, LocationListener{
 	private static final String GOOGLE_MAP_LATITUDE   = "google_map_latitude";
 	private static final String GOOGLE_MAP_LONGITUDE  = "google_map_longitude";
 	private static final String GOOGLE_MAP_ZOOM_LEVEL = "google_map_zoom_level";
@@ -108,11 +108,11 @@ public class MapActivity extends SherlockFragmentActivity implements ActionBar.O
 
 			// List navigation
 			ActionBar actionBar = this.getSupportActionBar();
-			ArrayAdapter<String> nav = new ArrayAdapter<String>(actionBar.getThemedContext(), R.layout.sherlock_spinner_item, new String[]{
+			ArrayAdapter<String> nav = new ArrayAdapter<String>(actionBar.getThemedContext(), android.R.layout.simple_spinner_item, new String[]{
 					this.getString(R.string.action_switchToSatellite),
 					this.getString(R.string.action_switchToTerrain)
 			});
-			nav.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
+			nav.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 			actionBar.setListNavigationCallbacks(nav, this);
 			actionBar.setHomeButtonEnabled(true);
@@ -157,7 +157,7 @@ public class MapActivity extends SherlockFragmentActivity implements ActionBar.O
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu){
-		this.getSupportMenuInflater().inflate(R.menu.map, menu);
+		this.getMenuInflater().inflate(R.menu.map, menu);
 		return true;
 	}
 
@@ -176,7 +176,7 @@ public class MapActivity extends SherlockFragmentActivity implements ActionBar.O
 	}
 
 	@Override
-	public boolean onMenuItemSelected(int featureId, MenuItem item){
+	public boolean onOptionsItemSelected(MenuItem item){
 		boolean ret = true;
 		switch(item.getItemId()){
 			case R.id.action_getDirections:
