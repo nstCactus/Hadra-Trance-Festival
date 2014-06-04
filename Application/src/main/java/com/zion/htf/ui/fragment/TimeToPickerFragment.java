@@ -58,13 +58,14 @@ public class TimeToPickerFragment extends DialogFragment{
         try{
             Bundle args = this.getArguments();
             if(null == args) throw new MissingArgumentException("You must provide the following arguments for this fragment to work properly: timestamp (long), set_id (int)");
-            if(0l == (this.timestamp = args.getLong("timestamp", 0l) * 1000)) throw new MissingArgumentException("timestamp", "long");
+            if(0l == (this.timestamp = args.getLong("timestamp", 0l))) throw new MissingArgumentException("timestamp", "long");
             if(0 == (this.setId = args.getInt("set_id", 0))) throw new MissingArgumentException("set_id", "int");
         }
         catch(MissingArgumentException e){
             throw new RuntimeException(e.getMessage());
         }
 
+        Log.v(TAG, String.format("Timestamp = %s", this.timestamp));
         final AlertDialog dialog =  new AlertDialog.Builder(this.getActivity())
                 .setTitle(R.string.title_new_alarm_dialog)
                 .setPositiveButton(R.string.alarm_set,
@@ -77,6 +78,10 @@ public class TimeToPickerFragment extends DialogFragment{
                                 catch(NumberFormatException e){
                                     amount = 0;
                                     // TODO: Validate user input
+                                }
+                                catch(NullPointerException e){
+                                    amount = 0;
+                                    // TODO: handle this properly
                                 }
 
                                 int minutes;
@@ -99,7 +104,7 @@ public class TimeToPickerFragment extends DialogFragment{
                                 }
                                 alarmTimestamp -= minutes * 60000;// * 60000 to convert to ms
 
-                                Log.v(TimeToPickerFragment.TAG, String.format("Alarm timestamp is %s, or %tc in a human-readable fashion", alarmTimestamp, alarmTimestamp));
+                                Log.v(TimeToPickerFragment.TAG, String.format("Alarm timestamp is %1$s, or %1$tc in a human-readable fashion", alarmTimestamp));
 
                                 // Save it in the database so it can be restored after reboots
                                 ContentValues values = new ContentValues(2);
@@ -120,7 +125,7 @@ public class TimeToPickerFragment extends DialogFragment{
                                 intent.setAction("com.zion.htf_" + (new Date().getTime()));// Do not reuse previous PendingIntent.
                                 PendingIntent alarmIntent = PendingIntent.getBroadcast(TimeToPickerFragment.this.getActivity(), 0, intent, 0);
 
-                                if(19 <= Build.VERSION.SDK_INT) am.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 60 * 1000, alarmIntent);// FIXME: use alarmTimestamp once basic testing has been done
+                                if(19 <= Build.VERSION.SDK_INT) am.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 10 * 1000, alarmIntent);// FIXME: use alarmTimestamp once basic testing has been done
                                 else                            am.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 60 * 1000, alarmIntent);
                             }
                         }

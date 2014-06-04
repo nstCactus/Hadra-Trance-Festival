@@ -11,7 +11,6 @@ import com.zion.htf.adapter.LineUpAdapter;
 import com.zion.htf.data.Item;
 
 public class AlarmManagerActivity extends ActionBarActivity {
-
     private PinnedSectionListView listView;
 
     @Override

@@ -26,7 +26,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.zion.htf.R;
-import com.zion.htf.data.Artist;
+import com.zion.htf.data.MusicSet;
 
 import java.util.List;
 
@@ -43,7 +43,7 @@ public class ArtistListAdapter<T> extends ArrayAdapter<T>{
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent){
         ItemViewHolder holder;
-        Artist artist = (Artist)this.getItem(position);
+        MusicSet musicSet = (MusicSet)this.getItem(position);
 
         if(null == convertView){
             // Inflate the view
@@ -60,8 +60,8 @@ public class ArtistListAdapter<T> extends ArrayAdapter<T>{
             holder = (ItemViewHolder)convertView.getTag();
         }
 
-        holder.artistName.setText(artist.getArtistName());
-        holder.setType.setText(artist.getSetType());
+        holder.artistName.setText(musicSet.getArtist().getName());
+        holder.setType.setText(musicSet.getSetType());
 		return convertView;
 	}
 }

@@ -12,6 +12,9 @@ import com.zion.htf.exception.SetNotFoundException;
 
 import org.michenux.android.db.sqlite.SQLiteDatabaseHelper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Artist {
     private static final String TAG = "ArtistDetailsActivity";
     private static final int COLUMN_ID = 0;
@@ -25,20 +28,11 @@ public class Artist {
     private static final int COLUMN_SOUNDCLOUD = 8;
     private static final int COLUMN_LABEL = 9;
     private static final int COLUMN_BIO_ID = 10;
-    private static final int COLUMN_SET_ID = 11;
-    private static final int COLUMN_SET_BEGIN = 12;
-    private static final int COLUMN_SET_END = 13;
-    private static final int COLUMN_SET_TYPE = 14;
-    private static final int COLUMN_SET_STAGE = 15;
-    private static final String QUERY = "SELECT artists.*, sets.id, sets.begin_date, sets.end_date, sets.type, sets.stage " +
-            "FROM artists " +
-            "INNER JOIN sets ON sets.artist = artists.id " +
-            "WHERE ";
+    private static final String QUERY = "SELECT artists.* FROM artists INNER JOIN sets ON sets.artist = artists.id ";
 
     /* Sets table fields */
     protected int id;
     private String name;
-    private String artist_name;
     private String genre;
     private String origin;
     private String picture;
@@ -48,19 +42,16 @@ public class Artist {
     private String soundcloud;
     private String label;
     private int bioId;
-    private int setId;
-    private String setType;
-    private long setBeginDate;
-    private long setEndDate;
-    private String setStage;
     private int pictureResourceId;
     private String bioEn;
     private String bioFr;
+    private static final SQLiteDatabaseHelper dbOpenHelper = Application.getDbHelper();
+    private boolean biosFetched = false;
 
     public Artist(String name) {
         if (null == name || 0 == name.length())
             throw new IllegalArgumentException("The value of the name field must not null and not empty");
-        this.artist_name = name;
+        this.name = name;
     }
 
     /**
@@ -99,9 +90,10 @@ public class Artist {
      * @param where a string representing the {@code WHERE} clause of the query used to get the artist
      * @return a new Artist instance with all fields correctly bound
      */
-    private static Artist newInstance(String where) throws ArtistNotFoundException {
-        SQLiteDatabaseHelper dbHelper = Application.getDbHelper();
-        Cursor cursor = dbHelper.getReadableDatabase().rawQuery(Artist.QUERY + where, null);
+    private static Artist newInstance(String where) throws ArtistNotFoundException{
+        if(!where.matches("^\\s*WHERE\\b.*")) where = " WHERE " + where;
+
+        Cursor cursor = Artist.dbOpenHelper.getReadableDatabase().rawQuery(Artist.QUERY + where, null);
 
         if (!cursor.moveToNext()) throw new ArtistNotFoundException("No artist found");
 
@@ -114,33 +106,18 @@ public class Artist {
                 .setFacebook(cursor.getString(Artist.COLUMN_FACEBOOK), "")
                 .setSoundcloud(cursor.getString(Artist.COLUMN_SOUNDCLOUD), "")
                 .setLabel(cursor.getString(Artist.COLUMN_LABEL), "")
-                .setSetId(cursor.getInt(Artist.COLUMN_SET_ID))
-                .setSetBeginDate(cursor.getLong(Artist.COLUMN_SET_BEGIN) * 1000)
-                .setSetEndDate(cursor.getLong(Artist.COLUMN_SET_END) * 1000)
-                .setSetType(cursor.getString(Artist.COLUMN_SET_TYPE))
-                .setSetStage(cursor.getString(Artist.COLUMN_SET_STAGE))
                 .setBioId(cursor.getInt(Artist.COLUMN_BIO_ID));
 
         if (!cursor.isClosed()) cursor.close();
-        dbHelper.close();
+        dbOpenHelper.close();
 
         return artist;
     }
 
-    public String getArtistName() {
-        return this.artist_name;
+    public String getName() {
+        return this.name;
     }
 
-    public String getSetType() {
-        return this.setType;
-    }
-
-    public Artist setSetType(String setType) {
-        if (null == setType || 0 == setType.length())
-            throw new IllegalArgumentException("The value of the type field of the sets table must not null and not empty");
-        this.setType = setType;
-        return this;
-    }
 
     public String getGenre() {
         return this.genre;
@@ -170,27 +147,27 @@ public class Artist {
         return this;
     }
 
-    private Artist setWebsite(String value, String defaultValue) {
+    public Artist setWebsite(String value, String defaultValue) {
         return this.setWebsite(null == value ? defaultValue : value);
     }
 
-    private Artist setFacebook(String value, String defaultValue) {
+    public Artist setFacebook(String value, String defaultValue) {
         return this.setFacebook(null == value ? defaultValue : value);
     }
 
-    private Artist setSoundcloud(String value, String defaultValue) {
+    public Artist setSoundcloud(String value, String defaultValue) {
         return this.setSoundcloud(null == value ? defaultValue : value);
     }
 
-    private Artist setLabel(String value, String defaultValue) {
+    public Artist setLabel(String value, String defaultValue) {
         return this.setLabel(null == value ? defaultValue : value);
     }
 
-    private Artist setPicture(String value, String defaultValue) {
+    public Artist setPicture(String value, String defaultValue) {
         return this.setPicture(null == value ? defaultValue : value);
     }
 
-    private Artist setGenre(String value, String defaultValue) {
+    public Artist setGenre(String value, String defaultValue) {
         return this.setGenre(null == value ? defaultValue : value);
     }
 
@@ -198,34 +175,6 @@ public class Artist {
         return this.setOrigin(null == value ? defaultValue : value);
     }
 
-    public Artist setSetEndDate(long setEndDate) {
-        if (0l == setEndDate)
-            throw new IllegalArgumentException("The value of the end_date field in the sets table cannont be 0");
-        this.setEndDate = setEndDate;
-        return this;
-    }
-
-    public String getSetStage() {
-        return this.setStage;
-    }
-
-    public Artist setSetStage(String setStage) {
-        if (null == setStage || 0 == setStage.length())
-            throw new IllegalArgumentException("The value of the stage field of the sets table must not null and not empty");
-        this.setStage = setStage;
-        return this;
-    }
-
-    public long getSetBeginDate() {
-        return this.setBeginDate;
-    }
-
-    public Artist setSetBeginDate(long setBeginDate) {
-        if (0l == setBeginDate)
-            throw new IllegalArgumentException("The value of the begin_date field in the sets table cannont be 0");
-        this.setBeginDate = setBeginDate;
-        return this;
-    }
 
     public int getPictureResourceId() {
         if(0 == this.pictureResourceId){
@@ -299,43 +248,48 @@ public class Artist {
     }
 
     /**
-     * Fetches (if needed) and return the artist bio, if possible corresponding to the provided {@code langCode}
+     * Return the artist bio, if possible corresponding to the provided {@code langCode}
      *
      * @return the artist's biography if possible in the language specified
      * @throws InconsistentDatabaseException if more than 2 entries are found in {@code bios} table for the same artist
      */
     public String getBio(String langCode) throws InconsistentDatabaseException {
-        if(null == this.bioFr || null == this.bioEn){
-            SQLiteDatabaseHelper dbHelper = Application.getDbHelper();
-            Cursor cursor = dbHelper.getReadableDatabase().rawQuery(String.format("SELECT text, lang_code FROM bios WHERE id = %d", this.bioId), null);
-            String dbLangCode, bio;
-
-            if(2 < cursor.getCount()) throw new InconsistentDatabaseException("An artist should have at most two bios entries");
-            while(cursor.moveToNext()){
-                dbLangCode = cursor.getString(1);
-                bio = cursor.isNull(0) ? "" : cursor.getString(0);
-                if("fr".equals(dbLangCode)){
-                    this.bioFr = bio;
-                }
-                else if("en".equals(dbLangCode)){
-                    this.bioEn = bio;
-                }
-            }
-
-            if (!cursor.isClosed()) cursor.close();
-            dbHelper.close();
+        if(!this.biosFetched){
+            this.fetchBios();
         }
+
         return "fr".equals(langCode) ? this.bioFr : this.bioEn;
     }
 
-    public int getSetId() {
-        return this.setId;
-    }
+    /**
+     * Fetch the biography in french and english and store them in {@code this.bioFr} and {@code this.bioEn}
+     * @throws InconsistentDatabaseException if more than 2 entries are found in {@code bios} table for the same artist
+     */
+    private void fetchBios() throws InconsistentDatabaseException {
+        SQLiteDatabaseHelper dbHelper = Application.getDbHelper();
+        Cursor cursor = dbHelper.getReadableDatabase().rawQuery(String.format("SELECT text, lang_code FROM bios WHERE id = %d", this.bioId), null);
+        String dbLangCode, bio;
 
-    public Artist setSetId(int setId) {
-        if (0 == setId) throw new IllegalArgumentException("The value of the id field in the sets table cannont be 0.");
-        this.setId = setId;
-        return this;
+        if(2 < cursor.getCount()) throw new InconsistentDatabaseException("An artist should have at most two bios entries");
+        while(cursor.moveToNext()){
+            dbLangCode = cursor.getString(1);
+            bio = cursor.getString(0);
+            if("fr".equals(dbLangCode)){
+                this.bioFr = bio;
+            }
+            else if("en".equals(dbLangCode)){
+                this.bioEn = bio;
+            }
+        }
+
+        if (!cursor.isClosed()) cursor.close();
+        dbHelper.close();
+
+        // Fallback to the other lang if empty
+        if(null == this.bioFr || 0 == this.bioFr.length()) this.bioFr = this.bioEn;
+        if(null == this.bioEn || 0 == this.bioEn.length()) this.bioEn = this.bioFr;
+
+        this.biosFetched = true;
     }
 
     public Artist setBioId(int bioId){
@@ -346,5 +300,30 @@ public class Artist {
 
     public int getBioId(){
         return this.bioId;
+    }
+
+    public Artist setCoverName(String cover){
+        this.cover = cover;
+
+        return this;
+    }
+
+    protected List<Artist> getAllArtists(){
+        List<Artist> artists = new ArrayList<Artist>();
+
+        String query = "SELECT s.id, a.name, a.genre, s.type, a.picture_name FROM artists AS a JOIN sets AS s ON s.artist = a.id GROUP BY a.name ORDER BY name ASC";// FIXME: get artists instead
+        Cursor cursor = Artist.dbOpenHelper.getReadableDatabase().rawQuery(query, null);
+
+        while(cursor.moveToNext()){
+            Artist artist = new Artist(cursor.getString(this.COLUMN_NAME));
+            artist.setGenre(cursor.getString(this.COLUMN_GENRE))
+                  .setPicture(cursor.getString(this.COLUMN_PICTURE));
+
+            artists.add(artist);
+        }
+        if(!cursor.isClosed()) cursor.close();
+        this.dbOpenHelper.close();
+
+        return artists;
     }
 }

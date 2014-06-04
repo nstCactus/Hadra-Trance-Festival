@@ -24,42 +24,50 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.AudioManager;
 import android.net.Uri;
+import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.util.Log;
 
 import com.zion.htf.Application;
 import com.zion.htf.R;
 import com.zion.htf.data.Artist;
+import com.zion.htf.data.MusicSet;
 import com.zion.htf.exception.MissingArgumentException;
 import com.zion.htf.exception.SetNotFoundException;
 import com.zion.htf.ui.ArtistDetailsActivity;
-
-import org.michenux.android.db.sqlite.SQLiteDatabaseHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 public class AlarmReceiver extends BroadcastReceiver{
-    private SQLiteDatabaseHelper dbOpenHelper = Application.getDbHelper();
-
     @Override
     public void onReceive(Context context, Intent intent)
     {
+        // Get preferences
+        Resources res = context.getResources();
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+
         int setId;
-        if(0 == (setId = intent.getIntExtra("set_id", 0))) try {
+        if (0 == (setId = intent.getIntExtra("set_id", 0))) try {
             throw new MissingArgumentException("set_id", "int");
         } catch (MissingArgumentException e) {
             throw new RuntimeException(e.getMessage());
         }
 
-        // Fetch info about the artist
-        Artist artist = null;
+        // Fetch info about the set
         try {
-            artist = Artist.getBySetId(setId);
+            // VIBRATE will be added if user did NOT disable notification vibration
+            // SOUND won't as it is set even if it is to the default value
+            int flags = Notification.DEFAULT_LIGHTS;
+            MusicSet set = MusicSet.getById(setId);
+            Artist artist = set.getArtist();
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("fr".equals(Locale.getDefault().getLanguage()) ? "HH:mm" : "h:mm aa");
 
@@ -79,25 +87,57 @@ public class AlarmReceiver extends BroadcastReceiver{
 
             // Builds the notification
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(Application.getContext())
-                    .setDefaults(Notification.DEFAULT_ALL)
                     .setPriority(Notification.PRIORITY_MAX)
                     .setSmallIcon(R.drawable.hadra_logo)
                     .setLargeIcon(largeIconBitmap)
                     .setAutoCancel(true)
                     .setContentIntent(resultPendingIntent)
-                    .setContentTitle(artist.getArtistName())
-                    .setContentText(String.format(context.getString(R.string.alarm_notification), artist.getArtistName(), artist.getSetStage(), dateFormat.format(artist.getSetBeginDate())));
+                    .setContentTitle(artist.getName())
+                    .setContentText(String.format(context.getString(R.string.alarm_notification), artist.getName(), set.getStage(), dateFormat.format(set.getBeginDate())));
+
+            // Vibrate settings
+            Boolean defaultVibrate = true;
+            if (!pref.contains(res.getString(R.string.pref_key_notifications_alarms_vibrate))){
+                // Get the system default for the vibrate setting
+                AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+                if (null != audioManager){
+                    switch (audioManager.getRingerMode()) {
+                        case AudioManager.RINGER_MODE_SILENT:
+                            defaultVibrate = false;
+                            break;
+                        case AudioManager.RINGER_MODE_NORMAL:
+                        case AudioManager.RINGER_MODE_VIBRATE:
+                        default:
+                            defaultVibrate = true;
+                    }
+                }
+            }
+            Boolean vibrate = pref.getBoolean(res.getString(R.string.pref_key_notifications_alarms_vibrate), defaultVibrate);
+
+            // Ringtone settings
+            String ringtone = pref.getString(res.getString(R.string.pref_key_notifications_alarms_ringtone), Settings.System.DEFAULT_NOTIFICATION_URI.toString());
+
+            // Apply notification settings
+            if(!vibrate){
+                notificationBuilder.setVibrate(new long[]{0l});
+            }
+            else{
+                flags |= Notification.DEFAULT_VIBRATE;
+            }
+
+            notificationBuilder.setSound(Uri.parse(ringtone));
 
             // Add the expandable notification buttons
             PendingIntent directionsButtonPendingIntent = PendingIntent.getActivity(Application.getContext(), 1, new Intent(Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?f=d&daddr=45.12465411273364,5.591188743710518")), Intent.FLAG_ACTIVITY_NEW_TASK);//FIXME: Get the coordinate of the stage instead
             notificationBuilder.addAction(R.drawable.ic_action_directions, Application.getContext().getString(R.string.action_directions), directionsButtonPendingIntent);
 
+            // Finalize the notification
+            notificationBuilder.setDefaults(flags);
+            Notification notification = notificationBuilder.build();
+
             NotificationManager notificationManager = (NotificationManager) Application.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
-            // id (here uid) allows you to update the notification later on.
-            Log.v("AlarmReceiver", String.format("Time to notify user %s will be on %s soon, uid = %d", artist.getArtistName(), artist.getSetStage()));
-            notificationManager.notify(artist.getSetStage(), 0, notificationBuilder.build());
-        }
-        catch (SetNotFoundException e) {
+            notificationManager.notify(set.getStage(), 0, notification);
+        } catch (SetNotFoundException e) {
             throw new RuntimeException(e.getMessage());
             //TODO: Handle this properly
         }

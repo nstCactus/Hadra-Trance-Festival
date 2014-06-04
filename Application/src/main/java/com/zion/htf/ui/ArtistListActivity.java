@@ -21,7 +21,6 @@ package com.zion.htf.ui;
 
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -30,27 +29,13 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.zion.htf.Application;
 import com.zion.htf.R;
 import com.zion.htf.adapter.ArtistListAdapter;
-import com.zion.htf.data.Artist;
-
-import org.michenux.android.db.sqlite.SQLiteDatabaseHelper;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.zion.htf.data.Item;
+import com.zion.htf.data.MusicSet;
 
 public class ArtistListActivity extends ActionBarActivity implements AdapterView.OnItemClickListener{
-    private static final SQLiteDatabaseHelper    dbOpenHelper = Application.getDbHelper();
     private         ListView                listView;
-
-    /* BEGIN Columns indexes for convenience */
-    protected final int COLUMN_SET_ID     = 0;
-    protected final int COLUMN_ARTIST     = 1;
-    protected final int COLUMN_GENRE      = 2;
-    protected final int COLUMN_TYPE       = 3;
-    protected final int COLUMN_PICTURE    = 4;
-	/* END Columns indexes for convenience */
 
     @Override
 	protected void onCreate(Bundle savedInstanceState){
@@ -62,7 +47,7 @@ public class ArtistListActivity extends ActionBarActivity implements AdapterView
 		actionBar.setDisplayHomeAsUpEnabled(true);
 
         this.listView = (ListView)this.findViewById(R.id.artist_list);
-        this.listView.setAdapter(new ArtistListAdapter<Artist>(this, R.layout.item_artist_list, R.id.label, this.getAllArtists()));
+        this.listView.setAdapter(new ArtistListAdapter<Item>(this, R.layout.item_artist_list, R.id.label, MusicSet.getList()));
         this.listView.setOnItemClickListener(this);
     }
 
@@ -82,32 +67,11 @@ public class ArtistListActivity extends ActionBarActivity implements AdapterView
 		return ret;
 	}
 
-    protected List<Artist> getAllArtists(){
-        List<Artist> artists = new ArrayList<Artist>();
-
-        String query = " SELECT s.id, a.name, a.genre, s.type, a.picture_name FROM artists AS a JOIN sets AS s ON s.artist = a.id GROUP BY a.name ORDER BY name ASC";// FIXME: get artists instead
-        Cursor cursor = ArtistListActivity.dbOpenHelper.getReadableDatabase().rawQuery(query, null);
-
-        while(cursor.moveToNext()){
-            Artist artist = new Artist(cursor.getString(this.COLUMN_ARTIST));
-            artist.setSetType(cursor.getString(this.COLUMN_TYPE))
-                  .setGenre(cursor.getString(this.COLUMN_GENRE))
-                  .setSetId(cursor.getInt(this.COLUMN_SET_ID))
-                  .setPicture(cursor.getString(this.COLUMN_PICTURE));
-
-            artists.add(artist);
-        }
-        if(!cursor.isClosed()) cursor.close();
-        this.dbOpenHelper.close();
-
-        return artists;
-    }
-
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-        Artist item = (Artist)this.listView.getAdapter().getItem(position);
+        MusicSet item = (MusicSet)this.listView.getAdapter().getItem(position);
         Intent intent = new Intent(this, ArtistDetailsActivity.class);
-        intent.putExtra("set_id", item.getSetId());
+        intent.putExtra("set_id", item.getId());
         this.startActivity(intent);
         this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }

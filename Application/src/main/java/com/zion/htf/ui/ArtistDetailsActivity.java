@@ -36,6 +36,7 @@ import android.widget.TextView;
 import com.zion.htf.BuildConfig;
 import com.zion.htf.R;
 import com.zion.htf.data.Artist;
+import com.zion.htf.data.MusicSet;
 import com.zion.htf.ui.fragment.TimeToPickerFragment;
 
 import java.util.Locale;
@@ -47,6 +48,7 @@ public class ArtistDetailsActivity extends ActionBarActivity implements View.OnC
 	private String soundcloud_url;
     private int setId;
 
+    private MusicSet musicSet;
     private Artist artist;
 
     //TODO: Refactor this Activity so that it holds an instance of Artist with all needed info
@@ -63,13 +65,14 @@ public class ArtistDetailsActivity extends ActionBarActivity implements View.OnC
         this.setId = this.getIntent().getIntExtra("set_id", 0);
 
         try {
-            this.artist = Artist.getBySetId(this.setId);
+            this.musicSet = MusicSet.getById(this.setId);
+            this.artist = this.musicSet.getArtist();
 
-            this.getSupportActionBar().setTitle(this.artist.getArtistName());
+            this.getSupportActionBar().setTitle(this.artist.getName());
 
             // Display artist name
             TextView artist_name_field = (TextView)this.findViewById(R.id.artist_name);
-            artist_name_field.setText(this.artist.getArtistName());
+            artist_name_field.setText(this.artist.getName());
 
             // Display label
             TextView label_field = (TextView)this.findViewById(R.id.label);
@@ -180,7 +183,7 @@ public class ArtistDetailsActivity extends ActionBarActivity implements View.OnC
      */
     private void showAddAlarmDialog(){
         Bundle args = new Bundle();
-        args.putLong("timestamp", this.artist.getSetBeginDate());
+        args.putLong("timestamp", this.musicSet.getBeginDateAsTimestamp());
         args.putInt("set_id", this.setId);
         DialogFragment newFragment = TimeToPickerFragment.newInstance(args);
         newFragment.show(this.getSupportFragmentManager(), "timeToPicker");

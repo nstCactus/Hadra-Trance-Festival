@@ -30,7 +30,7 @@ import com.hb.views.PinnedSectionListView;
 import com.zion.htf.Application;
 import com.zion.htf.R;
 import com.zion.htf.data.Item;
-import com.zion.htf.data.Set;
+import com.zion.htf.data.MusicSet;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -77,7 +77,7 @@ public class LineUpAdapter<T> extends ArrayAdapter<T> implements PinnedSectionLi
 		}
 		else{
 			ItemViewHolder holder;
-			Set set = (Set)this.getItem(position);
+			MusicSet musicSet = (MusicSet)this.getItem(position);
 
 			if(null == convertView){
 				// Inflate the view
@@ -95,9 +95,9 @@ public class LineUpAdapter<T> extends ArrayAdapter<T> implements PinnedSectionLi
 				holder = (ItemViewHolder)convertView.getTag();
 			}
 
-			holder.artistName.setText(set.toString());
-			holder.hour.setText(String.format("%s-%s", this.simpleDateFormat.format(set.getBeginDate()), this.simpleDateFormat.format(set.getEndDate())));
-			holder.setType.setText(set.getSetType());
+			holder.artistName.setText(musicSet.toString());
+			holder.hour.setText(String.format("%s-%s", this.simpleDateFormat.format(musicSet.getBeginDate()), this.simpleDateFormat.format(musicSet.getEndDate())));
+			holder.setType.setText(musicSet.getSetType());
 		}
 		return convertView;
 	}

@@ -44,6 +44,7 @@ public class SettingsActivity extends PreferenceActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 //        this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
@@ -77,13 +78,9 @@ public class SettingsActivity extends PreferenceActivity{
         this.getPreferenceScreen().addPreference(fakeHeader);
         this.addPreferencesFromResource(R.xml.pref_notification);
 
-        // Bind the summaries of EditText/List/Dialog/Ringtone preferences to
-        // their values. When their values change, their summaries are updated
-        // to reflect the new value, per the Android Design guidelines.
-//        SettingsActivity.bindPreferenceSummaryToValue(this.findPreference("example_text"));
-//        SettingsActivity.bindPreferenceSummaryToValue(this.findPreference("example_list"));
-        SettingsActivity.bindPreferenceSummaryToValue(this.findPreference("notifications_alarms_ringtone"));
-//        SettingsActivity.bindPreferenceSummaryToValue(this.findPreference("sync_frequency"));
+        // Bind the summaries of EditText/List/Dialog/Ringtone preferences to their values.
+        // When their values change, their summaries are updated to reflect the new value, per the Android Design guidelines.
+        SettingsActivity.bindPreferenceSummaryToValue(this.findPreference(this.getString(R.string.pref_key_notifications_alarms_ringtone)));
     }
 
     /** {@inheritDoc} */
@@ -124,8 +121,7 @@ public class SettingsActivity extends PreferenceActivity{
     }
 
     /**
-     * A preference value change listener that updates the preference's summary
-     * to reflect its new value.
+     * A preference value change listener that updates the preference's summary to reflect its new value.
      */
     private static final Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener() {
         @Override
@@ -140,8 +136,8 @@ public class SettingsActivity extends PreferenceActivity{
 
                 // Set the summary to reflect the new value.
                 preference.setSummary(0 <= index ? listPreference.getEntries()[index] : null);
-
-            } else if (preference instanceof RingtonePreference) {
+            }
+            else if (preference instanceof RingtonePreference) {
                 // For ringtone preferences, look up the correct display value
                 // using RingtoneManager.
                 if (TextUtils.isEmpty(stringValue)) {
@@ -164,8 +160,7 @@ public class SettingsActivity extends PreferenceActivity{
                 }
 
             } else {
-                // For all other preferences, set the summary to the value's
-                // simple string representation.
+                // For all other preferences, set the summary to the value's simple string representation.
                 preference.setSummary(stringValue);
             }
             return true;
@@ -185,18 +180,12 @@ public class SettingsActivity extends PreferenceActivity{
         // Set the listener to watch for value changes.
         preference.setOnPreferenceChangeListener(SettingsActivity.sBindPreferenceSummaryToValueListener);
 
-        // Trigger the listener immediately with the preference's
-        // current value.
-        SettingsActivity.sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
-                PreferenceManager
-                        .getDefaultSharedPreferences(preference.getContext())
-                        .getString(preference.getKey(), "")
-        );
+        // Trigger the listener immediately with the preference's current value.
+        SettingsActivity.sBindPreferenceSummaryToValueListener.onPreferenceChange(preference, PreferenceManager.getDefaultSharedPreferences(preference.getContext()).getString(preference.getKey(), ""));
     }
 
     /**
-     * This fragment shows general preferences only. It is used when the
-     * activity is showing a two-pane settings UI.
+     * This fragment shows general preferences only. It is used when the activity is showing a two-pane settings UI.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class GeneralPreferenceFragment extends PreferenceFragment {
@@ -205,10 +194,8 @@ public class SettingsActivity extends PreferenceActivity{
             super.onCreate(savedInstanceState);
             this.addPreferencesFromResource(R.xml.pref_general);
 
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
-            // to their values. When their values change, their summaries are
-            // updated to reflect the new value, per the Android Design
-            // guidelines.
+            // Bind the summaries of EditText/List/Dialog/Ringtone preferences to their values.
+            // When their values change, their summaries are updated to reflect the new value, per the Android Design guidelines.
             SettingsActivity.bindPreferenceSummaryToValue(this.findPreference("example_text"));
             SettingsActivity.bindPreferenceSummaryToValue(this.findPreference("example_list"));
         }
@@ -225,11 +212,9 @@ public class SettingsActivity extends PreferenceActivity{
             super.onCreate(savedInstanceState);
             this.addPreferencesFromResource(R.xml.pref_notification);
 
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
-            // to their values. When their values change, their summaries are
-            // updated to reflect the new value, per the Android Design
-            // guidelines.
-            SettingsActivity.bindPreferenceSummaryToValue(this.findPreference("notifications_new_message_ringtone"));
+            // Bind the summaries of EditText/List/Dialog/Ringtone preferences to their values.
+            // When their values change, their summaries are updated to reflect the new value, per the Android Design guidelines.
+            SettingsActivity.bindPreferenceSummaryToValue(this.findPreference(this.getString(R.string.pref_key_notifications_alarms_ringtone)));
         }
     }
 }

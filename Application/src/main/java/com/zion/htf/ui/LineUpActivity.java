@@ -35,7 +35,7 @@ import com.viewpagerindicator.PageIndicator;
 import com.zion.htf.R;
 import com.zion.htf.adapter.LineUpPagerAdapter;
 import com.zion.htf.data.Item;
-import com.zion.htf.data.Set;
+import com.zion.htf.data.MusicSet;
 
 import java.util.Date;
 
@@ -118,7 +118,7 @@ public class LineUpActivity extends ActionBarActivity {
 			while(!found && ++i < listView.getCount()){
 				item = (Item)listView.getItemAtPosition(i);
 				if(item.getType() == Item.TYPE_ITEM){
-					if(((Set)item).getEndDate().after(now)){
+					if(((MusicSet)item).getEndDate().after(now)){
 						found = true;
 
 						if(Build.VERSION.SDK_INT >= 11){
