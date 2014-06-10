@@ -16,7 +16,7 @@ libs/*
 .gradle
 
 # private stuff
-/.idea/workspace.xml
+/.idea/*
 /local.properties
 
 # Finder's crap
