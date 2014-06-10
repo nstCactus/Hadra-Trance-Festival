@@ -21,13 +21,14 @@
   -->
 
 <RelativeLayout
-		xmlns:android="http://schemas.android.com/apk/res/android"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_alignParentBottom="true"
-		android:layout_alignParentLeft="true"
-		android:id="@+id/relativeLayout"
-		android:onClick="onNowOnStageClicked"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:layout_alignParentBottom="true"
+	android:layout_alignParentLeft="true"
+	android:id="@+id/relativeLayout"
+	android:onClick="onNowOnStageClicked"
     android:background="#CC10020D"
     android:clickable="false">
 
@@ -46,10 +47,10 @@
 			android:layout_alignParentRight="true"/>
 
 	<LinearLayout
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:orientation="vertical"
-			android:layout_centerVertical="true"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		android:layout_centerVertical="true"
         android:gravity="center"
         android:layout_toLeftOf="@+id/speaker_right"
         android:layout_toRightOf="@+id/speaker_left"
@@ -59,7 +60,7 @@
         <com.mobsandgeeks.ui.TypefaceTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Penta (live)"
+            tools:text="Penta (live)"
             android:id="@+id/artist_name"
             style="@style/now_playing.artist" />
 
@@ -72,20 +73,22 @@
             <com.mobsandgeeks.ui.TypefaceTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Main stage"
+                tools:text="Main stage"
                 android:id="@+id/stage"
                 style="@style/now_playing" />
 
             <com.mobsandgeeks.ui.TypefaceTextView
+                android:id="@+id/separator"
+                tools:ignore="HardcodedText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="  –  "
+                android:text="  /  "
                 style="@style/now_playing" />
 
             <com.mobsandgeeks.ui.TypefaceTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="20h - 22h30"
+                tools:text="20h - 22h30"
                 style="@style/now_playing"
                 android:id="@+id/hour" />
 

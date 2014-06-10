@@ -27,15 +27,15 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.hb.views.PinnedSectionListView;
-import com.zion.htf.Application;
 import com.zion.htf.R;
 import com.zion.htf.data.Item;
 import com.zion.htf.data.MusicSet;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
-public class LineUpAdapter<T> extends ArrayAdapter<T> implements PinnedSectionListView.PinnedSectionListAdapter{
+public class LineUpListAdapter<T> extends ArrayAdapter<T> implements PinnedSectionListView.PinnedSectionListAdapter{
 	static class ItemViewHolder {
 		TextView  artistName;
 		TextView  setType;
@@ -46,45 +46,47 @@ public class LineUpAdapter<T> extends ArrayAdapter<T> implements PinnedSectionLi
 		TextView sectionHeader;
 	}
 
-	protected LayoutInflater   layoutInflater   = (LayoutInflater)this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-	protected SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
+	protected SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", "fr".equals(Locale.getDefault().getLanguage()) ? Locale.FRANCE : Locale.ENGLISH);
 
-	public LineUpAdapter(Context context, int resource, int textViewResourceId, List<T> objects){
+	public LineUpListAdapter(Context context, int resource, int textViewResourceId, List<T> objects){
 		super(context, resource, textViewResourceId, objects);
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent){
-		if(this.getItemViewType(position) == Item.TYPE_SECTION){
-			SectionViewHolder holder;
+		if(Item.TYPE_SECTION == this.getItemViewType(position)){
+			LineUpListAdapter.SectionViewHolder holder;
 
-			if(convertView == null){
+			if(null == convertView){
 				// Inflate the view
-				convertView = this.layoutInflater.inflate(R.layout.section_line_up_list, parent, false);
+                LayoutInflater layoutInflater = (LayoutInflater)this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				convertView = layoutInflater.inflate(R.layout.section_line_up_list, parent, false);
+                assert null != convertView;
 
 				// Get reference to its field and store it in the ViewHolder
-				holder = new SectionViewHolder();
-				holder.sectionHeader = (TextView)convertView.findViewById(R.id.list_item_section_header);
+				holder = new LineUpListAdapter.SectionViewHolder();
+                holder.sectionHeader = (TextView)convertView.findViewById(R.id.list_item_section_header);
 
 				// Store the ViewHolder in the View's tag for future retrieval
 				convertView.setTag(holder);
 			}
 			else{
-				holder = (SectionViewHolder)convertView.getTag();
+				holder = (LineUpListAdapter.SectionViewHolder)convertView.getTag();
 			}
 
 			holder.sectionHeader.setText(this.getItem(position).toString());
 		}
 		else{
-			ItemViewHolder holder;
+			LineUpListAdapter.ItemViewHolder holder;
 			MusicSet musicSet = (MusicSet)this.getItem(position);
 
 			if(null == convertView){
 				// Inflate the view
-				convertView = super.getView(position, convertView, parent);
+				convertView = super.getView(position, null, parent);
+                assert null != convertView;
 
-				// Get references to its fields and store them in the ViewHolder
-				holder = new ItemViewHolder();
+                // Get references to its fields and store them in the ViewHolder
+				holder = new LineUpListAdapter.ItemViewHolder();
 				holder.artistName = (TextView)convertView.findViewById(R.id.label);
 				holder.setType = (TextView)convertView.findViewById(R.id.set_type);
 				holder.hour = (TextView)convertView.findViewById(R.id.hour);
@@ -92,7 +94,7 @@ public class LineUpAdapter<T> extends ArrayAdapter<T> implements PinnedSectionLi
 				convertView.setTag(holder);
 			}
 			else{
-				holder = (ItemViewHolder)convertView.getTag();
+				holder = (LineUpListAdapter.ItemViewHolder)convertView.getTag();
 			}
 
 			holder.artistName.setText(musicSet.toString());
@@ -115,14 +117,6 @@ public class LineUpAdapter<T> extends ArrayAdapter<T> implements PinnedSectionLi
 
 	@Override
 	public boolean isItemViewTypePinned(int viewType){
-		return viewType == Item.TYPE_SECTION;
-	}
-
-	public int getPhotoResourceId(String resourceName){
-		int ret = 0;
-		if(null != resourceName)
-			ret = Application.getContext().getResources().getIdentifier(resourceName, "drawable", this.getContext().getPackageName());
-		if(ret == 0) ret = R.drawable.no_image;
-		return ret;
+		return Item.TYPE_SECTION == viewType;
 	}
 }

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ /*
+  ~     Copyright 2013-2014 Yohann Bianchi
+  ~
+  ~     This program is free software; you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation; either version 2 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     This program is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License along
+  ~     with this program; if not, write to the Free Software Foundation, Inc.,
+  ~     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+  ~     or see <http://www.gnu.org/licenses/>.
+  ~  */
+  -->
+
+<resources
+    xmlns:tools="http://schemas.android.com/tools">
+    <string name="info_edito">Edito</string>
+    <string name="info_news">News</string>
+    <string name="info_volunteers">Volunteers</string>
+    <string name="info_partners">Partners</string>
+    <string name="info_transport">How to come ?</string>
+    <string name="info_camp">Camping</string>
+    <string name="info_dogs">No dogs</string>
+    <string name="info_faq">FAQ</string>
+    <string name="info_about">About</string>
+    <string name="info_open_source" tools:ignore="MissingTranslation">Open source</string>
+    <string name="info_village">The village</string>
+</resources>

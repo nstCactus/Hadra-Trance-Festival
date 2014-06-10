@@ -19,12 +19,13 @@
     or see <http://www.gnu.org/licenses/>.
 -->
 
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
+<resources
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 	<style name="AppTheme" parent="Theme.AppCompat">
 		<item name="actionBarStyle">@style/ActionBar</item>
 		<item name="android:actionBarStyle">@style/ActionBar</item>
 		<item name="android:textColor">@color/brand_yellow</item>
-		<item name="android:windowBackground">@color/brand_black</item>
         <item name="vpiTabPageIndicatorStyle">@style/TabStyle</item>
     </style>
 
@@ -35,7 +36,7 @@
 
     <!-- ActionBar style -->
 	<style name="ActionBar" parent="Widget.AppCompat.ActionBar">
-		<item name="android:titleTextStyle">@style/TitleText</item>
+        <item name="android:titleTextStyle">@style/TitleText</item>
 		<item name="android:background">@drawable/actionbar_bg</item>
 
         <!-- Support library compatibility  -->
@@ -44,7 +45,7 @@
 	</style>
 
     <!-- ActionBar title style -->
-    <style name="TitleText">
+    <style name="TitleText" tools:ignore="SpUsage">
         <item name="android:textColor">@color/brand_yellow</item>
         <item name="android:textSize">17dip</item>
     </style>

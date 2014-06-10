@@ -33,7 +33,7 @@ import android.widget.ListView;
 
 import com.zion.htf.BuildConfig;
 import com.zion.htf.R;
-import com.zion.htf.adapter.LineUpAdapter;
+import com.zion.htf.adapter.LineUpListAdapter;
 import com.zion.htf.data.Item;
 import com.zion.htf.data.MusicSet;
 import com.zion.htf.ui.ArtistDetailsActivity;
@@ -62,7 +62,7 @@ public class LineUpListFragment extends Fragment implements AdapterView.OnItemCl
 		View view = inflater.inflate(R.layout.fragment_line_up_list, container, false);
 
 		this.listView = (ListView)view.findViewById(R.id.line_up_list);
-		this.listView.setAdapter(new LineUpAdapter<Item>(this.getActivity(), R.layout.item_line_up_list, R.id.label, MusicSet.getListByStage(this.stage, true)));
+		this.listView.setAdapter(new LineUpListAdapter<Item>(this.getActivity(), R.layout.item_line_up_list, R.id.label, MusicSet.getListByStage(this.stage, true)));
 
 		if(0 == LineUpActivity.sectionHeaderHeight){
 			final ViewTreeObserver viewTreeObserver = this.listView.getViewTreeObserver();

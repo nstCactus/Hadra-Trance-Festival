@@ -41,7 +41,7 @@ import com.zion.htf.ui.fragment.TimeToPickerFragment;
 
 import java.util.Locale;
 
-public class ArtistDetailsActivity extends ActionBarActivity implements View.OnClickListener{
+public class ArtistDetailsActivity extends ActionBarActivity implements View.OnClickListener, TimeToPickerFragment.TimeToPickerInterface{
 	private static final String TAG = "ArtistDetailsActivity";
 	private String facebook_url;
 	private String website_url;
@@ -190,12 +190,27 @@ public class ArtistDetailsActivity extends ActionBarActivity implements View.OnC
     }
 
     /**
-     * Disable an button (remove the onclick listener and set its alpha to 0.5)
+     * Disable an button (delete the onclick listener and set its alpha to 0.5)
      * @param imageButton The ImageButton to disable
      */
     private void disable(ImageButton imageButton){
 		imageButton.setClickable(false);
-		if(Build.VERSION.SDK_INT >= 16) imageButton.setImageAlpha(64);
+		if(16 <= Build.VERSION.SDK_INT) imageButton.setImageAlpha(64);
 		else imageButton.setAlpha(64);
 	}
+
+    @Override
+    public void doPositiveClick() {
+
+    }
+
+    @Override
+    public void doNegativeClick() {
+
+    }
+
+    @Override
+    public void doNeutralClick(int setId, int alarmId) {
+
+    }
 }

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ /*
+  ~     Copyright 2013-2014 Yohann Bianchi
+  ~
+  ~     This program is free software; you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation; either version 2 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     This program is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License along
+  ~     with this program; if not, write to the Free Software Foundation, Inc.,
+  ~     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+  ~     or see <http://www.gnu.org/licenses/>.
+  ~  */
+  -->
+
+<RelativeLayout
+		xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+		android:padding="10dp"
+        android:background="@drawable/active_list_item">
+
+	<TextView
+			android:layout_width="60sp"
+			android:layout_height="wrap_content"
+			tools:text="jeu. 23h45"
+			android:id="@+id/time"
+			android:singleLine="true"
+			android:layout_centerVertical="true"
+			android:layout_alignParentLeft="true"
+			android:clickable="false"
+			android:layout_gravity="center_vertical"
+			android:textSize="11sp"/>
+
+	<TextView
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			tools:text="ADN Smith"
+			android:id="@+id/label"
+			android:singleLine="true"
+			android:textAppearance="?android:attr/textAppearanceLarge"
+			android:clickable="false"
+			android:layout_gravity="center_vertical"
+			android:layout_centerVertical="true"
+			android:layout_toRightOf="@id/time"
+			android:layout_toLeftOf="@id/stage"/>
+
+	<TextView
+			android:layout_width="55sp"
+			android:layout_height="wrap_content"
+			tools:text="Temple"
+			android:id="@+id/stage"
+			android:singleLine="true"
+			android:layout_centerVertical="true"
+			android:layout_alignParentRight="true"
+			android:background="@drawable/pill_set_type"
+			android:textColor="@color/brand_black"
+			android:clickable="false"
+			android:layout_gravity="center_vertical"
+			android:layout_marginLeft="10dp"
+			android:textSize="13sp"
+			android:gravity="center"/>
+
+</RelativeLayout>

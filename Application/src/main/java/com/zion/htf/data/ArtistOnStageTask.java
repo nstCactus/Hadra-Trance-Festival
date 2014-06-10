@@ -37,46 +37,56 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimerTask;
 
+/* TODO: Create one task per stage and make them smart.
+    Each task should execute once and stop until the next set (use an alarm to run it when time comes)
+    A parent task should manage the periodical UI updates
+*/
 public class ArtistOnStageTask extends TimerTask{
 	private static final String               ORDER_ASC    = "ASC";
 	private static final String               ORDER_DESC   = "DESC";
 	private static final String               TAG          = "ArtistOnStageTimerTask";
-	private static       SQLiteDatabaseHelper dbOpenHelper = Application.getDbHelper();
+	private static final SQLiteDatabaseHelper dbOpenHelper = Application.getDbHelper();
 	private static ArrayList<String> stages;
 	private final  Activity          hostActivity;
 	private static int currentItem = -1;
+
 	private WeakReference<TextView> stageField;
 	private WeakReference<TextView> artistField;
-	private WeakReference<TextView> hourField;
+    private WeakReference<TextView> hourField;
+    private WeakReference<TextView> separatorField;
 
 	public ArtistOnStageTask(WeakReference<Activity> hostActivity){
 		this.hostActivity = hostActivity.get();
 		if(null != this.hostActivity){
-			this.stageField		= new WeakReference<TextView>((TextView)((Activity)hostActivity.get()).findViewById(R.id.stage));
-			this.artistField	= new WeakReference<TextView>((TextView)((Activity)hostActivity.get()).findViewById(R.id.artist_name));
-			this.hourField		= new WeakReference<TextView>((TextView)((Activity)hostActivity.get()).findViewById(R.id.hour));
+			this.stageField		= new WeakReference<TextView>((TextView) hostActivity.get().findViewById(R.id.stage));
+			this.artistField	= new WeakReference<TextView>((TextView) hostActivity.get().findViewById(R.id.artist_name));
+            this.hourField		= new WeakReference<TextView>((TextView) hostActivity.get().findViewById(R.id.hour));
+            this.separatorField = new WeakReference<TextView>((TextView) hostActivity.get().findViewById(R.id.separator));
 		}
 	}
 
 	@Override
 	public void run(){
-		MusicSet currentMusicSet = null;
 		SQLiteDatabase database = ArtistOnStageTask.dbOpenHelper.getReadableDatabase();
-		Log.v(TAG, "Getting artist on stage");
+		Log.v(ArtistOnStageTask.TAG, "Getting artist on stage");
 		if(null == ArtistOnStageTask.stages){
-			Log.v(TAG, "Fetching stages");
+			Log.v(ArtistOnStageTask.TAG, "Fetching stages");
 			ArtistOnStageTask.stages = new ArrayList<String>();
 			Cursor cursor = database.rawQuery("SELECT stage FROM lst__stages;", null);
-			while(cursor.moveToNext()) if(!cursor.isNull(0)) this.stages.add(cursor.getString(0));
+			while(cursor.moveToNext()) if(!cursor.isNull(0)) ArtistOnStageTask.stages.add(cursor.getString(0));
 			cursor.close();
 		}
 
-		if(ArtistOnStageTask.stages.size() < 1) throw new RuntimeException("No stages were found in the databse.");
+		if(1 > ArtistOnStageTask.stages.size()) throw new RuntimeException("No stages were found in the database.");
 
 		Date currentDate = new Date();
 		Date bound;
-		if(currentDate.before(bound = this.getFestivalStartDate())){
-			Log.v(TAG, "Pas commencé. Début à " + bound.toString());
+
+        ArtistOnStageTask.DataHolder data = new ArtistOnStageTask.DataHolder();
+
+        if(currentDate.before(bound = this.getFestivalStartDate())){
+            // Festival hasn't begun yet
+			Log.v(ArtistOnStageTask.TAG, "Pas commencé. Début à " + bound.toString());
 			int secondsFromStart = (int)(bound.getTime() / 1000 - currentDate.getTime() / 1000);
 			int daysFromStart = secondsFromStart / 86400;
 			int remainingSeconds = secondsFromStart % 86400;
@@ -84,59 +94,63 @@ public class ArtistOnStageTask extends TimerTask{
 			remainingSeconds = secondsFromStart % 3600;
 			int minutesFromStart = remainingSeconds / 60;
 
-			currentMusicSet = new MusicSet(String.format(Locale.getDefault().getLanguage().equals("fr") ? "%dj %dh %dm" : "%dd %dh %dm", daysFromStart, hoursFromStart, minutesFromStart), Item.TYPE_SECTION);
-			currentMusicSet.setStage(Application.getContext().getString(R.string.remaining_time));
-            //FIXME: handle too early, too late or daily break
-            //currentMusicSet.setGenre(Application.getContext().getString(R.string.before_opening));
+            data.main = String.format("fr".equals(Locale.getDefault().getLanguage()) ? "%dj %dh %dm" : "%dd %dh %dm", daysFromStart, hoursFromStart, minutesFromStart);
+			data.field1 = Application.getContext().getString(R.string.remaining_time);
+            data.field2 = Application.getContext().getString(R.string.before_opening);
+            data.separator = " ";
 		}
 		else if(currentDate.after(bound = this.getFestivalEndDate())){
-			Log.v(TAG, "Déjà fini depuis " + bound.toString());
-			// Message trop tard
-			currentMusicSet = new MusicSet(Application.getContext().getString(R.string.festival_over), Item.TYPE_SECTION);
+            // Festival is over
+			Log.v(ArtistOnStageTask.TAG, "Déjà fini depuis " + bound.toString());
+            data.main = Application.getContext().getString(R.string.festival_over);
+            data.field1 = data.field2 = data.separator = "";
 		}
 		else{
+            // Festival is on but we may fail to retrieve data so just in case...
 			int failureCount = 0;
-			while(failureCount < ArtistOnStageTask.stages.size() && null == currentMusicSet){
-				currentMusicSet = this.fetchCurrentSet();
-				failureCount++;
+            MusicSet currentSet = null;
+			while(failureCount < ArtistOnStageTask.stages.size() && null == data.main){
+                ArtistOnStageTask.currentItem = ++ArtistOnStageTask.currentItem % ArtistOnStageTask.stages.size();
+                currentSet = MusicSet.fetchCurrent(ArtistOnStageTask.stages.get(ArtistOnStageTask.currentItem));
+                if(null != currentSet){
+                    data.main = currentSet.getArtist().getName();
+                    data.field1 = currentSet.getStage();
+                    data.field2 = String.format("fr".equals(Locale.getDefault().getLanguage()) ? "%1$tHh %1$tM - %2$tHh %2$tM" : "%1$tl:%1$tM %1$tp - %2$tl:%2$tM %2$tp", currentSet.getBeginDate(), currentSet.getEndDate());
+                    data.separator = "  /  ";
+                    failureCount++;
+                }
 			}
-			if(null == currentMusicSet){
-				if(BuildConfig.DEBUG) Log.v(TAG, "Daily break on all stages at the same time... Very unlikely to happen.");
-				currentMusicSet = new MusicSet(Application.getContext().getString(R.string.daily_break, Item.TYPE_SECTION));
-				currentMusicSet.setStage(Application.getContext().getString(R.string.all_stages));
+			if(null == currentSet){
+				if(BuildConfig.DEBUG) Log.v(ArtistOnStageTask.TAG, "Daily break on all stages at the same time... Very unlikely to happen.");
+				data.main = Application.getContext().getString(R.string.daily_break);
+				data.field2 = Application.getContext().getString(R.string.all_stages);
+                data.field1 = data.separator = "";
 			}
 		}
 		database.close();
 
-		this.updateUI(currentMusicSet);
+		this.updateUI(data);
 	}
 
-	private void updateUI(final MusicSet musicSet){
+	private void updateUI(final ArtistOnStageTask.DataHolder data){
 		this.hostActivity.runOnUiThread(new Runnable(){
 			@Override
 			public void run(){
-				if(null != stageField && null != artistField && null != hourField)
-				// If set.type == Item.TYPE_ITEM, this is an actual match
-				stageField.get().setText(musicSet.getStage());
-				artistField.get().setText(musicSet.toString());
-				if(musicSet.getType() == Item.TYPE_ITEM){
-					hourField.get().setText(String.format(Locale.getDefault().getLanguage().equals("fr") ? "%1$tHh %1$tM - %2$tHh %2$tM" : "%1$tl:%1$tM %1$tp - %2$tl:%2$tM %2$tp", musicSet.getBeginDate(), musicSet.getEndDate()));
-				}
-				// Otherwise, it is either too early or too late or daily break
-				else{
-                    //FIXME: handle too early, too late or daily break
-					//hourField.get().setText(null != musicSet.getGenre() ? musicSet.getGenre() : "");
-				}
+				if(null != ArtistOnStageTask.this.stageField && null != ArtistOnStageTask.this.artistField && null != ArtistOnStageTask.this.hourField)
+                ArtistOnStageTask.this.stageField.get().setText(data.field1);
+                ArtistOnStageTask.this.artistField.get().setText(data.main);
+                ArtistOnStageTask.this.hourField.get().setText(data.field2);
+                ArtistOnStageTask.this.separatorField.get().setText(data.separator);
 			}
 		});
 	}
 
 	private Date getFestivalStartDate(){
-		return this.getFestivalBound(ORDER_ASC);
+		return this.getFestivalBound(ArtistOnStageTask.ORDER_ASC);
 	}
 
 	private Date getFestivalEndDate(){
-		return this.getFestivalBound(ORDER_DESC);
+		return this.getFestivalBound(ArtistOnStageTask.ORDER_DESC);
 	}
 
 	private Date getFestivalBound(String order){
@@ -146,18 +160,10 @@ public class ArtistOnStageTask extends TimerTask{
 		return new Date(cursor.getLong(0) * 1000);
 	}
 
-	private MusicSet fetchCurrentSet(){
-		MusicSet musicSet = null;
-		SQLiteDatabase db = ArtistOnStageTask.dbOpenHelper.getReadableDatabase();
-		ArtistOnStageTask.currentItem = ++ArtistOnStageTask.currentItem % ArtistOnStageTask.stages.size();
-		Cursor cursor = db.rawQuery("SELECT stage, artists.name, begin_date, end_date FROM sets JOIN artists ON sets.artist = artists.id WHERE stage = ? AND ? BETWEEN begin_date AND end_date;", new String[]{this.stages.get(this.currentItem), String.valueOf(System.currentTimeMillis() / 1000)});
-		if(cursor.moveToNext()){
-			musicSet = new MusicSet(cursor.getString(1));
-			musicSet.setBeginDate(cursor.getLong(2) * 1000);
-			musicSet.setEndDate(cursor.getLong(3) * 1000);
-			musicSet.setStage(cursor.getString(0));
-		}
-
-		return musicSet;
-	}
+    private class DataHolder{
+        public String main;
+        public String field1;
+        public String field2;
+        public String separator;
+    }
 }

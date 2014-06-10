@@ -45,7 +45,7 @@ public class InfoActivity extends ActionBarActivity implements AdapterView.OnIte
 			context.getString(R.string.info_camp),
 			context.getString(R.string.info_village),
             context.getString(R.string.info_dogs),
-            context.getString(R.string.info_volonteers),
+            context.getString(R.string.info_volunteers),
             context.getString(R.string.info_partners),
             context.getString(R.string.info_faq),
 			context.getString(R.string.info_about),
@@ -87,7 +87,7 @@ public class InfoActivity extends ActionBarActivity implements AdapterView.OnIte
 				item.equals(this.getString(strId = R.string.info_dogs)) ||
 				item.equals(this.getString(strId = R.string.info_faq)) ||
 				item.equals(this.getString(strId = R.string.info_about)) ||
-                item.equals(this.getString(strId = R.string.info_volonteers))||
+                item.equals(this.getString(strId = R.string.info_volunteers))||
                 item.equals(this.getString(strId = R.string.info_partners))||
                 item.equals(this.getString(strId = R.string.info_open_source))||
 				item.equals(this.getString(strId = R.string.info_village))

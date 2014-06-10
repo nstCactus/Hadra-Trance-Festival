@@ -149,10 +149,9 @@
 						android:src="@drawable/button_map_selector" />
 
 				<ImageButton
-						style="@style/bigButtons"
-						android:id="@+id/button_infos"
-						android:src="@drawable/button_infos_selector"
-						android:layout_below="@id/button_tickets"
+					style="@style/bigButtons"
+					android:id="@+id/button_infos"
+					android:src="@drawable/button_infos_selector"
                     android:onClick="onButtonClicked"/>
 
 			</LinearLayout>

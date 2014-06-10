@@ -73,7 +73,12 @@
 				android:layout_height="wrap_content"
 				tools:text="20h - 22h30"
 				style="@style/now_playing"
-				android:id="@+id/hour"
-				android:layout_centerHorizontal="true" />
+				android:id="@+id/hour" />
+
+        <TextView
+            android:id="@+id/separator"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="invisible" />
 	</LinearLayout>
 </RelativeLayout>

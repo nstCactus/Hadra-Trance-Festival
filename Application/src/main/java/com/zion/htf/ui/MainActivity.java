@@ -109,6 +109,10 @@ public class MainActivity extends ActionBarActivity{
                 this.startActivity(new Intent(this, SettingsActivity.class));
                 break;
 
+            case R.id.action_alarms:
+                this.startActivity(new Intent(this, AlarmManagerActivity.class));
+                break;
+
             default:
 				ret = false;
 		}

@@ -39,6 +39,7 @@ import com.zion.htf.Application;
 import com.zion.htf.R;
 import com.zion.htf.data.Artist;
 import com.zion.htf.data.MusicSet;
+import com.zion.htf.data.SavedAlarm;
 import com.zion.htf.exception.MissingArgumentException;
 import com.zion.htf.exception.SetNotFoundException;
 import com.zion.htf.ui.ArtistDetailsActivity;
@@ -54,10 +55,12 @@ public class AlarmReceiver extends BroadcastReceiver{
         Resources res = context.getResources();
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
 
-        int setId;
-        if (0 == (setId = intent.getIntExtra("set_id", 0))) try {
-            throw new MissingArgumentException("set_id", "int");
-        } catch (MissingArgumentException e) {
+        int setId, alarmId;
+        try {
+            if (0 == (setId = intent.getIntExtra("set_id", 0))) throw new MissingArgumentException("set_id", "int");
+            if (0 == (alarmId = intent.getIntExtra("alarm_id", 0))) throw new MissingArgumentException("alarm_id", "int");
+        }
+        catch (MissingArgumentException e) {
             throw new RuntimeException(e.getMessage());
         }
 
@@ -69,7 +72,13 @@ public class AlarmReceiver extends BroadcastReceiver{
             MusicSet set = MusicSet.getById(setId);
             Artist artist = set.getArtist();
 
-            SimpleDateFormat dateFormat = new SimpleDateFormat("fr".equals(Locale.getDefault().getLanguage()) ? "HH:mm" : "h:mm aa");
+            SimpleDateFormat dateFormat;
+            if("fr".equals(Locale.getDefault().getLanguage())){
+                dateFormat = new SimpleDateFormat("HH:mm", Locale.FRANCE);
+            }
+            else{
+                dateFormat = new SimpleDateFormat("h:mm aa", Locale.ENGLISH);
+            }
 
             // Creates an explicit intent for an Activity in your app
             Intent resultIntent = new Intent(Application.getContext(), ArtistDetailsActivity.class);
@@ -87,7 +96,7 @@ public class AlarmReceiver extends BroadcastReceiver{
 
             // Builds the notification
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(Application.getContext())
-                    .setPriority(Notification.PRIORITY_MAX)
+                    .setPriority(NotificationCompat.PRIORITY_MAX)
                     .setSmallIcon(R.drawable.hadra_logo)
                     .setLargeIcon(largeIconBitmap)
                     .setAutoCancel(true)
@@ -137,6 +146,8 @@ public class AlarmReceiver extends BroadcastReceiver{
 
             NotificationManager notificationManager = (NotificationManager) Application.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.notify(set.getStage(), 0, notification);
+
+            SavedAlarm.delete(alarmId);
         } catch (SetNotFoundException e) {
             throw new RuntimeException(e.getMessage());
             //TODO: Handle this properly

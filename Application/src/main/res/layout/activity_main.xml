@@ -119,8 +119,7 @@
 			style="@style/bigButtons"
 			android:id="@+id/button_tickets"
             android:onClick="onButtonClicked"
-            android:src="@drawable/button_tickets_selector"
-			android:layout_toRightOf="@id/button_artists" />
+            android:src="@drawable/button_tickets_selector" />
 	</LinearLayout>
 
 	<LinearLayout
@@ -141,8 +140,7 @@
 				style="@style/bigButtons"
 				android:id="@+id/button_infos"
                 android:onClick="onButtonClicked"
-                android:src="@drawable/button_infos_selector"
-				android:layout_toRightOf="@id/button_map" />
+                android:src="@drawable/button_infos_selector" />
 
 	</LinearLayout>
 	<include layout="@layout/fragment_now_on_stage"

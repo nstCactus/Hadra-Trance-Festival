@@ -24,7 +24,7 @@ public class Item{
 	public static final int TYPE_SECTION = 1;
 
 	protected String name;
-	protected int    type;
+	protected int    type = TYPE_ITEM;
 
 	public Item(String name){
 		this.name = name;

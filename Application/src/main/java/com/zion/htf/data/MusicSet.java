@@ -24,6 +24,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.zion.htf.Application;
 import com.zion.htf.exception.SetNotFoundException;
+import com.zion.util.DateUtils;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -31,6 +32,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * The {@code MusicSet} class holds data related to an {@link com.zion.htf.data.Artist}'s set as well as methods to retrieve this data from the {@code sets} database table.
+ * As it extends {@link com.zion.htf.data.Item}, it can be used as an item in a {@link com.hb.views.PinnedSectionListView} using a {@link com.zion.htf.adapter.LineUpListAdapter} as its source.
+ */
 public class MusicSet extends Item{
     private static final SQLiteOpenHelper dbOpenHelper = Application.getDbHelper();
     private static final String QUERY = "SELECT sets.*, artists.* FROM sets JOIN artists ON sets.artist = artists.id ";
@@ -68,10 +73,6 @@ public class MusicSet extends Item{
 		super(name, Item.TYPE_ITEM);
 	}
 
-	public MusicSet(String name, int type){
-		super(name, type);
-	}
-
     /*********************/
     /* Getters & Setters */
     /*********************/
@@ -88,6 +89,10 @@ public class MusicSet extends Item{
         return new Date(this.begin_date);
     }
 
+    /**
+     * Get the {@code MusicSet}'s begin date as a timestamp in milliseconds since UNIX epoch
+     * @return The {@code MusicSet}'s timestamp
+     */
     public long getBeginDateAsTimestamp() {
         return this.begin_date;
     }
@@ -139,12 +144,20 @@ public class MusicSet extends Item{
     public static MusicSet getById(int id) throws SetNotFoundException {
         Cursor cursor = MusicSet.dbOpenHelper.getReadableDatabase().rawQuery(String.format("%s WHERE sets.id = %d ", MusicSet.QUERY, id), null);
         if(null == cursor || !cursor.moveToNext()) throw new SetNotFoundException(id);
-        return MusicSet.newInstance(cursor);
+        MusicSet musicSet = MusicSet.newInstance(cursor);
+
+        if(!cursor.isClosed()) cursor.close();
+        MusicSet.dbOpenHelper.close();
+        return musicSet;
     }
 
     public static List<Item> getListByStage(String stage, String order, Boolean addDateSeparators){
         Cursor cursor = MusicSet.dbOpenHelper.getReadableDatabase().rawQuery(String.format("%s WHERE stage = ? %s", MusicSet.QUERY, order), new String[]{ stage });
-        return MusicSet.getList(cursor, addDateSeparators);
+        List<Item> list = MusicSet.getList(cursor, addDateSeparators);
+                if(!cursor.isClosed()) cursor.close();
+        MusicSet.dbOpenHelper.close();
+
+        return list;
     }
 
     public static List<Item> getListByStage(String stage, Boolean addDateSeparators){
@@ -163,7 +176,7 @@ public class MusicSet extends Item{
         return MusicSet.getList(MusicSet.dbOpenHelper.getReadableDatabase().rawQuery(query, null), addDateSeparators);
     }
 
-    public static List<Item> getList(Cursor cursor, Boolean addDateSeparators){
+    protected static List<Item> getList(Cursor cursor, Boolean addDateSeparators){
         List<Item> sets = new ArrayList<Item>();
 
         Date previousDate = new Date(0);
@@ -175,7 +188,7 @@ public class MusicSet extends Item{
             if(addDateSeparators){
                 Date beginDate = musicSet.getBeginDate();
 
-                if (!com.zion.util.Date.areSameDay(previousDate, beginDate)) {
+                if (!DateUtils.areSameDay(previousDate, beginDate)) {
                     sets.add(new Item(dateFormat.format(beginDate), Item.TYPE_SECTION));
                 }
                 previousDate = beginDate;
@@ -190,8 +203,31 @@ public class MusicSet extends Item{
         return sets;
     }
 
-    private static MusicSet newInstance(Cursor cursor){
-        MusicSet musicSet = new MusicSet(cursor.getString(MusicSet.COLUMN_ARTIST_NAME));
+    /**
+     * Get the {@code MusicSet} currently playing on the given {@code stage}
+     * @param stage The name of the stage
+     * @return A new {@code MusicSet} instance corresponding to the set currently played
+     */
+    public static MusicSet fetchCurrent(String stage){
+        Cursor cursor = MusicSet.dbOpenHelper.getReadableDatabase().rawQuery(String.format(Locale.ENGLISH, "%s WHERE stage = ? AND %d BETWEEN begin_date AND end_date;", MusicSet.QUERY, new Date().getTime() / 1000), new String[]{stage});
+        MusicSet musicSet = null;
+        if(null != cursor) {
+            if(cursor.moveToFirst()) musicSet = MusicSet.newInstance(cursor);
+            cursor.close();
+        }
+        MusicSet.dbOpenHelper.close();
+        return musicSet;
+    }
+
+    /**
+     * Get a new instance of {@code MusicSet} built from data extracted from {@code cursor}
+     * @param cursor A {@link android.database.Cursor} instance representing a query similar to {@link MusicSet.QUERY}
+     * @return A new instance of {@code MusicSet} or null if the {@link android.database.Cursor} is empty
+     */
+    @SuppressWarnings("JavadocReference")
+    public static MusicSet newInstance(Cursor cursor){
+        MusicSet musicSet = null;
+        musicSet = new MusicSet(cursor.getString(MusicSet.COLUMN_ARTIST_NAME));
         Artist artist = new Artist(cursor.getString(MusicSet.COLUMN_ARTIST_NAME))
                 .setGenre(cursor.getString(MusicSet.COLUMN_ARTIST_GENRE), "")
                 .setOrigin(cursor.getString(MusicSet.COLUMN_ARTIST_ORIGIN), "")

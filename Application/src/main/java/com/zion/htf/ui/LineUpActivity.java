@@ -45,9 +45,8 @@ public class LineUpActivity extends ActionBarActivity {
 
 	private LineUpPagerAdapter pagerAdpater;
 	private ViewPager          viewPager;
-	private PageIndicator      pageIndicator;
 
-	public static int sectionHeaderHeight = 0;
+    public static int sectionHeaderHeight = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState){
@@ -63,8 +62,8 @@ public class LineUpActivity extends ActionBarActivity {
 		this.viewPager = (ViewPager)this.findViewById(R.id.line_up_pager);
 		this.viewPager.setAdapter(this.pagerAdpater);
 
-		this.pageIndicator = (PageIndicator)this.findViewById(R.id.indicator);
-		this.pageIndicator.setViewPager(this.viewPager);
+        PageIndicator pageIndicator = (PageIndicator) this.findViewById(R.id.indicator);
+		pageIndicator.setViewPager(this.viewPager);
 	}
 
 	@Override
@@ -99,10 +98,10 @@ public class LineUpActivity extends ActionBarActivity {
 		Date now = new Date();
 
 		if(now.before(new Date(1408645800000l))){
-			this.displayErrorMessage(CAUSE_TOO_EARLY);
+			this.displayErrorMessage(LineUpActivity.CAUSE_TOO_EARLY);
 		}
 		else if(now.after(new Date(1408896000000l))){
-			this.displayErrorMessage(CAUSE_TOO_LATE);
+			this.displayErrorMessage(LineUpActivity.CAUSE_TOO_LATE);
 		}
 		else{
 			ret = true;
@@ -117,11 +116,11 @@ public class LineUpActivity extends ActionBarActivity {
 
 			while(!found && ++i < listView.getCount()){
 				item = (Item)listView.getItemAtPosition(i);
-				if(item.getType() == Item.TYPE_ITEM){
+				if(Item.TYPE_ITEM == item.getType()){
 					if(((MusicSet)item).getEndDate().after(now)){
 						found = true;
 
-						if(Build.VERSION.SDK_INT >= 11){
+						if(11 <= Build.VERSION.SDK_INT){
 							listView.smoothScrollToPositionFromTop(i, LineUpActivity.sectionHeaderHeight);
 						}
 						else{

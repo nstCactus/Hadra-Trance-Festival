@@ -12,9 +12,11 @@ import com.zion.htf.exception.SetNotFoundException;
 
 import org.michenux.android.db.sqlite.SQLiteDatabaseHelper;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Locale;
 
+/**
+ * The {@code Artist} class holds data related to an artist as well as methods to retrieve this data from the {@code artists} database table.
+ */
 public class Artist {
     private static final String TAG = "ArtistDetailsActivity";
     private static final int COLUMN_ID = 0;
@@ -63,7 +65,7 @@ public class Artist {
      */
     public static Artist getById(int artistId) throws ArtistNotFoundException {
         try {
-            return Artist.newInstance(String.format("artists.id = %d", artistId));
+            return Artist.newInstance(String.format(Locale.ENGLISH, "artists.id = %d", artistId));
         } catch (ArtistNotFoundException e) {
             throw new ArtistNotFoundException(artistId);
         }
@@ -78,7 +80,7 @@ public class Artist {
      */
     public static Artist getBySetId(int setId) throws SetNotFoundException {
         try {
-            return Artist.newInstance(String.format("sets.id = %d", setId));
+            return Artist.newInstance(String.format(Locale.ENGLISH, "sets.id = %d", setId));
         } catch (ArtistNotFoundException e) {
             throw new SetNotFoundException(setId);
         }
@@ -109,7 +111,7 @@ public class Artist {
                 .setBioId(cursor.getInt(Artist.COLUMN_BIO_ID));
 
         if (!cursor.isClosed()) cursor.close();
-        dbOpenHelper.close();
+        Artist.dbOpenHelper.close();
 
         return artist;
     }
@@ -182,7 +184,7 @@ public class Artist {
             int resId;
 
             // Sanitize picture resource name
-            picResName = picResName.toLowerCase()
+            picResName = picResName.toLowerCase(Locale.ENGLISH)
                     .replaceAll("\\.(?:jpe?g|png|gif)$", "")// Remove the extension if present in DB
                     .replace(".", "_");
 
@@ -306,24 +308,5 @@ public class Artist {
         this.cover = cover;
 
         return this;
-    }
-
-    protected List<Artist> getAllArtists(){
-        List<Artist> artists = new ArrayList<Artist>();
-
-        String query = "SELECT s.id, a.name, a.genre, s.type, a.picture_name FROM artists AS a JOIN sets AS s ON s.artist = a.id GROUP BY a.name ORDER BY name ASC";// FIXME: get artists instead
-        Cursor cursor = Artist.dbOpenHelper.getReadableDatabase().rawQuery(query, null);
-
-        while(cursor.moveToNext()){
-            Artist artist = new Artist(cursor.getString(this.COLUMN_NAME));
-            artist.setGenre(cursor.getString(this.COLUMN_GENRE))
-                  .setPicture(cursor.getString(this.COLUMN_PICTURE));
-
-            artists.add(artist);
-        }
-        if(!cursor.isClosed()) cursor.close();
-        this.dbOpenHelper.close();
-
-        return artists;
     }
 }

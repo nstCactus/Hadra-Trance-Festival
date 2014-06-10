@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_gravity="center"
     android:layout_width="wrap_content"
@@ -13,16 +13,15 @@
         android:inputType="numberSigned"
         android:ems="3"
         android:id="@+id/numberBox"
-        android:layout_weight="1"
         android:layout_gravity="center_vertical"
-        android:editable="true"
         android:enabled="true"
         android:focusable="true" />
 
     <Spinner
-        android:layout_width="246dp"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/unitSpinner"
         android:layout_gravity="center_vertical"
-        android:entries="@array/time_units" />
-</LinearLayout>
+        android:entries="@array/time_units"
+        android:layout_toRightOf="@id/numberBox"/>
+</RelativeLayout>

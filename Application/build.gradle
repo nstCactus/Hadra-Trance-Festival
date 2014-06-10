@@ -45,8 +45,8 @@ android {
         }
     }
 
-    lintOptions {
-        checkReleaseBuilds false
+    lintOptions{
+        checkReleaseBuilds true
         // Or, if you prefer, you can continue to check for errors in release builds,
         // but continue the build even when errors are found:
         abortOnError false
@@ -61,7 +61,6 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile files('libs/PayPalAndroidSDK.jar')
     compile 'com.google.android.gms:play-services:4.3.23'
-    //compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
     compile 'com.viewpagerindicator:library:2.4.1@aar'
     compile 'net.simonvt:android-numberpicker:1.0.0'
     compile 'com.mobsandgeeks.ui.library:TypefaceTextview:1.0.0@aar'
@@ -76,8 +75,6 @@ task askForPasswords << {
     android.signingConfigs.release.storePassword = storePwd
     android.signingConfigs.release.keyPassword = keyPwd
 }
-
-
 
 tasks.whenTaskAdded { theTask ->
     if (theTask.name.equals("packageRelease")) {
