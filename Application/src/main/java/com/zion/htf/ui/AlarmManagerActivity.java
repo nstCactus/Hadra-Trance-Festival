@@ -130,10 +130,8 @@ public class AlarmManagerActivity extends ActionBarActivity implements TimeToPic
 
                     SavedAlarm alarm = (SavedAlarm)AlarmManagerActivity.this.adapter.getItem(position);
                     Bundle args = new Bundle();
-                    args.putLong("timestamp", alarm.getTimestamp());
                     args.putInt("set_id", alarm.getSet().getId());
                     args.putInt("alarm_id", alarm.getId());
-                    args.putBoolean("allow_delete", true);
                     args.putBoolean("edit_mode", true);
                     DialogFragment newFragment = TimeToPickerFragment.newInstance(args);
                     newFragment.show(AlarmManagerActivity.this.getSupportFragmentManager(), "timeToPicker");
@@ -164,12 +162,15 @@ public class AlarmManagerActivity extends ActionBarActivity implements TimeToPic
     }
 
     @Override
-    public void doPositiveClick() {
-
+    public void doPositiveClick(int alarmId){
+        // Overkill but should be fail-proof
+        this.adapter = new AlarmsListAdapter<Item>(this, R.layout.item_alarm_list, R.id.label, SavedAlarm.getList(false));
+        this.listView.setAdapter(this.adapter);
+        this.adapter.notifyDataSetChanged();
     }
 
     @Override
-    public void doNegativeClick() {
+    public void doNegativeClick(){
 
     }
 

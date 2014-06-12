@@ -27,6 +27,7 @@
 	<string name="action_directions">Itinéraire</string>
 	<string name="action_onStage">À l\'écoute</string>
     <string name="action_addAlarm">Ajouter une alarme</string>
+    <string name="action_editAlarm">Modifier une alarme</string>
 
     <string name="donation_label">Don généreux</string>
 	<string name="error_too_early_title">Ne sois pas si impatient…</string>
@@ -44,8 +45,6 @@
 	<string name="all_stages">Toutes les scènes</string>
 	<string name="festival_over">Le festival est terminé</string>
     <string name="title_activity_artist_list">Liste des artistes</string>
-    <string name="title_new_alarm_dialog">Nouvelle alarme</string>
-    <string name="alarm_notification">%1$s joue sur %2$s à %3$s</string>
 
     <string-array name="time_units">
         <item>Heures</item>

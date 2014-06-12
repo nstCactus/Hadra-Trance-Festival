@@ -20,16 +20,12 @@
 package com.zion.htf.data;
 
 import android.app.Activity;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.widget.TextView;
 
 import com.zion.htf.Application;
 import com.zion.htf.BuildConfig;
 import com.zion.htf.R;
-
-import org.michenux.android.db.sqlite.SQLiteDatabaseHelper;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -42,11 +38,8 @@ import java.util.TimerTask;
     A parent task should manage the periodical UI updates
 */
 public class ArtistOnStageTask extends TimerTask{
-	private static final String               ORDER_ASC    = "ASC";
-	private static final String               ORDER_DESC   = "DESC";
 	private static final String               TAG          = "ArtistOnStageTimerTask";
-	private static final SQLiteDatabaseHelper dbOpenHelper = Application.getDbHelper();
-	private static ArrayList<String> stages;
+	private static ArrayList<Stage> stages;
 	private final  Activity          hostActivity;
 	private static int currentItem = -1;
 
@@ -67,14 +60,10 @@ public class ArtistOnStageTask extends TimerTask{
 
 	@Override
 	public void run(){
-		SQLiteDatabase database = ArtistOnStageTask.dbOpenHelper.getReadableDatabase();
 		Log.v(ArtistOnStageTask.TAG, "Getting artist on stage");
 		if(null == ArtistOnStageTask.stages){
 			Log.v(ArtistOnStageTask.TAG, "Fetching stages");
-			ArtistOnStageTask.stages = new ArrayList<String>();
-			Cursor cursor = database.rawQuery("SELECT stage FROM lst__stages;", null);
-			while(cursor.moveToNext()) if(!cursor.isNull(0)) ArtistOnStageTask.stages.add(cursor.getString(0));
-			cursor.close();
+            ArtistOnStageTask.stages = Stage.getList();
 		}
 
 		if(1 > ArtistOnStageTask.stages.size()) throw new RuntimeException("No stages were found in the database.");
@@ -84,7 +73,7 @@ public class ArtistOnStageTask extends TimerTask{
 
         ArtistOnStageTask.DataHolder data = new ArtistOnStageTask.DataHolder();
 
-        if(currentDate.before(bound = this.getFestivalStartDate())){
+        if(currentDate.before(bound = Festival.getFestivalStartDate())){
             // Festival hasn't begun yet
 			Log.v(ArtistOnStageTask.TAG, "Pas commencé. Début à " + bound.toString());
 			int secondsFromStart = (int)(bound.getTime() / 1000 - currentDate.getTime() / 1000);
@@ -99,7 +88,7 @@ public class ArtistOnStageTask extends TimerTask{
             data.field2 = Application.getContext().getString(R.string.before_opening);
             data.separator = " ";
 		}
-		else if(currentDate.after(bound = this.getFestivalEndDate())){
+		else if(currentDate.after(bound = Festival.getFestivalEndDate())){
             // Festival is over
 			Log.v(ArtistOnStageTask.TAG, "Déjà fini depuis " + bound.toString());
             data.main = Application.getContext().getString(R.string.festival_over);
@@ -111,7 +100,7 @@ public class ArtistOnStageTask extends TimerTask{
             MusicSet currentSet = null;
 			while(failureCount < ArtistOnStageTask.stages.size() && null == data.main){
                 ArtistOnStageTask.currentItem = ++ArtistOnStageTask.currentItem % ArtistOnStageTask.stages.size();
-                currentSet = MusicSet.fetchCurrent(ArtistOnStageTask.stages.get(ArtistOnStageTask.currentItem));
+                currentSet = MusicSet.fetchCurrent(ArtistOnStageTask.stages.get(ArtistOnStageTask.currentItem).getName());
                 if(null != currentSet){
                     data.main = currentSet.getArtist().getName();
                     data.field1 = currentSet.getStage();
@@ -127,7 +116,6 @@ public class ArtistOnStageTask extends TimerTask{
                 data.field1 = data.separator = "";
 			}
 		}
-		database.close();
 
 		this.updateUI(data);
 	}
@@ -143,21 +131,6 @@ public class ArtistOnStageTask extends TimerTask{
                 ArtistOnStageTask.this.separatorField.get().setText(data.separator);
 			}
 		});
-	}
-
-	private Date getFestivalStartDate(){
-		return this.getFestivalBound(ArtistOnStageTask.ORDER_ASC);
-	}
-
-	private Date getFestivalEndDate(){
-		return this.getFestivalBound(ArtistOnStageTask.ORDER_DESC);
-	}
-
-	private Date getFestivalBound(String order){
-		SQLiteDatabase db = ArtistOnStageTask.dbOpenHelper.getReadableDatabase();
-		Cursor cursor = db.rawQuery("SELECT begin_date FROM sets ORDER BY begin_date " + order + " LIMIT 1;", null);
-		if(!cursor.moveToNext() || cursor.isNull(0)) throw new RuntimeException("Error getting festival start/begin date");
-		return new Date(cursor.getLong(0) * 1000);
 	}
 
     private class DataHolder{

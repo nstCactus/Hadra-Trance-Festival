@@ -38,9 +38,9 @@ import com.zion.htf.BuildConfig;
 import com.zion.htf.R;
 import com.zion.htf.data.MusicSet;
 import com.zion.htf.data.SavedAlarm;
+import com.zion.htf.exception.AlarmNotFoundException;
 import com.zion.htf.exception.MissingArgumentException;
 import com.zion.htf.exception.SetNotFoundException;
-import com.zion.htf.ui.AlarmManagerActivity;
 
 /**
  * An {@link android.app.AlertDialog} used to set or edit an alarm.
@@ -54,127 +54,64 @@ public class TimeToPickerFragment extends DialogFragment{
     private Spinner unitSpinner;
     private EditText numberBox;
 
-    private long timestamp;
-    private int setId;
-    private boolean allowDelete;
     private boolean editMode;
-    private int alarmId;
+    private SavedAlarm alarm;
+    private MusicSet set;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Bundle args = this.getArguments();
         try{
+            // Get required arguments (general)
             if(null == args) throw new MissingArgumentException("You must provide the following arguments for this fragment to work properly: timestamp (long), set_id (int)");
-            if(0l == (this.timestamp = args.getLong("timestamp", 0l))) throw new MissingArgumentException("timestamp", "long");
-            if(0 == (this.setId = args.getInt("set_id", 0))) throw new MissingArgumentException("set_id", "int");
-            this.allowDelete = args.getBoolean("allow_delete", false);
+            if(!args.containsKey("set_id")) throw new MissingArgumentException("set_id", "int");
             this.editMode = args.getBoolean("edit_mode", false);
+
+            // Get required arguments (edit mode only)
             if(this.editMode){
-                if(0 == (this.alarmId = args.getInt("alarm_id", 0))) throw new MissingArgumentException("alarm_id", "int");
+                if(!args.containsKey("alarm_id")) throw new MissingArgumentException("alarm_id", "int");
+                this.alarm = SavedAlarm.getById(args.getInt("alarm_id", 0));
             }
 
-            Log.v(TimeToPickerFragment.TAG, String.format("Timestamp = %s", this.timestamp));
+            // Get the set
+            this.set = MusicSet.getById(this.editMode ? this.alarm.getSetId() : args.getInt("set_id", 0));
+
+            // Build the dialog
             AlertDialog.Builder builder =  new AlertDialog.Builder(this.getActivity())
-                    .setTitle(R.string.title_new_alarm_dialog)
-                    .setPositiveButton(R.string.alarm_set, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                    int amount;
-                                    try {
-                                        Editable numberField = TimeToPickerFragment.this.numberBox.getText();
-                                        if (null != numberField)
-                                            amount = Integer.parseInt(numberField.toString());
-                                        else amount = 0;
-                                    } catch (NumberFormatException e) {
-                                        amount = 0;
-                                        // TODO: Validate user input
-                                    }
+                    .setTitle(this.editMode ? R.string.title_edit_alarm_dialog : R.string.title_new_alarm_dialog)
+                    .setPositiveButton(R.string.alarm_set, new PositiveClickListener())
+                    .setNegativeButton(R.string.alarm_cancel, new NegativeClickListener());
 
-                                    int minutes;
-                                    Log.v(TimeToPickerFragment.TAG, String.format("User pressed OK, number = %s, unit = %s", amount, TimeToPickerFragment.this.unitSpinner.getSelectedItem()));
-
-                                    // Compute alarm timestamp
-                                    long alarmTimestamp = TimeToPickerFragment.this.timestamp;
-
-                                    switch (TimeToPickerFragment.this.unitSpinner.getSelectedItemPosition()) {
-                                        case 0:// Unit = hours
-                                            minutes = amount * 60;
-                                            break;
-
-                                        case 1:// Unit = minutes
-                                            minutes = amount;
-                                            break;
-
-                                        default:
-                                            throw new RuntimeException("Inconsistent item position for time_units array");
-                                    }
-                                    alarmTimestamp -= minutes * 60000;// * 60000 to convert to ms
-
-                                    Log.v(TimeToPickerFragment.TAG, String.format("Alarm timestamp is %1$s, or %1$tc in a human-readable fashion", alarmTimestamp));
-
-                                    // Save it in the database so it can be restored after reboots
-                                    ContentValues values = new ContentValues(2);
-                                    values.put("timestamp", alarmTimestamp / 1000);
-                                    values.put("set_id", TimeToPickerFragment.this.setId);
-                                    try{
-                                        if(TimeToPickerFragment.this.editMode){
-                                            // FIXME: Update makes a mess out of the timestamp.
-                                            Application.getDbHelper().getWritableDatabase().update("alarms", values, "id = " + TimeToPickerFragment.this.alarmId, null);
-                                        }
-                                        else{
-                                            Application.getDbHelper().getWritableDatabase().insertOrThrow("alarms", null, values);
-                                        }
-                                    }
-                                    catch(SQLException e){
-                                        if(BuildConfig.DEBUG) e.printStackTrace();
-                                        //TODO: Notify the user that something went wrong
-                                    }
-
-                                    // Set alarm
-                                    SavedAlarm alarm = new SavedAlarm(TimeToPickerFragment.this.alarmId, alarmTimestamp, TimeToPickerFragment.this.setId);
-                                    alarm.registerAlarm(TimeToPickerFragment.this.getActivity());
-                                }
-                            }
-                    )
-                    .setNegativeButton(R.string.alarm_cancel, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                    Log.v(TimeToPickerFragment.TAG, "User pressed Cancel");
-                                    //((ArtistDetailsActivity) getActivity()).doNegativeClick();
-                                }
-                            }
-                    );
-
-            if(this.allowDelete){
-                final int alarmId = args.getInt("alarm_id", 0);
-                if(0 == alarmId) throw new MissingArgumentException("alarm_id", "int");
-                builder.setNeutralButton(R.string.alarm_delete, new DialogInterface.OnClickListener(){
-                    @Override
-                    public void onClick(DialogInterface dialog, int which){
-                        SavedAlarm.delete(alarmId);
-                        ((AlarmManagerActivity)TimeToPickerFragment.this.getActivity()).doNeutralClick(TimeToPickerFragment.this.setId, alarmId);
-                    }
-                });
+            if(this.editMode){
+                builder.setNeutralButton(R.string.alarm_delete, new NeutralClickListener());
             }
-
             final AlertDialog dialog = builder.create();
+
+            // Add the custom view to the dialog
             @SuppressLint("InflateParams")
             View view = dialog.getLayoutInflater().inflate(R.layout.fragment_time_to_picker, null);
             if(null == view) throw new NullPointerException("Can't inflate the fragment_time_to_picker layout.");
             dialog.setView(view);
 
+            // Initialize the time unit spinner
             this.unitSpinner = (Spinner)view.findViewById(R.id.unitSpinner);
             if(null == this.unitSpinner) throw new NullPointerException("Couldn't find unitSpinner");
             this.unitSpinner.setSelection(1);
 
+            // Initialize the time input box and focus it
             this.numberBox = (EditText)view.findViewById(R.id.numberBox);
             if(null == this.numberBox) throw new NullPointerException("Couldn't find numberBox");
             this.numberBox.requestFocus();
+
+            // Populate the time input box with the saved value (edit mode only)
             if(this.editMode){
                 // Compute the number of minutes between alarm and set. Convert to hours if possible
-                MusicSet musicSet = MusicSet.getById(this.setId);
-                long setTimestamp = musicSet.getBeginDateAsTimestamp();
-                if(BuildConfig.DEBUG && setTimestamp < this.timestamp) Log.w(TimeToPickerFragment.TAG, String.format("The alarm (id = %d, td = %d) is set after the set (id = %d) has begun (ts = %d).", this.alarmId, this.timestamp, this.setId, setTimestamp));
+                long setTimestamp = this.set.getBeginDateAsTimestamp();
+                if(BuildConfig.DEBUG && setTimestamp < this.alarm.getTimestamp()) Log.w(TimeToPickerFragment.TAG, String.format("The alarm (id = %d, td = %d) is set after the set (id = %d) has begun (ts = %d).", this.alarm.getId(), this.alarm.getTimestamp(), this.set.getId(), setTimestamp));
 
-                long defaultValue = (setTimestamp - this.timestamp) / 60000;// Convert the delta between timestamps to minutes
+                long defaultValue = (setTimestamp - this.alarm.getTimestamp()) / 60000;// Convert the delta between timestamps to minutes
+
+                // Convert default value to hours if possible
                 if(0 == defaultValue % 60){
                     defaultValue /= 60;
                     this.unitSpinner.setSelection(0);
@@ -183,16 +120,23 @@ public class TimeToPickerFragment extends DialogFragment{
                 this.numberBox.setText(String.format("%d", defaultValue));
             }
 
+            // Display software keyboard
             dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
             return dialog;
         }
         catch(MissingArgumentException e){
-            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException(e.getMessage(), e);
+            //TODO: Handle this properly
         }
-        catch (SetNotFoundException e){
+        catch(SetNotFoundException e){
             e.printStackTrace();
-            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException(e.getMessage(), e);
+            //TODO: Handle this properly
+        }
+        catch(AlarmNotFoundException e){
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage(), e);
             //TODO: Handle this properly
         }
     }
@@ -210,8 +154,97 @@ public class TimeToPickerFragment extends DialogFragment{
     }
 
     public interface TimeToPickerInterface{
-        void doPositiveClick();
+        void doPositiveClick(int id);
         void doNegativeClick();
         void doNeutralClick(int setId, int alarmId);
+    }
+
+    class PositiveClickListener implements DialogInterface.OnClickListener{
+        @Override
+        public void onClick(DialogInterface dialog, int which){
+            boolean databaseOperationSucceded = true;
+            long amount;
+            try{
+                Editable numberField = TimeToPickerFragment.this.numberBox.getText();
+                if(null != numberField){
+                    amount = Integer.parseInt(numberField.toString());
+                }
+                else{
+                    amount = 0;
+                }
+            }
+            catch(NumberFormatException e){
+                amount = 0;
+                // TODO: Validate user input
+            }
+
+            long minutes;
+            Log.v(TimeToPickerFragment.TAG, String.format("User pressed OK, number = %s, unit = %s", amount, TimeToPickerFragment.this.unitSpinner.getSelectedItem()));
+
+            // Compute alarm timestamp
+            long alarmTimestamp = TimeToPickerFragment.this.set.getBeginDateAsTimestamp();
+
+            switch (TimeToPickerFragment.this.unitSpinner.getSelectedItemPosition()) {
+                case 0:// Unit = hours
+                    minutes = amount * 60;
+                    break;
+
+                case 1:// Unit = minutes
+                    minutes = amount;
+                    break;
+
+                default:
+                    throw new RuntimeException("Inconsistent selected item position for time_units array");
+            }
+            alarmTimestamp -= minutes * 60000;// * 60000 to convert to ms
+
+            Log.v(TimeToPickerFragment.TAG, String.format("Alarm timestamp is %1$s, or %1$tc in a human-readable fashion", alarmTimestamp));
+
+            // Save it in the database so it can be restored after reboots
+            ContentValues values = new ContentValues(2);
+            values.put("timestamp", alarmTimestamp / 1000);
+            values.put("set_id", TimeToPickerFragment.this.set.getId());
+            try {
+                if(TimeToPickerFragment.this.editMode){
+                    //FIXME: For some reason an alarm has to be updated twice for AlarmManager to "understand" it.
+                    TimeToPickerFragment.this.alarm.unregisterAlarm(TimeToPickerFragment.this.getActivity());
+                    Application.getDbHelper().getWritableDatabase().update("alarms", values, "id = " + TimeToPickerFragment.this.alarm.getId(), null);
+                }
+                else{
+                    int alarmId = (int) Application.getDbHelper().getWritableDatabase().insertOrThrow("alarms", null, values);
+                    TimeToPickerFragment.this.alarm = new SavedAlarm(alarmId, alarmTimestamp, TimeToPickerFragment.this.set.getId());
+                }
+            }
+            catch(SQLException e){
+                databaseOperationSucceded = false;
+                if(BuildConfig.DEBUG) e.printStackTrace();
+                //TODO: Notify the user that something went wrong
+            }
+
+            // Set alarm
+            TimeToPickerFragment.this.alarm.registerAlarm(TimeToPickerFragment.this.getActivity());
+            
+            // Notify the activity that something changed
+            if(databaseOperationSucceded){
+                ((TimeToPickerFragment.TimeToPickerInterface)TimeToPickerFragment.this.getActivity()).doPositiveClick(TimeToPickerFragment.this.alarm.getId());
+            }
+        }
+    }
+
+    class NegativeClickListener implements DialogInterface.OnClickListener {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            Log.v(TimeToPickerFragment.TAG, "User pressed Cancel");
+            //((ArtistDetailsActivity) getActivity()).doNegativeClick();
+        }
+    }
+
+    class NeutralClickListener implements DialogInterface.OnClickListener {
+        @Override
+        public void onClick(DialogInterface dialog, int which){
+            TimeToPickerFragment.this.alarm.unregisterAlarm(TimeToPickerFragment.this.getActivity());
+            SavedAlarm.delete(TimeToPickerFragment.this.alarm.getId());
+            ((TimeToPickerFragment.TimeToPickerInterface)TimeToPickerFragment.this.getActivity()).doNeutralClick(TimeToPickerFragment.this.set.getId(), TimeToPickerFragment.this.alarm.getId());
+        }
     }
 }

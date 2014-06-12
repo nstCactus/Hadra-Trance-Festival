@@ -37,6 +37,8 @@ import com.zion.htf.BuildConfig;
 import com.zion.htf.R;
 import com.zion.htf.data.Artist;
 import com.zion.htf.data.MusicSet;
+import com.zion.htf.data.SavedAlarm;
+import com.zion.htf.exception.AlarmNotFoundException;
 import com.zion.htf.ui.fragment.TimeToPickerFragment;
 
 import java.util.Locale;
@@ -50,6 +52,7 @@ public class ArtistDetailsActivity extends ActionBarActivity implements View.OnC
 
     private MusicSet musicSet;
     private Artist artist;
+    private SavedAlarm alarm = null;
 
     //TODO: Refactor this Activity so that it holds an instance of Artist with all needed info
 
@@ -64,9 +67,16 @@ public class ArtistDetailsActivity extends ActionBarActivity implements View.OnC
 
         this.setId = this.getIntent().getIntExtra("set_id", 0);
 
-        try {
+        try{
             this.musicSet = MusicSet.getById(this.setId);
             this.artist = this.musicSet.getArtist();
+
+            try{
+                this.alarm = SavedAlarm.findBySetId(this.musicSet.getId());
+            }
+            catch(AlarmNotFoundException e){
+                // Nothing to do, it's ok for a set not to have an alarm
+            }
 
             this.getSupportActionBar().setTitle(this.artist.getName());
 
@@ -123,6 +133,23 @@ public class ArtistDetailsActivity extends ActionBarActivity implements View.OnC
     }
 
     @Override
+    public boolean onPrepareOptionsMenu (Menu menu){
+        MenuItem addAlarmItem = menu.findItem(R.id.action_addAlarm);
+        MenuItem editAlarmItem = menu.findItem(R.id.action_editAlarm);
+
+        if(null != addAlarmItem){
+            addAlarmItem.setVisible(null == this.alarm);
+            addAlarmItem.setEnabled(null == this.alarm);
+        }
+        if(null != editAlarmItem){
+            editAlarmItem.setVisible(null != this.alarm);
+            editAlarmItem.setEnabled(null != this.alarm);
+        }
+
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
 	public void onClick(View v){
 		Intent intent = null;
 
@@ -164,6 +191,10 @@ public class ArtistDetailsActivity extends ActionBarActivity implements View.OnC
                 // Open the add alarm popup
                 this.showAddAlarmDialog();
                 break;
+            case R.id.action_editAlarm:
+                // Open the add alarm popup
+                this.showEditAlarmDialog();
+                break;
 			default:
 				ret = false;
 		}
@@ -179,12 +210,23 @@ public class ArtistDetailsActivity extends ActionBarActivity implements View.OnC
     }
 
     /**
-     * Displays a dialog to configure a new reminder for the current artist
+     * Displays a dialog to configure a new reminder for the current set
      */
     private void showAddAlarmDialog(){
         Bundle args = new Bundle();
-        args.putLong("timestamp", this.musicSet.getBeginDateAsTimestamp());
         args.putInt("set_id", this.setId);
+        DialogFragment newFragment = TimeToPickerFragment.newInstance(args);
+        newFragment.show(this.getSupportFragmentManager(), "timeToPicker");
+    }
+
+    /**
+     * Displays a dialog to edit a reminder for the current set
+     */
+    private void showEditAlarmDialog(){
+        Bundle args = new Bundle();
+        args.putInt("set_id", this.setId);
+        args.putInt("alarm_id", this.alarm.getId());
+        args.putBoolean("edit_mode", true);
         DialogFragment newFragment = TimeToPickerFragment.newInstance(args);
         newFragment.show(this.getSupportFragmentManager(), "timeToPicker");
     }
@@ -200,8 +242,16 @@ public class ArtistDetailsActivity extends ActionBarActivity implements View.OnC
 	}
 
     @Override
-    public void doPositiveClick() {
-
+    public void doPositiveClick(int id) {
+        // Change the alarm icon
+        try{
+            this.alarm = SavedAlarm.getById(id);
+        }
+        catch(AlarmNotFoundException e){
+            if(BuildConfig.DEBUG) e.printStackTrace();
+            // TODO: Handle this properly
+        }
+        this.invalidateOptionsMenu();
     }
 
     @Override
@@ -211,6 +261,7 @@ public class ArtistDetailsActivity extends ActionBarActivity implements View.OnC
 
     @Override
     public void doNeutralClick(int setId, int alarmId) {
-
+        this.alarm = null;
+        this.invalidateOptionsMenu();
     }
 }

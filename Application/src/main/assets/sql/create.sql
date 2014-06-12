@@ -14,7 +14,8 @@ CREATE TABLE lst__set_types(
 );
 
 CREATE TABLE lst__stages(
-    stage VARCHAR(255) UNIQUE NOT NULL
+    stage VARCHAR(255) UNIQUE NOT NULL,
+    location_id INT NOT NULL
 );
 
 CREATE TABLE lst__genres(
@@ -152,9 +153,9 @@ INSERT INTO lst__set_types VALUES("DJ set");
 INSERT INTO lst__set_types VALUES("Live act");
 INSERT INTO lst__set_types VALUES("Live band");
 
-INSERT INTO lst__stages VALUES("The temple");
-INSERT INTO lst__stages VALUES("The lotus");
-INSERT INTO lst__stages VALUES("The moon");
+INSERT INTO lst__stages VALUES("The temple", 1);
+INSERT INTO lst__stages VALUES("The lotus", 2);
+INSERT INTO lst__stages VALUES("The moon", 30);
 
 INSERT INTO "artists" VALUES (1, 'Adn Smith', NULL, 'FR', 'ph_adn_smith.jpg', NULL, 'http://www.electrikdream.com/artists/adn-smith', 'https://facebook.com/371083109642684', 'https://soundcloud.com/dj-adnsmith', 'Electrik Dream', 1);
 INSERT INTO "artists" VALUES (2, 'Alen', NULL, 'HR', 'ph_alen.jpg', NULL, 'http://www.future-nature.info/', 'https://facebook.com/100000348731100', 'https://soundcloud.com/djalenmarsroom', 'Marsroom / Future Nature Festival', 2);

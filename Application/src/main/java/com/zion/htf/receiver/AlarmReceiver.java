@@ -35,11 +35,12 @@ import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 
-import com.zion.htf.Application;
 import com.zion.htf.R;
 import com.zion.htf.data.Artist;
 import com.zion.htf.data.MusicSet;
 import com.zion.htf.data.SavedAlarm;
+import com.zion.htf.data.Stage;
+import com.zion.htf.exception.InconsistentDatabaseException;
 import com.zion.htf.exception.MissingArgumentException;
 import com.zion.htf.exception.SetNotFoundException;
 import com.zion.htf.ui.ArtistDetailsActivity;
@@ -81,21 +82,21 @@ public class AlarmReceiver extends BroadcastReceiver{
             }
 
             // Creates an explicit intent for an Activity in your app
-            Intent resultIntent = new Intent(Application.getContext(), ArtistDetailsActivity.class);
+            Intent resultIntent = new Intent(context, ArtistDetailsActivity.class);
             resultIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);// Do not start a  new activity but reuse the existing one (if any)
             resultIntent.putExtra("set_id", setId);
 
             // Manipulate the TaskStack in order to get a good back button behaviour. See http://developer.android.com/guide/topics/ui/notifiers/notifications.html
-            TaskStackBuilder stackBuilder = TaskStackBuilder.create(Application.getContext());
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
             stackBuilder.addParentStack(ArtistDetailsActivity.class);
             stackBuilder.addNextIntent(resultIntent);
             PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
             // Extract a bitmap from a file to use a large icon
-            Bitmap largeIconBitmap = BitmapFactory.decodeResource(Application.getContext().getResources(), artist.getPictureResourceId());
+            Bitmap largeIconBitmap = BitmapFactory.decodeResource(context.getResources(), artist.getPictureResourceId());
 
             // Builds the notification
-            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(Application.getContext())
+            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context)
                     .setPriority(NotificationCompat.PRIORITY_MAX)
                     .setSmallIcon(R.drawable.hadra_logo)
                     .setLargeIcon(largeIconBitmap)
@@ -136,15 +137,24 @@ public class AlarmReceiver extends BroadcastReceiver{
 
             notificationBuilder.setSound(Uri.parse(ringtone));
 
-            // Add the expandable notification buttons
-            PendingIntent directionsButtonPendingIntent = PendingIntent.getActivity(Application.getContext(), 1, new Intent(Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?f=d&daddr=45.12465411273364,5.591188743710518")), Intent.FLAG_ACTIVITY_NEW_TASK);//FIXME: Get the coordinate of the stage instead
-            notificationBuilder.addAction(R.drawable.ic_action_directions, Application.getContext().getString(R.string.action_directions), directionsButtonPendingIntent);
+            // Get the stage GPS coordinates
+            try {
+                Stage stage = Stage.getByName(set.getStage());
+
+                // Add the expandable notification buttons
+                PendingIntent directionsButtonPendingIntent = PendingIntent.getActivity(context, 1, new Intent(Intent.ACTION_VIEW, Uri.parse(String.format(Locale.ENGLISH, "http://maps.google.com/maps?f=d&daddr=%f,%f", stage.getLatitude(), stage.getLongitude()))), Intent.FLAG_ACTIVITY_NEW_TASK);
+                notificationBuilder.addAction(R.drawable.ic_action_directions, context.getString(R.string.action_directions), directionsButtonPendingIntent);
+            }
+            catch(InconsistentDatabaseException e){
+                e.printStackTrace();
+                //TODO: Handle this properly
+            }
 
             // Finalize the notification
             notificationBuilder.setDefaults(flags);
             Notification notification = notificationBuilder.build();
 
-            NotificationManager notificationManager = (NotificationManager) Application.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.notify(set.getStage(), 0, notification);
 
             SavedAlarm.delete(alarmId);

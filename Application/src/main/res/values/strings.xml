@@ -29,6 +29,7 @@
     <string name="action_directions">Get directions</string>
     <string name="action_onStage">Now on stage</string>
     <string name="action_addAlarm">Add an alarm</string>
+    <string name="action_editAlarm">Edit an alarm</string>
     <string name="donation_label">Generous donation</string>
     <string name="error_too_early_title">Too early…</string>
     <string name="error_too_early_message">Hadra Trance Festival has not begun yet.
@@ -42,8 +43,6 @@
     <string name="all_stages">All stages</string>
     <string name="festival_over">Festival is over</string>
     <string name="title_activity_artist_list">Artist list</string>
-    <string name="title_new_alarm_dialog">New alarm</string>
-    <string name="alarm_notification">%1$s will be on %2$s at %3$s</string>
 
     <string-array name="time_units">
         <item>Hours</item>

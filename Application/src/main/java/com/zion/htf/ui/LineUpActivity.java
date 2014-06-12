@@ -34,6 +34,7 @@ import com.hb.views.PinnedSectionListView;
 import com.viewpagerindicator.PageIndicator;
 import com.zion.htf.R;
 import com.zion.htf.adapter.LineUpPagerAdapter;
+import com.zion.htf.data.Festival;
 import com.zion.htf.data.Item;
 import com.zion.htf.data.MusicSet;
 
@@ -97,10 +98,10 @@ public class LineUpActivity extends ActionBarActivity {
 
 		Date now = new Date();
 
-		if(now.before(new Date(1408645800000l))){
+		if(now.before(Festival.getFestivalStartDate())){
 			this.displayErrorMessage(LineUpActivity.CAUSE_TOO_EARLY);
 		}
-		else if(now.after(new Date(1408896000000l))){
+		else if(now.after(Festival.getFestivalEndDate())){
 			this.displayErrorMessage(LineUpActivity.CAUSE_TOO_LATE);
 		}
 		else{

@@ -21,6 +21,10 @@
   -->
 
 <resources>
+    <string name="title_new_alarm_dialog">Nouvelle alarme</string>
+    <string name="title_edit_alarm_dialog">Modifier une alarme</string>
+    <string name="alarm_notification">%1$s joue sur %2$s à %3$s</string>
+
     <string name="title_activity_alarm_manager">Rappels</string>
     <string name="action_remove_alarm">Supprimer</string>
     <string name="action_select_all_alarms">Tout sélectionner</string>

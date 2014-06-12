@@ -21,10 +21,18 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-   <item
+    <item
         android:id="@+id/action_addAlarm"
         android:title="@string/action_addAlarm"
         android:orderInCategory="1"
         app:showAsAction="ifRoom|withText"
         android:icon="@drawable/ic_action_add_alarm" />
+    <item
+        android:id="@+id/action_editAlarm"
+        android:title="@string/action_editAlarm"
+        android:orderInCategory="1"
+        app:showAsAction="ifRoom|withText"
+        android:icon="@drawable/ic_action_alarms"
+        android:visible="false"
+        android:enabled="false" />
 </menu>

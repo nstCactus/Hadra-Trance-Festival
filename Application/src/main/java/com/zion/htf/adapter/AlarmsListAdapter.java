@@ -39,7 +39,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
-public class AlarmsListAdapter<T> extends ArrayAdapter<T> {//implements PinnedSectionListView.PinnedSectionListAdapter{
+public class AlarmsListAdapter<T> extends ArrayAdapter<T> {
     static class ItemViewHolder {
 		TextView artistName;
 		TextView stage;
@@ -215,7 +215,7 @@ public class AlarmsListAdapter<T> extends ArrayAdapter<T> {//implements PinnedSe
     }
 
     /**
-     * Removes the specified object from the list and the database.
+     * Remove the specified object from the list and the database.
      * @param position The position of the object to delete.
      */
     public void delete(int position){
@@ -228,7 +228,7 @@ public class AlarmsListAdapter<T> extends ArrayAdapter<T> {//implements PinnedSe
         int id = ((SavedAlarm)object).getId();
         Log.v("AlarmsListAdapter", String.format("Single alarm deletion. id = %d", id));
         int affectedRows = SavedAlarm.delete(id);
-        Log.v("AlarmsListAdapter", String.format("Deleted rows: ", affectedRows));
+        Log.v("AlarmsListAdapter", String.format("Deleted rows: %d", affectedRows));
 
         this.notifyDataSetChanged();
     }

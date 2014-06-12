@@ -32,6 +32,7 @@ import android.util.Log;
 
 import com.zion.htf.Application;
 import com.zion.htf.BuildConfig;
+import com.zion.htf.exception.AlarmNotFoundException;
 import com.zion.htf.exception.SetNotFoundException;
 import com.zion.htf.receiver.AlarmReceiver;
 import com.zion.util.DateUtils;
@@ -54,8 +55,9 @@ public class SavedAlarm extends Item{
      * HACK! Selection order must be the same as in {@link MusicSet.QUERY}. Any added selected column must be APPENDED to the list.
      */
     @SuppressWarnings("JavadocReference")
-    private static final String SETS_QUERY = "SELECT sets.*, artists.*, alarms.id AS aId, alarms.timestamp AS aTimestamp FROM sets JOIN artists ON sets.artist = artists.id JOIN alarms ON sets.id = alarms.set_id";
-    private static final String ALARMS_QUERY = "SELECT * FROM alarms";
+    private static final String SETS_QUERY = "SELECT sets.*, artists.*, alarms.id AS aId, alarms.timestamp AS aTimestamp FROM sets JOIN artists ON sets.artist = artists.id JOIN alarms ON sets.id = alarms.set_id ";
+    private static final String ALARMS_QUERY = "SELECT * FROM alarms ";
+    private static final String ALARMS_FROM_SET_ID_QUERY = "SELECT alarms.id, alarms.timestamp, alarms.set_id FROM alarms JOIN sets ON sets.id = set_id ";
 
     private int id;
     private long timestamp;
@@ -264,11 +266,67 @@ public class SavedAlarm extends Item{
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.putExtra("set_id", this.getSetId());
         intent.putExtra("alarm_id", this.getId());
-        intent.setAction("com.zion.htf_" + new Date().getTime());// Do not reuse previous PendingIntent.
-        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+        intent.setAction("com.zion.htf_" + this.getSetId());// This only allows one alarm per set.
+        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        if (19 <= Build.VERSION.SDK_INT)    am.setExact(AlarmManager.RTC_WAKEUP, this.getTimestamp(), alarmIntent);// FIXME: use alarmTimestamp once basic testing has been done
+        if (19 <= Build.VERSION.SDK_INT)    am.setExact(AlarmManager.RTC_WAKEUP, this.getTimestamp(), alarmIntent);
         else                                am.set(AlarmManager.RTC_WAKEUP, this.getTimestamp(), alarmIntent);
+    }
 
+    /**
+     * Unregister an alarm in the System's {@link android.app.AlarmManager}
+     * @param context   The {@link android.content.Context} in which the application is currently running
+     */
+    public void unregisterAlarm(Context context){
+        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, AlarmReceiver.class);
+        intent.putExtra("set_id", this.getSetId());
+        intent.putExtra("alarm_id", this.getId());
+        intent.setAction("com.zion.htf_" + this.getSetId());// This only allows one alarm per set.
+        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // Never null as FLAG_NO_CREATE is not passed to PendingIntent.getBroadcast()t
+        alarmIntent.cancel();
+        am.cancel(alarmIntent);
+
+    }
+
+    /**
+     * Get an alarm using its database identifier
+     * @param id The database identifier of the {@code SavedAlarm}
+     * @return  a {@code SavedAlarm} instance fetched from the {@code alarms} database table
+     * @throws AlarmNotFoundException
+     */
+    public static SavedAlarm getById(int id) throws AlarmNotFoundException{
+        SavedAlarm alarm;
+        Cursor cursor = SavedAlarm.dbOpenHelper.getReadableDatabase().rawQuery(String.format(Locale.ENGLISH, "%s WHERE id = %d", SavedAlarm.ALARMS_QUERY, id), null);
+
+        if(null == cursor || !cursor.moveToFirst()) throw new AlarmNotFoundException(id);
+        int columnId = cursor.getColumnIndexOrThrow("id");
+        int columnTimestamp = cursor.getColumnIndexOrThrow("timestamp");
+        int columnSetId = cursor.getColumnIndexOrThrow("set_id");
+
+        alarm = new SavedAlarm(cursor.getInt(columnId), cursor.getLong(columnTimestamp) * 1000, cursor.getInt(columnSetId));
+
+        return alarm;
+    }
+
+    /**
+     * Get an alarm using the database identifier of its associated {@link com.zion.htf.data.MusicSet}
+     * @param setId the database identifier of the associated {@link com.zion.htf.data.MusicSet}
+     * @return  a {@code SavedAlarm} instance fetched from the {@code alarms} database table
+     */
+    public static SavedAlarm findBySetId(int setId) throws AlarmNotFoundException{
+        SavedAlarm alarm;
+        Cursor cursor = SavedAlarm.dbOpenHelper.getReadableDatabase().rawQuery(String.format(Locale.ENGLISH, "%s WHERE set_id = %d", SavedAlarm.ALARMS_FROM_SET_ID_QUERY, setId), null);
+
+        if(null == cursor || !cursor.moveToFirst()) throw new AlarmNotFoundException(String.format(Locale.ENGLISH, "No alarm found for the set with id = %d", setId));
+        int columnId = cursor.getColumnIndexOrThrow("id");
+        int columnTimestamp = cursor.getColumnIndexOrThrow("timestamp");
+        int columnSetId = cursor.getColumnIndexOrThrow("set_id");
+
+        alarm = new SavedAlarm(cursor.getInt(columnId), cursor.getLong(columnTimestamp) * 1000, cursor.getInt(columnSetId));
+
+        return alarm;
     }
 }

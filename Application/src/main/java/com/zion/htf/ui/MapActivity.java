@@ -21,6 +21,7 @@ package com.zion.htf.ui;
 
 import android.app.Dialog;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -64,7 +65,7 @@ public class MapActivity extends ActionBarActivity implements ActionBar.OnNaviga
 	private   GoogleMap map;
 	protected int       spinnerPosition;
 	private final String               TAG          = "MapActivity";
-	private       SQLiteDatabaseHelper dbOpenHelper = Application.getDbHelper();
+	private final SQLiteDatabaseHelper dbOpenHelper = Application.getDbHelper();
 	private LocationManager  locationManager;
 	private String locationProviderName;
 
@@ -77,7 +78,7 @@ public class MapActivity extends ActionBarActivity implements ActionBar.OnNaviga
 		int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this.getBaseContext());
 
 		// Showing status
-		if(status != ConnectionResult.SUCCESS){ // Google Play Services are not available
+		if(ConnectionResult.SUCCESS != status){ // Google Play Services are not available
 			int requestCode = 10;
 			Dialog dialog = GooglePlayServicesUtil.getErrorDialog(status, this, requestCode);
 			dialog.show();
@@ -86,7 +87,7 @@ public class MapActivity extends ActionBarActivity implements ActionBar.OnNaviga
 			SupportMapFragment supportMapFragment = (SupportMapFragment)this.getSupportFragmentManager().findFragmentById(R.id.map);
 			this.map = supportMapFragment.getMap();
 
-			// Feature enablement
+			// Features
 			this.map.setMyLocationEnabled(true);
 			this.map.getUiSettings().setCompassEnabled(true);
 			this.map.getUiSettings().setAllGesturesEnabled(true);
@@ -96,7 +97,7 @@ public class MapActivity extends ActionBarActivity implements ActionBar.OnNaviga
 
 			// Configure location polling
 			// Getting LocationManager object from System Service LOCATION_SERVICE
-			this.locationManager = (LocationManager)getSystemService(LOCATION_SERVICE);
+			this.locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
 			// Creating a criteria object to retrieve provider
 			Criteria criteria = new Criteria();
@@ -120,14 +121,13 @@ public class MapActivity extends ActionBarActivity implements ActionBar.OnNaviga
 
 			// Populate the map with locations
 			try{
-				String langCode = Locale.getDefault().getLanguage().equals("fr") ? "fr" : "en";
+				String langCode = "fr".equals(Locale.getDefault().getLanguage()) ? "fr" : "en";
 				String query = "SELECT latitude, longitude, label, icon, description FROM locations AS loc INNER JOIN lst__location_types AS lty ON lty.id = loc.location_type AND lty.lang_code = ? LEFT JOIN location_descriptions AS ldc ON ldc.id = loc.location_description AND ldc.lang_code = ?;";
 				Cursor cursor = this.dbOpenHelper.getReadableDatabase().rawQuery(query, new String[]{langCode, langCode});
 
 				while(cursor.moveToNext()){
 					int iconResId = this.getResources().getIdentifier(cursor.getString(3), "drawable", "com.zion.htf");
 					String description = cursor.isNull(4) ? "" : cursor.getString(4);
-					//if(iconResId == 0) iconResId = R.drawable.marker_generic;
 					this.addLocation(new LatLng(cursor.getDouble(0), cursor.getDouble(1)), cursor.getString(2), iconResId, description);
 				}
 				if(!cursor.isClosed()) cursor.close();
@@ -221,8 +221,6 @@ public class MapActivity extends ActionBarActivity implements ActionBar.OnNaviga
 
 		// Getting Current Location
 		if(null != this.locationProviderName){
-			Location location = this.locationManager.getLastKnownLocation(this.locationProviderName);
-
 			this.locationManager.requestLocationUpdates(this.locationProviderName, 20000, 0, this);
 		}
 	}
@@ -238,12 +236,12 @@ public class MapActivity extends ActionBarActivity implements ActionBar.OnNaviga
 
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState){
-		savedInstanceState.putDouble(GOOGLE_MAP_LATITUDE, this.map.getCameraPosition().target.latitude);
-		savedInstanceState.putDouble(GOOGLE_MAP_LONGITUDE, this.map.getCameraPosition().target.longitude);
-		savedInstanceState.putFloat(GOOGLE_MAP_ZOOM_LEVEL, this.map.getCameraPosition().zoom);
-		savedInstanceState.putFloat(GOOGLE_MAP_TILT, this.map.getCameraPosition().tilt);
-		savedInstanceState.putFloat(GOOGLE_MAP_BEARING, this.map.getCameraPosition().bearing);
-		savedInstanceState.putInt(GOOGLE_MAP_TYPE, this.map.getMapType());
+		savedInstanceState.putDouble(MapActivity.GOOGLE_MAP_LATITUDE, this.map.getCameraPosition().target.latitude);
+		savedInstanceState.putDouble(MapActivity.GOOGLE_MAP_LONGITUDE, this.map.getCameraPosition().target.longitude);
+		savedInstanceState.putFloat(MapActivity.GOOGLE_MAP_ZOOM_LEVEL, this.map.getCameraPosition().zoom);
+		savedInstanceState.putFloat(MapActivity.GOOGLE_MAP_TILT, this.map.getCameraPosition().tilt);
+		savedInstanceState.putFloat(MapActivity.GOOGLE_MAP_BEARING, this.map.getCameraPosition().bearing);
+		savedInstanceState.putInt(MapActivity.GOOGLE_MAP_TYPE, this.map.getMapType());
 
 		super.onSaveInstanceState(savedInstanceState);
 	}
@@ -256,13 +254,13 @@ public class MapActivity extends ActionBarActivity implements ActionBar.OnNaviga
 			int mapType;
 
 			CameraPosition.Builder cameraPositionBuilder = new CameraPosition.Builder();
-			if(91l != (latitude = savedInstanceState.getDouble(GOOGLE_MAP_LATITUDE, 91l))
-			   && 181l != (longitude = savedInstanceState.getDouble(GOOGLE_MAP_LONGITUDE, 181))) cameraPositionBuilder.target(new LatLng(latitude, longitude));
+			if(91l != (latitude = savedInstanceState.getDouble(MapActivity.GOOGLE_MAP_LATITUDE, 91l))
+			   && 181l != (longitude = savedInstanceState.getDouble(MapActivity.GOOGLE_MAP_LONGITUDE, 181))) cameraPositionBuilder.target(new LatLng(latitude, longitude));
 
-			if(23 > (zoom = savedInstanceState.getFloat(GOOGLE_MAP_ZOOM_LEVEL, 22))) cameraPositionBuilder.zoom(zoom);
-			if(92 > (tilt = savedInstanceState.getFloat(GOOGLE_MAP_TILT, 91))) cameraPositionBuilder.tilt(tilt);
-			if(362 > (bearing = savedInstanceState.getFloat(GOOGLE_MAP_BEARING))) cameraPositionBuilder.bearing(bearing);
-			if(GoogleMap.MAP_TYPE_SATELLITE == (mapType = savedInstanceState.getInt(GOOGLE_MAP_TYPE))
+			if(23 > (zoom = savedInstanceState.getFloat(MapActivity.GOOGLE_MAP_ZOOM_LEVEL, 22))) cameraPositionBuilder.zoom(zoom);
+			if(92 > (tilt = savedInstanceState.getFloat(MapActivity.GOOGLE_MAP_TILT, 91))) cameraPositionBuilder.tilt(tilt);
+			if(362 > (bearing = savedInstanceState.getFloat(MapActivity.GOOGLE_MAP_BEARING))) cameraPositionBuilder.bearing(bearing);
+			if(GoogleMap.MAP_TYPE_SATELLITE == (mapType = savedInstanceState.getInt(MapActivity.GOOGLE_MAP_TYPE))
 			   || GoogleMap.MAP_TYPE_TERRAIN == mapType) this.map.setMapType(mapType);
 
 			this.map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPositionBuilder.build()));
