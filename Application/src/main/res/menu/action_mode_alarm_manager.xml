@@ -25,10 +25,10 @@
     <item
         android:id="@+id/action_select_all_alarms"
         android:title="@string/action_select_all_alarms"
-        android:icon="@drawable/ic_action_select_all" />
+        android:icon="@drawable/ic_menu_select_all" />
     <item
         android:id="@+id/action_remove_alarms"
         android:title="@string/action_remove_alarm"
-        android:icon="@drawable/ic_action_discard" />
+        android:icon="@drawable/ic_menu_discard" />
 
 </menu>
