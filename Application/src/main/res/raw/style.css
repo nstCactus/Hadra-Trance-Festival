@@ -1,17 +1,18 @@
 html {
     margin: 0;
+    font-family: Helvetica,sans-serif;
+    color: #F6B900;
+    background-color: #5c1819;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    font-size: 16px;
+    /*text-align: justify;*/
 }
-    
+
 body {
     margin: 0;
     padding: 10px;
     padding-top: 5px;
-    font-family: Helvetica,sans-serif;
-    color: #F6B900;
-    background-color: #10020D;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    text-align: justify;
 }
 
 a, a:hover, a:visited {
@@ -41,20 +42,24 @@ h1, h2 {
 }
 
 h1 {
-    font-size: 200%;
+    font-size: 20px;
+/*    font-size: 200%;*/
 }
 
 h2 {
-    font-size: 160%;
+    font-size: 18px;
+/*    font-size: 160%;*/
 }
 
 h3 {
-    font-size: 120%;
+    font-size: 18px;
+/*    font-size: 120%;*/
 }
 
 .faq h1,
 .partners h1{
-    font-size: 120%;
+    font-size: 20px;
+/*    font-size: 120%;*/
 }
 
 h1 a {
@@ -62,7 +67,7 @@ h1 a {
 }
 
 .alt {
-    color: #590801;
+    color: #009E6A;
 }
 
 .text-center {
@@ -93,15 +98,16 @@ h1 a {
 }
 
 .logos > span,
-.logos > a{
-    display: block;
-    width: 160px;
-    height: 160px;
+.logos > a {
+    display: inline-block;
+    vertical-align: top;
+    width: 100px;
+    height: 100px;
     text-align: center;
-    float: left;
     margin: 10px;
 }
 
-.partners h1{
-    clear: both;
+.logos img {
+    max-width: 100%;
+    max-height: 100%;
 }

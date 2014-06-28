@@ -22,5 +22,4 @@
 <ListView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/info_listview"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/background_blur"/>
+    android:layout_height="match_parent" />

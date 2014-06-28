@@ -23,7 +23,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -59,19 +58,19 @@ public class InfoDetailsActivity extends ActionBarActivity{
         this.setTitle(this.getString(this.getResources().getIdentifier(resourceName, "string", "com.zion.htf")));
 
 		this.webView = new WebView(this);
-		this.webView.loadDataWithBaseURL("/", this.readTextFromResource(resourceName), "text/html", "utf-8", null);
-		this.webView.setBackgroundColor(Color.argb(1, 0, 0, 0));
-		if(resourceName.equals("info_about") || resourceName.equals("info_open_source")) this.webView.setWebViewClient(new WebViewClient(){
+		this.webView.loadDataWithBaseURL("file:///android_res/raw/", this.readTextFromResource(resourceName), "text/html", "utf-8", null);
+		this.webView.setBackgroundColor(0x00000000);
+		if("info_about".equals(resourceName) || "info_open_source".equals(resourceName)) this.webView.setWebViewClient(new WebViewClient(){
 			@Override
 			public boolean shouldOverrideUrlLoading(WebView view, String url){
-				Log.v(TAG, url);
+				Log.v(InfoDetailsActivity.TAG, url);
 				boolean ret = false;
-				if(-1 != url.indexOf("github.com/nstCactus")){
-					startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/nstCactus/Hadra-Trance-Festival")));
+				if(url.contains("github.com/nstCactus")){
+                    InfoDetailsActivity.this.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/nstCactus/Hadra-Trance-Festival")));
 					ret = true;
 				}
-				else if(-1 != url.indexOf("donate.me")){
-					startActivity(new Intent(context, DonateActivity.class));
+				else if(url.contains("donate.me")){
+                    InfoDetailsActivity.this.startActivity(new Intent(InfoDetailsActivity.this.context, DonateActivity.class));
 					ret = true;
 				}
 
@@ -80,7 +79,7 @@ public class InfoDetailsActivity extends ActionBarActivity{
 
 			@Override
 			public void onPageStarted(WebView view, String url, Bitmap favicon){
-				Log.v(TAG, "onPageStarted called");
+				Log.v(InfoDetailsActivity.TAG, "onPageStarted called");
 				if(shouldOverrideUrlLoading(view, url)){
 					view.stopLoading();
 				}
@@ -92,22 +91,22 @@ public class InfoDetailsActivity extends ActionBarActivity{
 	}
 
 	private String readTextFromResource(int resourceID){
-		InputStream raw = getResources().openRawResource(resourceID);
+		InputStream raw = this.getResources().openRawResource(resourceID);
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 		int i;
 		try{
 			i = raw.read();
-			while(i != -1){
+			while(-1 != i){
 				stream.write(i);
 				i = raw.read();
 			}
 			raw.close();
 		}
 		catch(IOException e){
-			Log.e(TAG, "Error reading resource with id " + resourceID, e);
+			Log.e(InfoDetailsActivity.TAG, "Error reading resource with id " + resourceID, e);
 		}
 		catch(Resources.NotFoundException e){
-			Log.e(TAG, "No resource found matching id " + resourceID, e);
+			Log.e(InfoDetailsActivity.TAG, "No resource found matching id " + resourceID, e);
 		}
 		return stream.toString();
 	}
@@ -125,7 +124,7 @@ public class InfoDetailsActivity extends ActionBarActivity{
 
 	@Override
 	public boolean onOptionsItemSelected (MenuItem item){
-		boolean ret = true;
+		boolean ret = false;
 
 		switch(item.getItemId()){
 			case android.R.id.home:

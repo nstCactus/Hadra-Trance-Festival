@@ -24,8 +24,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-		android:orientation="vertical"
-        android:background="@drawable/background_blur">
+		android:orientation="vertical">
 
 
     <LinearLayout
@@ -44,7 +43,7 @@
 		<ImageView
 				style="@style/artist.photo"
 				android:id="@+id/artist_photo"
-                tools:src="@drawable/ph_bytherain"/>
+                tools:src="@drawable/ph_by_the_rain"/>
 
 		<com.mobsandgeeks.ui.TypefaceTextView
 			android:layout_width="fill_parent"

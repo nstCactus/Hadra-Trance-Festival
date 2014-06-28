@@ -27,6 +27,7 @@
 		<item name="android:actionBarStyle">@style/ActionBar</item>
 		<item name="android:textColor">@color/brand_yellow</item>
         <item name="vpiTabPageIndicatorStyle">@style/TabStyle</item>
+        <item name="android:windowBackground">@drawable/background_blur</item>
     </style>
 
     <!-- Theme for LinupUpActivity -->

@@ -32,8 +32,7 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              tools:context=".LineUpActivity"
-              android:background="@drawable/background_blur">
+              tools:context=".LineUpActivity">
 
 	<com.viewpagerindicator.TabPageIndicator
 			android:id="@+id/indicator"
