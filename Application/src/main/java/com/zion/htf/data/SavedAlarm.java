@@ -258,16 +258,13 @@ public class SavedAlarm extends Item{
     }
 
     /**
-     * Register an alarm in the System's {@link android.app.AlarmManager}
+     * Register an alarm in the System's {@link android.app.AlarmManager} if such an alarm already exists (same set) it will be updated
      * @param context   The {@link android.content.Context} in which the application is currently running
+     * @see <a href="http://stackoverflow.com/a/16853300/509484">This StackOverflow answer</a> for more details
      */
     public void registerAlarm(Context context){
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, AlarmReceiver.class);
-        intent.putExtra("set_id", this.getSetId());
-        intent.putExtra("alarm_id", this.getId());
-        intent.setAction("com.zion.htf_" + this.getSetId());// This only allows one alarm per set.
-        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent alarmIntent = this.getPendingIntent(context);
 
         if (19 <= Build.VERSION.SDK_INT)    am.setExact(AlarmManager.RTC_WAKEUP, this.getTimestamp(), alarmIntent);
         else                                am.set(AlarmManager.RTC_WAKEUP, this.getTimestamp(), alarmIntent);
@@ -279,16 +276,30 @@ public class SavedAlarm extends Item{
      */
     public void unregisterAlarm(Context context){
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, AlarmReceiver.class);
+        PendingIntent alarmIntent = this.getPendingIntent(context);
+
+        alarmIntent.cancel();
+        am.cancel(alarmIntent);
+    }
+
+    /**
+     * Retrieve a pending intent for {@link com.zion.htf.receiver.AlarmReceiver} for the current {@code SavedAlarm} instance.
+     * This method should always be used to retrieve {@link android.app.PendingIntent}s in {@code (un)registerAlarm} methods as it
+     * helps to make sure that the new {@link android.app.PendingIntent} instance will match the original one.
+     * @param context   The {@link android.content.Context} in which the application is currently running
+     * @return the {@link android.app.PendingIntent} associated with the current intance
+     */
+    protected PendingIntent getPendingIntent(Context context){
+        PendingIntent pendingIntent;
+        Intent intent;
+
+        intent = new Intent(context, AlarmReceiver.class);
         intent.putExtra("set_id", this.getSetId());
         intent.putExtra("alarm_id", this.getId());
         intent.setAction("com.zion.htf_" + this.getSetId());// This only allows one alarm per set.
-        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        pendingIntent = PendingIntent.getBroadcast(context, this.getSetId(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        // Never null as FLAG_NO_CREATE is not passed to PendingIntent.getBroadcast()t
-        alarmIntent.cancel();
-        am.cancel(alarmIntent);
-
+        return pendingIntent;
     }
 
     /**

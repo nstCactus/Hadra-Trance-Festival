@@ -162,7 +162,7 @@ public class TimeToPickerFragment extends DialogFragment{
     class PositiveClickListener implements DialogInterface.OnClickListener{
         @Override
         public void onClick(DialogInterface dialog, int which){
-            boolean databaseOperationSucceded = true;
+            boolean databaseOperationSucceeded = true;
             long amount;
             try{
                 Editable numberField = TimeToPickerFragment.this.numberBox.getText();
@@ -206,9 +206,10 @@ public class TimeToPickerFragment extends DialogFragment{
             values.put("set_id", TimeToPickerFragment.this.set.getId());
             try {
                 if(TimeToPickerFragment.this.editMode){
-                    //FIXME: For some reason an alarm has to be updated twice for AlarmManager to "understand" it.
-                    TimeToPickerFragment.this.alarm.unregisterAlarm(TimeToPickerFragment.this.getActivity());
                     Application.getDbHelper().getWritableDatabase().update("alarms", values, "id = " + TimeToPickerFragment.this.alarm.getId(), null);
+
+                    // Retrieve an updated version of the alarm from database
+                    TimeToPickerFragment.this.alarm = SavedAlarm.getById(TimeToPickerFragment.this.alarm.getId());
                 }
                 else{
                     int alarmId = (int) Application.getDbHelper().getWritableDatabase().insertOrThrow("alarms", null, values);
@@ -216,16 +217,21 @@ public class TimeToPickerFragment extends DialogFragment{
                 }
             }
             catch(SQLException e){
-                databaseOperationSucceded = false;
+                databaseOperationSucceeded = false;
                 if(BuildConfig.DEBUG) e.printStackTrace();
                 //TODO: Notify the user that something went wrong
             }
+            catch(AlarmNotFoundException e){
+                databaseOperationSucceeded = false;
+                if(BuildConfig.DEBUG) e.printStackTrace();
+                // TODO: Handle this properly
+            }
 
-            // Set alarm
+            // Set or update the alarm
             TimeToPickerFragment.this.alarm.registerAlarm(TimeToPickerFragment.this.getActivity());
             
             // Notify the activity that something changed
-            if(databaseOperationSucceded){
+            if(databaseOperationSucceeded){
                 ((TimeToPickerFragment.TimeToPickerInterface)TimeToPickerFragment.this.getActivity()).doPositiveClick(TimeToPickerFragment.this.alarm.getId());
             }
         }
