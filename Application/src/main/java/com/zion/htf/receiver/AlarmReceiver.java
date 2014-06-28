@@ -98,7 +98,7 @@ public class AlarmReceiver extends BroadcastReceiver{
             // Builds the notification
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context)
                     .setPriority(NotificationCompat.PRIORITY_MAX)
-                    .setSmallIcon(R.drawable.hadra_logo)
+                    .setSmallIcon(R.drawable.ic_stat_notify_app_icon)
                     .setLargeIcon(largeIconBitmap)
                     .setAutoCancel(true)
                     .setContentIntent(resultPendingIntent)
@@ -143,7 +143,7 @@ public class AlarmReceiver extends BroadcastReceiver{
 
                 // Add the expandable notification buttons
                 PendingIntent directionsButtonPendingIntent = PendingIntent.getActivity(context, 1, new Intent(Intent.ACTION_VIEW, Uri.parse(String.format(Locale.ENGLISH, "http://maps.google.com/maps?f=d&daddr=%f,%f", stage.getLatitude(), stage.getLongitude()))), Intent.FLAG_ACTIVITY_NEW_TASK);
-                notificationBuilder.addAction(R.drawable.ic_action_directions, context.getString(R.string.action_directions), directionsButtonPendingIntent);
+                notificationBuilder.addAction(R.drawable.ic_menu_directions, context.getString(R.string.action_directions), directionsButtonPendingIntent);
             }
             catch(InconsistentDatabaseException e){
                 e.printStackTrace();
