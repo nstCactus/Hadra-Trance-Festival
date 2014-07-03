@@ -35,6 +35,7 @@ import java.util.Locale;
 /**
  * The {@code MusicSet} class holds data related to an {@link com.zion.htf.data.Artist}'s set as well as methods to retrieve this data from the {@code sets} database table.
  * As it extends {@link com.zion.htf.data.Item}, it can be used as an item in a {@link com.hb.views.PinnedSectionListView} using a {@link com.zion.htf.adapter.LineUpListAdapter} as its source.
+ * FIXME: Delegate the Artist object creation to {@link com.zion.htf.data.Artist} to ensure all values are set correctly
  */
 public class MusicSet extends Item{
     private static final SQLiteOpenHelper dbOpenHelper = Application.getDbHelper();
@@ -112,7 +113,7 @@ public class MusicSet extends Item{
     }
 
     public String getSetType() {
-        return setType;
+        return this.setType;
     }
 
     public MusicSet setSetType(String setType) {
@@ -130,7 +131,7 @@ public class MusicSet extends Item{
     }
 
     public String getStage() {
-        return stage;
+        return this.stage;
     }
 
     public MusicSet setStage(String stage) {
@@ -226,9 +227,11 @@ public class MusicSet extends Item{
      */
     @SuppressWarnings("JavadocReference")
     public static MusicSet newInstance(Cursor cursor){
-        MusicSet musicSet = null;
+        MusicSet musicSet;
         musicSet = new MusicSet(cursor.getString(MusicSet.COLUMN_ARTIST_NAME));
+
         Artist artist = new Artist(cursor.getString(MusicSet.COLUMN_ARTIST_NAME))
+                .setId(cursor.getInt(MusicSet.COLUMN_ARTIST_ID))
                 .setGenre(cursor.getString(MusicSet.COLUMN_ARTIST_GENRE), "")
                 .setOrigin(cursor.getString(MusicSet.COLUMN_ARTIST_ORIGIN), "")
                 .setPicture(cursor.getString(MusicSet.COLUMN_ARTIST_PICTURE_NAME), "")
