@@ -21,12 +21,10 @@ package com.zion.htf.ui;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.AttributeSet;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -48,13 +46,6 @@ public class MainActivity extends ActionBarActivity{
 		super.onCreate(savedInstanceState);
 
 		this.setContentView(R.layout.activity_main);
-	}
-
-	@Override
-	public View onCreateView(String name, Context context, AttributeSet attrs){
-		View view = super.onCreateView(name, context, attrs);
-
-		return view;
 	}
 
 	@Override
@@ -88,7 +79,15 @@ public class MainActivity extends ActionBarActivity{
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu){
         this.getMenuInflater().inflate(R.menu.main, menu);
-        if(BuildConfig.DEBUG) this.getMenuInflater().inflate(R.menu.main_debug, menu);
+        if(BuildConfig.DEBUG){
+            this.getMenuInflater().inflate(R.menu.main_debug, menu);
+
+            MenuItem bookmarksMenuItem = menu.findItem(R.id.action_favorite_artists);
+            bookmarksMenuItem.setVisible(true);
+
+            MenuItem helpMenuItem = menu.findItem(R.id.action_help);
+            helpMenuItem.setVisible(true);
+        }
 		return true;
 	}
 
@@ -111,6 +110,16 @@ public class MainActivity extends ActionBarActivity{
 
             case R.id.action_alarms:
                 this.startActivity(new Intent(this, AlarmManagerActivity.class));
+                break;
+
+            case R.id.action_favorite_artists:
+                this.startActivity(new Intent(this, FavoriteArtistsManagerActivity.class));
+                break;
+
+            case R.id.action_about:
+                Intent intent = new Intent(this, InfoDetailsActivity.class);
+                intent.putExtra(InfoDetailsActivity.name, "info_about");
+                this.startActivity(intent);
                 break;
 
             default:
