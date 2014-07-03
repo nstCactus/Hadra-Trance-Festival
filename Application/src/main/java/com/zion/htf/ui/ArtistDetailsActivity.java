@@ -24,7 +24,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,43 +38,52 @@ import com.zion.htf.data.Artist;
 import com.zion.htf.data.MusicSet;
 import com.zion.htf.data.SavedAlarm;
 import com.zion.htf.exception.AlarmNotFoundException;
+import com.zion.htf.exception.MissingArgumentException;
 import com.zion.htf.ui.fragment.TimeToPickerFragment;
 
 import java.util.Locale;
 
+/**
+ * This activity displays detailed information about an artist such as its name, label, origin, biography as well as links to its website, facebook page and souncloud profile.
+ * The user can add a reminder to its set (if he navigated to the artist from {@link com.zion.htf.ui.LineUpActivity} or {@link com.zion.htf.ui.ArtistListActivity}).
+ * For this activity to load properly, a {@code set_id} or {@code artist_id} (which are database identifiers of rows in tables {@code sets} and {@code artists}) is required.
+ */
 public class ArtistDetailsActivity extends ActionBarActivity implements View.OnClickListener, TimeToPickerFragment.TimeToPickerInterface{
 	private static final String TAG = "ArtistDetailsActivity";
 	private String facebook_url;
 	private String website_url;
 	private String soundcloud_url;
     private int setId;
+    private int artistId;
 
-    private MusicSet musicSet;
     private Artist artist;
     private SavedAlarm alarm = null;
-
-    //TODO: Refactor this Activity so that it holds an instance of Artist with all needed info
 
     @Override
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.activity_artist_details);
 
-		ActionBar actionBar = this.getSupportActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);
-		actionBar.setHomeButtonEnabled(true);
-
-        this.setId = this.getIntent().getIntExtra("set_id", 0);
-
         try{
-            this.musicSet = MusicSet.getById(this.setId);
-            this.artist = this.musicSet.getArtist();
+            Intent openingIntent = this.getIntent();
+            if(!openingIntent.hasExtra("set_id") && !openingIntent.hasExtra("artist_id")) throw new MissingArgumentException("");
+            this.setId = this.getIntent().getIntExtra("set_id", 0);
+            this.artistId = openingIntent.getIntExtra("artist_id", 0);
 
-            try{
-                this.alarm = SavedAlarm.findBySetId(this.musicSet.getId());
+            if(openingIntent.hasExtra("set_id")){
+                MusicSet musicSet = MusicSet.getById(this.setId);
+                this.artist = musicSet.getArtist();
+                this.artistId = this.artist.getId();
+
+                try{
+                    this.alarm = SavedAlarm.findBySetId(musicSet.getId());
+                }
+                catch(AlarmNotFoundException e){
+                    // Nothing to do, it's ok for a set not to have an alarm
+                }
             }
-            catch(AlarmNotFoundException e){
-                // Nothing to do, it's ok for a set not to have an alarm
+            else if(openingIntent.hasExtra("artist_id")){
+                this.artist = Artist.getById(this.artistId);
             }
 
             this.getSupportActionBar().setTitle(this.artist.getName());
@@ -118,16 +126,31 @@ public class ArtistDetailsActivity extends ActionBarActivity implements View.OnC
             String bio = this.artist.getBio("fr".equals(Locale.getDefault().getLanguage()) ? "fr" : "en");
             bio_field.setText(bio);
         }
-        catch (Exception e){
+        catch(MissingArgumentException e){
+            if(BuildConfig.DEBUG) e.printStackTrace();
             //TODO: Handle this properly
-            e.printStackTrace();
+        }
+        catch (Exception e){
+            if(BuildConfig.DEBUG) e.printStackTrace();
+            //TODO: Handle this properly
         }
 	}
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
-        if(BuildConfig.DEBUG){// FIXME: Remove this condition when alarms are ready
-            this.getMenuInflater().inflate(R.menu.artist_details, menu);
+        this.getMenuInflater().inflate(R.menu.artist_details, menu);
+
+        if(!this.getIntent().hasExtra("set_id")){
+            MenuItem addAlarmMenuItem = menu.findItem(R.id.action_addAlarm);
+            MenuItem editAlarmMenuItem = menu.findItem(R.id.action_editAlarm);
+            if(null != addAlarmMenuItem){
+                addAlarmMenuItem.setVisible(false);
+                addAlarmMenuItem.setEnabled(false);
+            }
+            if(null != editAlarmMenuItem){
+                editAlarmMenuItem.setVisible(false);
+                editAlarmMenuItem.setEnabled(false);
+            }
         }
         return true;
     }
@@ -136,14 +159,29 @@ public class ArtistDetailsActivity extends ActionBarActivity implements View.OnC
     public boolean onPrepareOptionsMenu (Menu menu){
         MenuItem addAlarmItem = menu.findItem(R.id.action_addAlarm);
         MenuItem editAlarmItem = menu.findItem(R.id.action_editAlarm);
+        MenuItem toggleFavorite = menu.findItem(R.id.action_toggle_favorite);
 
+        boolean areAlarmsEnabled = this.getIntent().hasExtra("set_id");
+        boolean hasAlarm = null != this.alarm;
+
+        // Add / edit alarm button
         if(null != addAlarmItem){
-            addAlarmItem.setVisible(null == this.alarm);
-            addAlarmItem.setEnabled(null == this.alarm);
+            addAlarmItem.setVisible(areAlarmsEnabled && null == this.alarm);
+            addAlarmItem.setEnabled(areAlarmsEnabled && null == this.alarm);
         }
         if(null != editAlarmItem){
-            editAlarmItem.setVisible(null != this.alarm);
-            editAlarmItem.setEnabled(null != this.alarm);
+            editAlarmItem.setVisible(areAlarmsEnabled && null != this.alarm);
+            editAlarmItem.setEnabled(areAlarmsEnabled && null != this.alarm);
+        }
+
+        // Favorite button
+        if(this.artist.isFavorite()){
+            toggleFavorite.setTitle(R.string.action_unset_favorite);
+            toggleFavorite.setIcon(R.drawable.ic_menu_favorite);
+        }
+        else{
+            toggleFavorite.setTitle(R.string.action_set_favorite);
+            toggleFavorite.setIcon(R.drawable.ic_menu_not_favorite);
         }
 
         return super.onPrepareOptionsMenu(menu);
@@ -184,23 +222,31 @@ public class ArtistDetailsActivity extends ActionBarActivity implements View.OnC
 		boolean ret = true;
 
 		switch(item.getItemId()){
-			case android.R.id.home:
-				this.finish();
-				break;
             case R.id.action_addAlarm:
-                // Open the add alarm popup
                 this.showAddAlarmDialog();
                 break;
+
             case R.id.action_editAlarm:
-                // Open the add alarm popup
                 this.showEditAlarmDialog();
                 break;
+
+            case R.id.action_toggle_favorite:
+                this.toggleFavoriteArtist();
+                break;
+
 			default:
 				ret = false;
 		}
 
 		return ret;
 	}
+
+    /**
+     * Toggle the favorite status of the current artist
+     */
+    private void toggleFavoriteArtist(){
+        if(this.artist.toggleFavorite()) this.supportInvalidateOptionsMenu();
+    }
 
     @Override
     //Play closing animation when activity is closed (using back button for instance)
@@ -251,7 +297,7 @@ public class ArtistDetailsActivity extends ActionBarActivity implements View.OnC
             if(BuildConfig.DEBUG) e.printStackTrace();
             // TODO: Handle this properly
         }
-        this.invalidateOptionsMenu();
+        this.supportInvalidateOptionsMenu();
     }
 
     @Override
@@ -262,6 +308,6 @@ public class ArtistDetailsActivity extends ActionBarActivity implements View.OnC
     @Override
     public void doNeutralClick(int setId, int alarmId) {
         this.alarm = null;
-        this.invalidateOptionsMenu();
+        this.supportInvalidateOptionsMenu();
     }
 }

@@ -47,7 +47,7 @@ public class ArtistListActivity extends ActionBarActivity implements AdapterView
 		actionBar.setDisplayHomeAsUpEnabled(true);
 
         this.listView = (ListView)this.findViewById(R.id.artist_list);
-        this.listView.setAdapter(new ArtistListAdapter<Item>(this, R.layout.item_artist_list, R.id.label, MusicSet.getList()));
+        this.listView.setAdapter(new ArtistListAdapter<Item>(this, R.layout.item_artists_list, R.id.label, MusicSet.getList()));
         this.listView.setOnItemClickListener(this);
     }
 

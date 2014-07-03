@@ -17,9 +17,7 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
     or see <http://www.gnu.org/licenses/>.
 -->
-<resources
-    xmlns:tools="http://schemas.android.com/tools">
-
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name" tools:ignore="MissingTranslation">Hadra Trance Festival</string>
     <string name="title_activity_map">Map</string>
     <string name="title_activity_line_up" tools:ignore="MissingTranslation">Line Up</string>
@@ -48,4 +46,11 @@
         <item>Hours</item>
         <item>Minutes</item>
     </string-array>
+
+    <string name="no_item_selected">No selected item</string>
+    <plurals name="item_selected">
+        <item quantity="zero">@string/no_item_selected</item>
+        <item quantity="one">1 selected item</item>
+        <item quantity="other">%d selected items</item>
+    </plurals>
 </resources>

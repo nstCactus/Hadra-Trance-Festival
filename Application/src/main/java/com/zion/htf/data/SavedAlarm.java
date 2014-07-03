@@ -47,7 +47,7 @@ import java.util.Locale;
 
 /**
  * The {@code SavedAlarm} class holds data related to user-defined alarms as well as methods to retrieve this data from the {@code alarms} database table.
- * As it extends {@link com.zion.htf.data.Item}, it can be used as an item in a {@link com.hb.views.PinnedSectionListView} using a {@link com.zion.htf.adapter.AlarmsListAdapter} as its source.
+ * As it extends {@link com.zion.htf.data.Item}, it can be used as an item in a {@link com.hb.views.PinnedSectionListView} using a {@link com.zion.htf.adapter.AbstractActionModeListAdapter} as its source.
  */
 public class SavedAlarm extends Item{
     private static final SQLiteDatabaseHelper dbOpenHelper = Application.getDbHelper();
@@ -146,7 +146,7 @@ public class SavedAlarm extends Item{
      * Return a {@link List} of the {@code SavedAlarm} that are persisted in the database.
      * @return A {@link List} of {@code SavedAlarm} objects
      */
-    public static List<Item> getList(){
+    public static List<SavedAlarm> getList(){
         return SavedAlarm.getList(false);
     }
     /**
@@ -154,8 +154,8 @@ public class SavedAlarm extends Item{
      * @param addDateSeparators A {@code boolean} indicating whether to add {@link com.zion.htf.data.Item} as date separator (for use in a {@link com.zion.htf.adapter.LineUpListAdapter})
      * @return A {@link List} of {@code SavedAlarm} objects
      */
-    public static List<Item> getList(Boolean addDateSeparators){
-        List<Item> alarms = new ArrayList<Item>();
+    public static List<SavedAlarm> getList(Boolean addDateSeparators){
+        List<SavedAlarm> alarms = new ArrayList<SavedAlarm>();
 
         Cursor cursor = SavedAlarm.dbOpenHelper.getReadableDatabase().rawQuery(SavedAlarm.SETS_QUERY, null);
         int columnIndexId = cursor.getColumnIndex("aId");
@@ -172,7 +172,7 @@ public class SavedAlarm extends Item{
             if(addDateSeparators){
                 Date alarmDate = new Date(alarm.getTimestamp());
                 if (!DateUtils.areSameDay(previousDate, alarmDate)){
-                    alarms.add(new Item(dateFormat.format(alarmDate), Item.TYPE_SECTION));
+                    alarms.add(new SavedAlarm(dateFormat.format(alarmDate)));
                 }
                 previousDate = alarmDate;
             }
@@ -225,7 +225,7 @@ public class SavedAlarm extends Item{
     }
 
     /**
-     * Delete the alarms of which database identifier matches the given {@code IN} clause
+     * Delete the alarms which database identifier matches the given {@code IN} clause
      * @param in The {@code IN} clause (without the {@code IN} keyword itself)
      * @return the number of deleted rows
      */

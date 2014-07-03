@@ -45,7 +45,6 @@ import com.zion.htf.exception.SetNotFoundException;
 /**
  * An {@link android.app.AlertDialog} used to set or edit an alarm.
  */
-// FIXME: Edit mode title should emphasize the fact it editing rather than creating an alarm
 // FIXME: Dialog must state clearly that the input must be in hours/minutes to the begining of the set
 // TODO: Consider using a spinner as in Calendar app
 public class TimeToPickerFragment extends DialogFragment{

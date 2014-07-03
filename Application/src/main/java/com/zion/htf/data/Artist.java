@@ -1,6 +1,9 @@
 package com.zion.htf.data;
 
+import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 
 import com.zion.htf.Application;
@@ -12,6 +15,8 @@ import com.zion.htf.exception.SetNotFoundException;
 
 import org.michenux.android.db.sqlite.SQLiteDatabaseHelper;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -30,11 +35,12 @@ public class Artist {
     private static final int COLUMN_SOUNDCLOUD = 8;
     private static final int COLUMN_LABEL = 9;
     private static final int COLUMN_BIO_ID = 10;
+    private static final int COLUMN_FAVORITE = 11;
     private static final String QUERY = "SELECT artists.* FROM artists INNER JOIN sets ON sets.artist = artists.id ";
 
     /* Sets table fields */
     protected int id;
-    private String name;
+    private final String name;
     private String genre;
     private String origin;
     private String picture;
@@ -44,6 +50,7 @@ public class Artist {
     private String soundcloud;
     private String label;
     private int bioId;
+    private boolean isFavorite;
     private int pictureResourceId;
     private String bioEn;
     private String bioFr;
@@ -67,6 +74,7 @@ public class Artist {
         try {
             return Artist.newInstance(String.format(Locale.ENGLISH, "artists.id = %d", artistId));
         } catch (ArtistNotFoundException e) {
+            // Enrich the exception including the artist id
             throw new ArtistNotFoundException(artistId);
         }
     }
@@ -92,13 +100,28 @@ public class Artist {
      * @param where a string representing the {@code WHERE} clause of the query used to get the artist
      * @return a new Artist instance with all fields correctly bound
      */
-    private static Artist newInstance(String where) throws ArtistNotFoundException{
+    public static Artist newInstance(String where) throws ArtistNotFoundException{
         if(!where.matches("^\\s*WHERE\\b.*")) where = " WHERE " + where;
 
         Cursor cursor = Artist.dbOpenHelper.getReadableDatabase().rawQuery(Artist.QUERY + where, null);
 
         if (!cursor.moveToNext()) throw new ArtistNotFoundException("No artist found");
+        Artist artist = Artist.newInstance(cursor);
 
+        if (!cursor.isClosed()) cursor.close();
+        Artist.dbOpenHelper.close();
+
+        return artist;
+    }
+
+    /**
+     * Return a new {@code Artist} instance
+     *
+     * @param cursor A {@link android.database.Cursor} instance representing a query similar to {@link Artist.QUERY}
+     * @return a new Artist instance with all fields correctly bound
+     */
+    @SuppressWarnings("JavadocReference")
+    public static Artist newInstance(Cursor cursor){
         Artist artist = new Artist(cursor.getString(Artist.COLUMN_NAME));
         artist.setId(cursor.getInt(Artist.COLUMN_ID))
                 .setGenre(cursor.getString(Artist.COLUMN_GENRE), "")
@@ -108,10 +131,8 @@ public class Artist {
                 .setFacebook(cursor.getString(Artist.COLUMN_FACEBOOK), "")
                 .setSoundcloud(cursor.getString(Artist.COLUMN_SOUNDCLOUD), "")
                 .setLabel(cursor.getString(Artist.COLUMN_LABEL), "")
-                .setBioId(cursor.getInt(Artist.COLUMN_BIO_ID));
-
-        if (!cursor.isClosed()) cursor.close();
-        Artist.dbOpenHelper.close();
+                .setBioId(cursor.getInt(Artist.COLUMN_BIO_ID))
+                .setFavorite(cursor.getInt(Artist.COLUMN_FAVORITE));
 
         return artist;
     }
@@ -308,5 +329,75 @@ public class Artist {
         this.cover = cover;
 
         return this;
+    }
+
+    public static List<Artist> getFavoriteArtistsList(){
+        List<Artist> artists = new ArrayList<Artist>();
+        SQLiteDatabaseHelper dbHelper = Application.getDbHelper();
+        Cursor cursor = dbHelper.getReadableDatabase().rawQuery(String.format("%s WHERE artists.favorite = 1", Artist.QUERY), null);//FIXME: Change the WHERE clause to select only artists marked as favorite
+
+        while(cursor.moveToNext()){
+            artists.add(Artist.newInstance(cursor));
+        }
+
+        if (!cursor.isClosed()) cursor.close();
+        dbHelper.close();
+
+        return artists;
+    }
+
+    public boolean isFavorite() {
+        return this.isFavorite;
+    }
+
+    public Artist setFavorite(boolean favorite){
+        this.isFavorite = favorite;
+        return this;
+    }
+
+    public Artist setFavorite(int favorite){
+        return this.setFavorite(0 != favorite);
+    }
+
+    /**
+     * Toggle the artist's favorite status in database
+     * @return boolean Whether or not the query was successful
+     */
+    public boolean toggleFavorite(){
+        boolean ret = false;
+        boolean newValue = !this.isFavorite;
+
+        ContentValues values = new ContentValues();
+        values.put("favorite", newValue);
+        SQLiteDatabase db = Artist.dbOpenHelper.getWritableDatabase();
+
+        db.beginTransaction();
+
+        int affectedRows = db.update("artists", values, "id = " + this.id, null);
+
+        if(1 == affectedRows){
+            db.setTransactionSuccessful();
+            this.setFavorite(newValue);
+            ret = true;
+        }
+        else if(BuildConfig.DEBUG){
+            Log.e(Artist.TAG, String.format(Locale.ENGLISH, "Failed to toggle favorite status of artist %s (%d). Transaction rolled back as it would have updated %d rows instead of 1.", this.name, this.id, affectedRows));
+        }
+
+        db.endTransaction();
+        db.close();
+        Artist.dbOpenHelper.close();
+
+        return ret;
+    }
+
+    /**
+     * Remove the favorite status from the artist whose database identifier matches the given {@code IN} clause
+     * @param inClause The {@code IN} clause (without the {@code IN} keyword itself)
+     * @return int the number of updated artists
+     */
+    public static int unsetFavorite(String inClause){
+        SQLiteStatement statement = Artist.dbOpenHelper.getWritableDatabase().compileStatement(String.format(Locale.ENGLISH, "UPDATE artists SET favorite = 0 WHERE id IN(%s);", inClause));
+        return statement.executeUpdateDelete();
     }
 }

@@ -69,6 +69,7 @@ public class MusicSet extends Item{
     protected static final int COLUMN_ARTIST_SOUNDCLOUD     = 14;
     protected static final int COLUMN_ARTIST_LABEL          = 15;
     protected static final int COLUMN_ARTIST_BIO_ID         = 16;
+    protected static final int COLUMN_ARTIST_FAVORITE       = 17;
 
     public MusicSet(String name){
 		super(name, Item.TYPE_ITEM);
@@ -78,7 +79,7 @@ public class MusicSet extends Item{
     /* Getters & Setters */
     /*********************/
     public int getId() {
-        return id;
+        return this.id;
     }
 
     public MusicSet setId(int id) {
@@ -240,7 +241,8 @@ public class MusicSet extends Item{
                 .setFacebook(cursor.getString(MusicSet.COLUMN_ARTIST_FACEBOOK), "")
                 .setSoundcloud(cursor.getString(MusicSet.COLUMN_ARTIST_SOUNDCLOUD), "")
                 .setLabel(cursor.getString(MusicSet.COLUMN_ARTIST_LABEL), "")
-                .setBioId(cursor.getInt(MusicSet.COLUMN_ARTIST_BIO_ID));
+                .setBioId(cursor.getInt(MusicSet.COLUMN_ARTIST_BIO_ID))
+                .setFavorite(cursor.getInt(MusicSet.COLUMN_ARTIST_FAVORITE));
 
         musicSet.setSetType(cursor.getString(MusicSet.COLUMN_TYPE))
                 .setStage(cursor.getString(MusicSet.COLUMN_STAGE))

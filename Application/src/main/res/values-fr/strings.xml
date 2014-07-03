@@ -51,4 +51,9 @@
         <item>Minutes</item>
     </string-array>
 
+    <string name="no_item_selected">Aucun élément sélectionné</string>
+    <plurals name="item_selected">
+        <item quantity="one">%d élément sélectionné</item>
+        <item quantity="other">%d éléments sélectionnés</item>
+    </plurals>
 </resources>

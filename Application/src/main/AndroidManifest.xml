@@ -20,7 +20,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.zion.htf"
     android:versionCode="9"
-    android:versionName="1.20" >
+    android:versionName="1.2" >
 
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -60,22 +60,20 @@
         android:required="false" />
 
     <application
-        android:name="com.zion.htf.Application"
+        android:name=".Application"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyDueyhcgOJaNXOR3lz4VQJQ7NJE9Nn90HI" />
 
         <activity
-            android:name="com.zion.htf.ui.MainActivity"
+            android:name=".ui.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -84,83 +82,83 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.zion.htf.ui.LineUpActivity"
+            android:name=".ui.LineUpActivity"
             android:label="@string/title_activity_line_up"
-            android:parentActivityName="com.zion.htf.ui.MainActivity"
+            android:parentActivityName=".ui.MainActivity"
             android:theme="@style/Theme.LineUp" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.zion.htf.ui.MainActivity" />
         </activity>
         <activity
-            android:name="com.zion.htf.ui.ArtistListActivity"
+            android:name=".ui.ArtistListActivity"
             android:label="@string/title_activity_artist_list"
-            android:parentActivityName="com.zion.htf.ui.MainActivity">
+            android:parentActivityName=".ui.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.zion.htf.ui.MainActivity" />
         </activity>
         <activity
-            android:name="com.zion.htf.ui.MapActivity"
+            android:name=".ui.MapActivity"
             android:label="@string/title_activity_map"
-            android:parentActivityName="com.zion.htf.ui.MainActivity">
+            android:parentActivityName=".ui.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.zion.htf.ui.MainActivity" />
         </activity>
         <activity
-            android:name="com.zion.htf.ui.ArtistDetailsActivity"
-            android:parentActivityName="com.zion.htf.ui.LineUpActivity">
+            android:name=".ui.ArtistDetailsActivity"
+            android:parentActivityName=".ui.LineUpActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.zion.htf.ui.LineUpActivity" />
         </activity>
         <activity
-            android:name="com.zion.htf.ui.DonateActivity"
+            android:name=".ui.DonateActivity"
             android:label="@string/action_donate"
-            android:parentActivityName="com.zion.htf.ui.MainActivity">
+            android:parentActivityName=".ui.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.zion.htf.ui.MainActivity" />
         </activity>
         <activity
-            android:name="com.zion.htf.ui.InfoActivity"
+            android:name=".ui.InfoActivity"
             android:label="@string/action_info"
-            android:parentActivityName="com.zion.htf.ui.MainActivity">
+            android:parentActivityName=".ui.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.zion.htf.ui.MainActivity" />
         </activity>
         <activity
-            android:name="com.zion.htf.ui.InfoDetailsActivity"
+            android:name=".ui.InfoDetailsActivity"
             android:label="@string/action_info"
-            android:parentActivityName="com.zion.htf.ui.InfoActivity">
+            android:parentActivityName=".ui.InfoActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.zion.htf.ui.InfoActivity" />
         </activity>
         <activity
-            android:name="com.zion.htf.ui.SettingsActivity"
+            android:name=".ui.SettingsActivity"
             android:label="@string/action_settings"
-            android:parentActivityName="com.zion.htf.ui.MainActivity">
+            android:parentActivityName=".ui.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.zion.htf.ui.MainActivity" />
         </activity>
         <activity
-            android:name="com.zion.htf.ui.AlarmManagerActivity"
+            android:name=".ui.AlarmManagerActivity"
             android:label="@string/title_activity_alarm_manager"
-            android:parentActivityName="com.zion.htf.ui.MainActivity" >
+            android:parentActivityName=".ui.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="MainActivity" />
         </activity>
 
         <!-- Alarms-related receivers -->
-        <receiver android:name="com.zion.htf.receiver.AlarmReceiver" />
-        <receiver android:name="com.zion.htf.receiver.BootReceiver">
+        <receiver android:name=".receiver.AlarmReceiver" />
+        <receiver android:name=".receiver.BootReceiver" >
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
@@ -191,5 +189,14 @@
         <activity
             android:name="io.card.payment.DataEntryActivity"
             android:theme="@style/Theme.AppCompat.Light" />
+        <activity
+            android:name=".ui.FavoriteArtistsManagerActivity"
+            android:label="@string/title_activity_favorites_artists_manager"
+            android:parentActivityName=".ui.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.zion.htf.ui.MainActivity" />
+        </activity>
     </application>
+
 </manifest>
