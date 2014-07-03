@@ -20,8 +20,7 @@
   ~  */
   -->
 
-<resources
-    xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="info_edito">Edito</string>
     <string name="info_news">News</string>
     <string name="info_volunteers">Volunteers</string>
@@ -33,4 +32,19 @@
     <string name="info_about">About</string>
     <string name="info_open_source" tools:ignore="MissingTranslation">Open source</string>
     <string name="info_village">The village</string>
+
+    <array name="infos">
+        <item>@string/info_edito</item>
+        <item>@string/info_news</item>
+        <item>@string/info_transport</item>
+        <item>@string/info_camp</item>
+        <item>@string/info_village</item>
+        <item>@string/info_dogs</item>
+        <item>@string/info_volunteers</item>
+        <item>@string/info_partners</item>
+        <item>@string/info_faq</item>
+        <item>@string/info_about</item>
+        <item>@string/info_open_source</item>
+        <item>@string/action_donate</item>
+    </array>
 </resources>

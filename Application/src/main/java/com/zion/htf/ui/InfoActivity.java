@@ -36,22 +36,9 @@ import com.zion.htf.R;
 
 public class InfoActivity extends ActionBarActivity implements AdapterView.OnItemClickListener{
 	private static final String TAG = "InfoActivity";
+	private static final Context  context = Application.getContext();
+	private static final String[] items   = InfoActivity.context.getResources().getStringArray(R.array.infos);
 	private ListAdapter listAdapter;
-	private static Context  context = Application.getContext();
-	private static String[] items   = new String[]{//TODO: Move this to an XML res file
-            context.getString(R.string.info_edito),
-            context.getString(R.string.info_news),
-			context.getString(R.string.info_transport),
-			context.getString(R.string.info_camp),
-			context.getString(R.string.info_village),
-            context.getString(R.string.info_dogs),
-            context.getString(R.string.info_volunteers),
-            context.getString(R.string.info_partners),
-            context.getString(R.string.info_faq),
-			context.getString(R.string.info_about),
-			context.getString(R.string.info_open_source),
-			context.getString(R.string.action_donate)
-	};
     private ListView listview;
 
 	@Override
@@ -70,6 +57,7 @@ public class InfoActivity extends ActionBarActivity implements AdapterView.OnIte
 	}
 
 	@Override
+    // TODO: Create an AboutActivity instead of displaying the about info in a WebView
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id){
 		String item = (String)parent.getAdapter().getItem(position);
 
@@ -98,7 +86,7 @@ public class InfoActivity extends ActionBarActivity implements AdapterView.OnIte
 				intent.putExtra(InfoDetailsActivity.name, name);
 			}
 			catch(Resources.NotFoundException e){
-				Log.e(TAG, String.format("Resource entry name not found for string \"%s\" (id: %d)", item, strId), e);
+				Log.e(InfoActivity.TAG, String.format("Resource entry name not found for string \"%s\" (id: %d)", item, strId), e);
 			}
 		}
 
