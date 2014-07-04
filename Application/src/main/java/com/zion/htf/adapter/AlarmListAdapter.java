@@ -22,103 +22,66 @@
 package com.zion.htf.adapter;
 
 import android.content.Context;
-import android.util.Log;
+import android.database.Cursor;
 import android.util.SparseBooleanArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.zion.htf.R;
-import com.zion.htf.data.MusicSet;
 import com.zion.htf.data.SavedAlarm;
+import com.zion.htf.ui.AlarmManagerActivity;
 
-import java.util.List;
-import java.util.Locale;
-
-public class AlarmListAdapter<T> extends AbstractActionModeListAdapter {
-    static class ItemViewHolder{
+public class AlarmListAdapter extends AbstractActionModeListAdapter {
+    static class ViewHolder {
         TextView artistName;
         TextView stage;
         TextView time;
     }
 
-    public AlarmListAdapter(Context context, int resource, int textViewResourceId, List<T> objects) {
-        super(context, resource, textViewResourceId, objects);
+    public AlarmListAdapter(Context context, Cursor cursor, boolean autoRequery) {
+        super(context, cursor, autoRequery);
+    }
+
+    public AlarmListAdapter(Context context, Cursor cursor, int flags) {
+        super(context, cursor, flags);
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent){
-        Log.v(this.getClass().getName(), String.format(Locale.ENGLISH, "getView(%d, %s, %s)", position, convertView, parent));
+    public View newView(Context context, Cursor cursor, ViewGroup parent) {
+        View rowView = super.layoutInflater.inflate(R.layout.item_alarms_list, parent, false);
+        AlarmListAdapter.ViewHolder holder = new AlarmListAdapter.ViewHolder();
 
-        AlarmListAdapter.ItemViewHolder holder;
-        SavedAlarm alarm = (SavedAlarm)this.getItem(position);
-        MusicSet set = alarm.getSet();
-        boolean inflateView = null == convertView;
+        holder.artistName = (TextView)rowView.findViewById(R.id.label);
+        holder.stage = (TextView)rowView.findViewById(R.id.stage);
+        holder.time = (TextView)rowView.findViewById(R.id.time);
 
-        // Always call the super method as it sets selected items background color
-        convertView = super.getView(position, convertView, parent);
+        rowView.setTag(holder);
+        return rowView;
+    }
 
-        if(inflateView){
-            // Get references to the fields and store them in the ViewHolder
-            holder = new AlarmListAdapter.ItemViewHolder();
-            holder.artistName = (TextView)convertView.findViewById(R.id.label);
-            holder.stage = (TextView)convertView.findViewById(R.id.stage);
-            holder.time = (TextView)convertView.findViewById(R.id.time);
+    @Override
+    public void bindView(View view, Context context, Cursor cursor) {
+        AlarmListAdapter.ViewHolder holder = (AlarmListAdapter.ViewHolder) view.getTag();
 
-            convertView.setTag(holder);
-        }
-        else{
-            holder = (AlarmListAdapter.ItemViewHolder)convertView.getTag();
-        }
-
-        String stage = set.getStage();
-        stage = stage.replace("The ", "");
-        stage = stage.substring(0, 1).toUpperCase(Locale.ENGLISH) + stage.substring(1);
-        holder.artistName.setText(alarm.getSet().getArtist().getName());
-        holder.time.setText(this.simpleDateFormat.format(alarm.getTimestamp()));
-        holder.stage.setText(stage);
-
-        return convertView;
+        holder.artistName.setText(cursor.getString(AlarmManagerActivity.COLUMN_ARTIST_NAME));
+        holder.time.setText(this.simpleDateFormat.format(cursor.getLong(AlarmManagerActivity.COLUMN_ALARM_TIMESTAMP)));
+        holder.stage.setText(cursor.getString(AlarmManagerActivity.COLUMN_SET_STAGE));
     }
 
     @Override
     public void removeSelected(){
         SparseBooleanArray selectedIds = this.getSelectedPositions();
         String inClause = null;
-        SavedAlarm item;
         int id;
 
         for(int i = selectedIds.size() - 1; 0 <= i; i--){
-            item = (SavedAlarm)this.getItem(selectedIds.keyAt(i));
-            id = item.getId();
+            id = ((Cursor)this.getItem(selectedIds.keyAt(i))).getInt(AlarmManagerActivity.COLUMN_ALARM_ID);
             if(null == inClause)    inClause = String.valueOf(id);
             else                    inClause += String.format(",%d", id);
-
-            Log.v("AlarmsListAdapter", String.format("Trying to delete item at position %d.Adapter size = %d", selectedIds.keyAt(i), this.getCount()));
-            this.remove(item);
         }
 
         SavedAlarm.delete(inClause);
         this.notifyDataSetChanged();
-    }
-
-    /**
-     * Find an alarm using its database identifier
-     * @param id the database identifier of the alarm
-     * @return the position of the `SavedAlarm` object matching the given {@code id} or null if none found
-     */
-    public int findAlarmPositionById(int id){
-        int position = -1;
-        SavedAlarm current;
-
-        int currentPosition = 0;
-        int count = this.getCount();
-        while(-1 == position && currentPosition < count){
-            current = (SavedAlarm)this.getItem(currentPosition);
-            if(null != current && id == current.getId()) position = currentPosition;
-            currentPosition++;
-        }
-
-        return position;
     }
 }

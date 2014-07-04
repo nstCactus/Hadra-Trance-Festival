@@ -19,6 +19,7 @@
 
 package com.zion.htf.ui;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -38,6 +39,7 @@ import com.zion.htf.data.Artist;
 import com.zion.htf.data.MusicSet;
 import com.zion.htf.data.SavedAlarm;
 import com.zion.htf.exception.AlarmNotFoundException;
+import com.zion.htf.exception.ArtistNotFoundException;
 import com.zion.htf.exception.MissingArgumentException;
 import com.zion.htf.ui.fragment.TimeToPickerFragment;
 
@@ -129,6 +131,9 @@ public class ArtistDetailsActivity extends ActionBarActivity implements View.OnC
         catch(MissingArgumentException e){
             if(BuildConfig.DEBUG) e.printStackTrace();
             //TODO: Handle this properly
+        }
+        catch(ArtistNotFoundException e){
+            if(BuildConfig.DEBUG) e.printStackTrace();
         }
         catch (Exception e){
             if(BuildConfig.DEBUG) e.printStackTrace();
@@ -245,7 +250,10 @@ public class ArtistDetailsActivity extends ActionBarActivity implements View.OnC
      * Toggle the favorite status of the current artist
      */
     private void toggleFavoriteArtist(){
-        if(this.artist.toggleFavorite()) this.supportInvalidateOptionsMenu();
+        if(this.artist.toggleFavorite()){
+            this.supportInvalidateOptionsMenu();
+            this.setResult(this.artist.isFavorite() ? Activity.RESULT_CANCELED : Activity.RESULT_OK);
+        }
     }
 
     @Override

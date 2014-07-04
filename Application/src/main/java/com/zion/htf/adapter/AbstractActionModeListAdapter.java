@@ -22,28 +22,43 @@
 package com.zion.htf.adapter;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.util.Log;
 import android.util.SparseBooleanArray;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.CursorAdapter;
 
 import com.zion.htf.R;
 
 import java.text.SimpleDateFormat;
-import java.util.List;
 import java.util.Locale;
 
-public abstract class AbstractActionModeListAdapter<T> extends ArrayAdapter<T>{
+public abstract class AbstractActionModeListAdapter<T> extends CursorAdapter {
     protected final Context context;
+    protected final LayoutInflater layoutInflater;
     private SparseBooleanArray selectedPositions = new SparseBooleanArray();
 
 	protected SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE HH:mm", "fr".equals(Locale.getDefault().getLanguage()) ? Locale.FRANCE : Locale.ENGLISH);
 
-	public AbstractActionModeListAdapter(Context context, int resource, int textViewResourceId, List<T> objects){
-		super(context, resource, textViewResourceId, objects);
+	public AbstractActionModeListAdapter(Context context, Cursor cursor, boolean autoRequery){
+		super(context, cursor, autoRequery);
         this.context = context;
+        this.layoutInflater = LayoutInflater.from(context);
     }
+
+    public AbstractActionModeListAdapter(Context context, Cursor cursor, int flags){
+        super(context, cursor, flags);
+        this.context = context;
+        this.layoutInflater = LayoutInflater.from(context);
+    }
+
+    @Override
+    abstract public View newView(Context context, Cursor cursor, ViewGroup parent);
+
+    @Override
+    abstract public void bindView(View view, Context context, Cursor cursor);
 
     /*********************/
     /* Handle selections */
@@ -52,11 +67,9 @@ public abstract class AbstractActionModeListAdapter<T> extends ArrayAdapter<T>{
     @Override
     /**
      * {@inheritDoc}
-     * Derived classes should always call {@code super.getView()} in their {@code getView} method as it handles selected items background
      */
     public View getView(int position, View convertView, ViewGroup parent){
-        // Inflate the view if needed
-        if(null == convertView) convertView = super.getView(position, null, parent);
+        convertView = super.getView(position, null, parent);
 
         if(this.isSelected(position))   convertView.setBackgroundColor(this.context.getResources().getColor(R.color.brand_orange));
         else                            convertView.setBackgroundColor(this.context.getResources().getColor(android.R.color.transparent));

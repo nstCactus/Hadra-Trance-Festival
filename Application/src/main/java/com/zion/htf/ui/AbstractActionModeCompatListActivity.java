@@ -21,7 +21,10 @@
 
 package com.zion.htf.ui;
 
+import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.view.ActionMode;
 import android.util.Log;
@@ -35,13 +38,14 @@ import android.widget.ListView;
 import com.zion.htf.R;
 import com.zion.htf.adapter.AbstractActionModeListAdapter;
 
-public abstract class AbstractActionModeCompatListActivity extends ActionBarActivity{
+public abstract class AbstractActionModeCompatListActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     protected ListView listView;
     protected AbstractActionModeListAdapter<Object> adapter;
     protected ActionMode actionMode = null;
     protected final ActionMode.Callback actionModeCallback = new ActionModeCallback();
     private int listViewId;
     private int layoutId;
+    protected static final int LISTVIEW_LOADER_ID = 5433;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -78,7 +82,16 @@ public abstract class AbstractActionModeCompatListActivity extends ActionBarActi
         }
     }
 
-    protected class ActionModeCallback implements ActionMode.Callback{
+    @Override
+    abstract public Loader<Cursor> onCreateLoader(int i, Bundle bundle);
+
+    @Override
+    abstract public void onLoadFinished(Loader<Cursor> loader, Cursor cursor);
+
+    @Override
+    abstract public void onLoaderReset(Loader<Cursor> loader);
+
+    protected class ActionModeCallback implements ActionMode.Callback {
         // Called when the action mode is created; startActionMode() was called
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
@@ -103,6 +116,7 @@ public abstract class AbstractActionModeCompatListActivity extends ActionBarActi
                 case R.id.action_remove_selected:
                     Log.v("AlarmManagerActivity", "User wants to delete all selected items.");
                     AbstractActionModeCompatListActivity.this.adapter.removeSelected();
+                    AbstractActionModeCompatListActivity.this.getSupportLoaderManager().restartLoader(AbstractActionModeCompatListActivity.LISTVIEW_LOADER_ID, null, AbstractActionModeCompatListActivity.this).forceLoad();
                     mode.finish(); // Action picked, so close the CAB
                     return true;
                 case R.id.action_select_all:

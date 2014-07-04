@@ -21,25 +21,35 @@
 
 package com.zion.htf.ui;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 
-import com.zion.htf.BuildConfig;
+import com.zion.content.SQLiteCursorLoader;
+import com.zion.htf.Application;
 import com.zion.htf.R;
 import com.zion.htf.adapter.FavoriteArtistsListAdapter;
-import com.zion.htf.data.Artist;
-import com.zion.htf.exception.ArtistNotFoundException;
 
 public class FavoriteArtistsManagerActivity extends AbstractActionModeCompatListActivity{
-    protected FavoriteArtistsListAdapter<Artist> adapter;
+    private static final String QUERY = "SELECT id AS _id, name, picture_name FROM artists WHERE favorite = 1 ORDER BY name ASC;";
+    public static final int COLUMN_ID      = 0;
+    public static final int COLUMN_NAME    = 1;
+    public static final int COLUMN_PICTURE = 2;
+    private static final int ARTIST_DETAILS_REQUEST_CODE = 1;
+
+    protected FavoriteArtistsListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
-        super.adapter = new FavoriteArtistsListAdapter<Artist>(this, R.layout.item_favorite_artists_list, R.id.label, Artist.getFavoriteArtistsList());
+        this.getSupportLoaderManager().initLoader(AbstractActionModeCompatListActivity.LISTVIEW_LOADER_ID, null, this).forceLoad();
+        super.adapter = new FavoriteArtistsListAdapter(this, null, false);
 
         super.setLayoutId(R.layout.activity_favorite_artists_manager);
         super.setListViewId(R.id.favorite_artists_list);
@@ -47,34 +57,11 @@ public class FavoriteArtistsManagerActivity extends AbstractActionModeCompatList
     }
 
     @Override
-    // FIXME: find a better way to refresh this.
-    protected void onResume(){
-        // Refresh the list of favorite artists to handle the cases where a user unfavorites an artist coming from this activity and then comes back to it
-        boolean dataSetChanged = false;
-        Artist artist;
-
-        // Loop through the Artist object present in adapter to check if their favorite status changed.
-        // If it is no longer favorite, then remove it from the adapter
-        for(int i = 0; i < super.adapter.getCount(); i++){
-            artist = (Artist)super.adapter.getItem(i);
-            try{
-                if(!Artist.getById(artist.getId()).isFavorite()){
-                    super.adapter.remove(artist);
-                    dataSetChanged = true;
-                }
-            }
-            catch(ArtistNotFoundException e){
-                if(BuildConfig.DEBUG) e.printStackTrace();
-            }
-        }
-        if(dataSetChanged) super.adapter.notifyDataSetChanged();
-    }
-
-    @Override
     protected void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent(this, ArtistDetailsActivity.class);
-        intent.putExtra("artist_id", ((Artist)super.adapter.getItem(position)).getId());
-        this.startActivity(intent);
+        super.adapter.getItem(position);
+        intent.putExtra("artist_id", ((Cursor)super.adapter.getItem(position)).getInt(FavoriteArtistsManagerActivity.COLUMN_ID));
+        this.startActivityForResult(intent, FavoriteArtistsManagerActivity.ARTIST_DETAILS_REQUEST_CODE);
     }
 
     @Override
@@ -97,5 +84,32 @@ public class FavoriteArtistsManagerActivity extends AbstractActionModeCompatList
                 ret = super.onOptionsItemSelected(item);
         }
         return ret;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent){
+        super.onActivityResult(requestCode, resultCode, intent);
+
+        if(FavoriteArtistsManagerActivity.ARTIST_DETAILS_REQUEST_CODE == requestCode && Activity.RESULT_OK == resultCode){
+            this.getSupportLoaderManager().restartLoader(AbstractActionModeCompatListActivity.LISTVIEW_LOADER_ID, null, this).forceLoad();
+        }
+    }
+
+        @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args){
+        Log.v("FavoriteArtistsManagerActivity", "Creating loader");
+        Loader<Cursor> loader = new SQLiteCursorLoader(this, Application.getDbHelper().getReadableDatabase(), FavoriteArtistsManagerActivity.QUERY, null);
+        return loader;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor){
+        Log.v("FavoriteArtistsManagerActivity", "Done loading data");
+        super.adapter.swapCursor(cursor);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        super.adapter.changeCursor(null);
     }
 }

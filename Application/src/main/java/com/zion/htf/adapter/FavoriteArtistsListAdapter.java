@@ -22,6 +22,7 @@
 package com.zion.htf.adapter;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.View;
@@ -31,65 +32,54 @@ import android.widget.TextView;
 
 import com.zion.htf.R;
 import com.zion.htf.data.Artist;
+import com.zion.htf.ui.FavoriteArtistsManagerActivity;
 
-import java.util.List;
-import java.util.Locale;
-
-public class FavoriteArtistsListAdapter<T> extends AbstractActionModeListAdapter{
-    static class ItemViewHolder{
+public class FavoriteArtistsListAdapter extends AbstractActionModeListAdapter{
+    // ViewHolder pattern
+    static class ViewHolder {
         TextView artistName;
         ImageView artistPhoto;
     }
 
-    public FavoriteArtistsListAdapter(Context context, int resource, int textViewResourceId, List objects) {
-        super(context, resource, textViewResourceId, objects);
+    public FavoriteArtistsListAdapter(Context context, Cursor cursor, boolean autoRequery) {
+        super(context, cursor, autoRequery);
+    }
+
+    public FavoriteArtistsListAdapter(Context context, Cursor cursor, int flags) {
+        super(context, cursor, flags);
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent){
-        Log.v(this.getClass().getName(), String.format(Locale.ENGLISH, "getView(%d, %s, %s)", position, convertView, parent));
-        
-        FavoriteArtistsListAdapter.ItemViewHolder holder;
-        Artist artist = (Artist)this.getItem(position);
-        boolean inflateView = null == convertView;
+    public View newView(Context context, Cursor cursor, ViewGroup parent) {
+        View rowView = super.layoutInflater.inflate(R.layout.item_favorite_artists_list, parent, false);
+        FavoriteArtistsListAdapter.ViewHolder holder = new FavoriteArtistsListAdapter.ViewHolder();
+        holder.artistName = (TextView)rowView.findViewById(R.id.label);
+        holder.artistPhoto = (ImageView)rowView.findViewById(R.id.artist_photo);
 
-        // Always call the super method as it sets selected items background color
-        convertView = super.getView(position, convertView, parent);
-        Log.v("FavoriteArtistListAdapter", String.format(Locale.ENGLISH, "The item at position %d is supposed to be %s.", position, this.isSelected(position) ? "selected" : "unselected"));
-        if(inflateView){
-            // Get references to its fields and store them in the ViewHolder
-            holder = new FavoriteArtistsListAdapter.ItemViewHolder();
-            holder.artistName = (TextView)convertView.findViewById(R.id.label);
-            holder.artistPhoto = (ImageView)convertView.findViewById(R.id.artist_photo);
+        rowView.setTag(holder);
+        return rowView;
+    }
 
-            convertView.setTag(holder);
-        }
-        else{
-            holder = (FavoriteArtistsListAdapter.ItemViewHolder)convertView.getTag();
-        }
-
-        holder.artistName.setText(artist.getName());
+    @Override
+    public void bindView(View view, Context context, Cursor cursor){
+        FavoriteArtistsListAdapter.ViewHolder holder = (FavoriteArtistsListAdapter.ViewHolder)view.getTag();
+        holder.artistName.setText(cursor.getString(FavoriteArtistsManagerActivity.COLUMN_NAME));
         holder.artistPhoto.setImageResource(R.drawable.no_image);
         holder.artistPhoto.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-
-        return convertView;
     }
 
     @Override
     public void removeSelected(){
         SparseBooleanArray selectedIds = this.getSelectedPositions();
         String inClause = null;
-        Artist item;
         int id;
 
         for(int i = selectedIds.size() - 1; 0 <= i; i--){
-            item = (Artist)this.getItem(selectedIds.keyAt(i));
-            id = item.getId();
+            id = ((Cursor)this.getItem(selectedIds.keyAt(i))).getInt(FavoriteArtistsManagerActivity.COLUMN_ID);
             if(null == inClause)    inClause = String.valueOf(id);
             else                    inClause += String.format(",%d", id);
 
             Log.v("AlarmsListAdapter", String.format("Trying to unfavorite item at position %d.Adapter size = %d", selectedIds.keyAt(i), this.getCount()));
-            this.remove(item);
         }
 
         Artist.unsetFavorite(inClause);

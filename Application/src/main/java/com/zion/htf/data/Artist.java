@@ -331,17 +331,21 @@ public class Artist {
         return this;
     }
 
+    public static Cursor getFavoriteArtists(){
+        SQLiteDatabaseHelper dbHelper = Application.getDbHelper();
+        return dbHelper.getReadableDatabase().rawQuery(String.format("%s WHERE artists.favorite = 1", Artist.QUERY), null);
+    }
+
     public static List<Artist> getFavoriteArtistsList(){
         List<Artist> artists = new ArrayList<Artist>();
-        SQLiteDatabaseHelper dbHelper = Application.getDbHelper();
-        Cursor cursor = dbHelper.getReadableDatabase().rawQuery(String.format("%s WHERE artists.favorite = 1", Artist.QUERY), null);//FIXME: Change the WHERE clause to select only artists marked as favorite
+        Cursor cursor = Artist.getFavoriteArtists();
 
         while(cursor.moveToNext()){
             artists.add(Artist.newInstance(cursor));
         }
 
         if (!cursor.isClosed()) cursor.close();
-        dbHelper.close();
+        Application.getDbHelper().close();
 
         return artists;
     }

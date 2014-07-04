@@ -36,6 +36,10 @@ import com.zion.htf.data.ArtistOnStageTask;
 import java.lang.ref.WeakReference;
 import java.util.Timer;
 
+/*
+TODO: Implement homeAsUp navigation
+TODO: Check that notification back-button and homeAsUp works as it should (http://developer.android.com/training/implementing-navigation/)
+ */
 public class MainActivity extends ActionBarActivity{
 	private static final String TAG                             = "MainActivity";
 	private static final int 	ARTIST_ON_STAGE_UPDATE_INTERVAL = 10000;
