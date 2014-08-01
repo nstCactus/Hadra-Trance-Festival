@@ -11,10 +11,8 @@ apply plugin: 'com.android.application'
 
 repositories {
     mavenCentral()
-    repositories {
-        flatDir {
-            dirs 'libs'
-        }
+    flatDir {
+        dirs 'libs'
     }
 }
 
@@ -29,11 +27,11 @@ android {
 
     productFlavors {
         production{
-            packageName "com.zion.htf"
+            applicationId "com.zion.htf"
         }
 
         analytics{
-            packageName "com.zion.htf.analytics"
+            applicationId "com.zion.htf.analytics"
         }
     }
 
