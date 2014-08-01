@@ -26,16 +26,17 @@ import org.michenux.android.info.VersionUtils;
 public class Application extends android.app.Application{
 	private static SQLiteDatabaseHelper dbHelper = null;
 	private static Context context;
+    private static final int PIWIK_SITE_ID = 4;
 
 	@Override
 	public void onCreate(){
 		super.onCreate();
-		this.context = this;
+        Application.context = this;
 	}
 
 	public static SQLiteDatabaseHelper getDbHelper(){
-		if(Application.dbHelper == null)
-			Application.dbHelper = new SQLiteDatabaseHelper(context, "hadra", null, VersionUtils.getVersionCode(context));
+		if(null == Application.dbHelper)
+			Application.dbHelper = new SQLiteDatabaseHelper(Application.context, "hadra", null, VersionUtils.getVersionCode(context));
 		return Application.dbHelper;
 	}
 
