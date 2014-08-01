@@ -25,33 +25,41 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-	android:padding="10dp"
 	android:clickable="false">
 
-	<TextView
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/artist_photo"
+        android:src="@drawable/no_image"
+        tools:src="@drawable/ph_adn_smith"
+        android:scaleType="centerCrop"
+        android:layout_marginRight="10dp" />
+
+    <TextView
 		android:layout_width="70sp"
 		android:layout_height="wrap_content"
 		tools:text="20:30-22:30"
 		android:id="@+id/hour"
 		android:singleLine="true"
-		android:layout_centerVertical="true"
-		android:layout_alignParentLeft="true"
-		android:clickable="false"
-		android:layout_gravity="center_vertical"
-		android:textSize="11sp"/>
+        android:clickable="false"
+		android:textSize="12sp"
+        android:layout_toRightOf="@+id/artist_photo"
+        android:layout_below="@+id/artist_name"
+        android:layout_toLeftOf="@+id/set_type" />
 
 	<TextView
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		tools:text="ADN Smith"
-		android:id="@+id/label"
+		android:id="@+id/artist_name"
 		android:singleLine="true"
 		android:textAppearance="?android:attr/textAppearanceLarge"
 		android:clickable="false"
 		android:layout_gravity="center_vertical"
-		android:layout_centerVertical="true"
-		android:layout_toRightOf="@+id/hour"
-		android:layout_toLeftOf="@+id/set_type"/>
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/artist_photo"
+        android:layout_toLeftOf="@+id/set_type" />
 
 	<TextView
 		android:layout_width="35sp"
@@ -67,6 +75,6 @@
 		android:layout_gravity="center_vertical"
 		android:layout_marginLeft="10dp"
 		android:textSize="13sp"
-		android:gravity="center"/>
-
+		android:gravity="center"
+        android:layout_marginRight="10dp" />
 </RelativeLayout>

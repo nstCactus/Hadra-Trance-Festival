@@ -47,7 +47,6 @@ import java.util.Locale;
 
 /**
  * The {@code SavedAlarm} class holds data related to user-defined alarms as well as methods to retrieve this data from the {@code alarms} database table.
- * As it extends {@link com.zion.htf.data.Item}, it can be used as an item in a {@link com.hb.views.PinnedSectionListView} using a {@link com.zion.htf.adapter.AbstractActionModeListAdapter} as its source.
  */
 public class SavedAlarm extends Item{
     private static final SQLiteDatabaseHelper dbOpenHelper = Application.getDbHelper();
@@ -181,7 +180,6 @@ public class SavedAlarm extends Item{
         }
 
         if(!cursor.isClosed()) cursor.close();
-        SavedAlarm.dbOpenHelper.close();
 
         return alarms;
     }
@@ -254,7 +252,6 @@ public class SavedAlarm extends Item{
             }
         }
         if(!cursor.isClosed()) cursor.close();
-        SavedAlarm.dbOpenHelper.close();
     }
 
     /**

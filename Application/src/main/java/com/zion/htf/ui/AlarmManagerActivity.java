@@ -33,20 +33,25 @@ import com.zion.content.SQLiteCursorLoader;
 import com.zion.htf.Application;
 import com.zion.htf.R;
 import com.zion.htf.adapter.AlarmListAdapter;
-import com.zion.htf.data.SavedAlarm;
 import com.zion.htf.ui.fragment.TimeToPickerFragment;
 
 public class AlarmManagerActivity extends AbstractActionModeCompatListActivity implements TimeToPickerFragment.TimeToPickerInterface, LoaderManager.LoaderCallbacks<Cursor> {
-    private static final String QUERY = "SELECT alarms.id AS _id, name, timestamp * 1000, (UPPER(SUBSTR(stage, 5, 1)) || SUBSTR(stage, 6)) AS STAGE, sets.id FROM alarms JOIN sets ON set_id = sets.id JOIN artists ON artist = artists.id";
-    public static final int COLUMN_ALARM_ID        = 0;
-    public static final int COLUMN_ARTIST_NAME     = 1;
-    public static final int COLUMN_ALARM_TIMESTAMP = 2;
-    public static final int COLUMN_SET_STAGE       = 3;
-    public static final int COLUMN_SET_ID          = 4;
+    private     static final String QUERY = "SELECT alarms.id AS _id, name, timestamp * 1000, stage AS STAGE, sets.id, sets.type, artists.picture_name FROM alarms JOIN sets ON set_id = sets.id JOIN artists ON artist = artists.id"; // FIXME: Tune the query so that the STAGE field is as follow "<stage_name> - <short day>. <hour>:<minute>"
+
+    protected   static final int LISTVIEW_LOADER_ID       = 5000;
+
+    public      static final int COLUMN_ALARM_ID             = 0;
+    public      static final int COLUMN_ARTIST_NAME          = 1;
+    public      static final int COLUMN_ALARM_TIMESTAMP      = 2;
+    public      static final int COLUMN_SET_STAGE            = 3;
+    public      static final int COLUMN_SET_ID               = 4;
+    public      static final int COLUMN_SET_TYPE             = 5;
+    public      static final int COLUMN_ARTIST_PICTURE_NAME  = 6;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
-        super.getSupportLoaderManager().initLoader(AbstractActionModeCompatListActivity.LISTVIEW_LOADER_ID, null, this).forceLoad();
+        super.getSupportLoaderManager().initLoader(this.getLoaderId(), null, this).forceLoad();
         super.adapter = new AlarmListAdapter(this, null, false);
 
         super.setLayoutId(R.layout.activity_alarm_manager);
@@ -67,7 +72,7 @@ public class AlarmManagerActivity extends AbstractActionModeCompatListActivity i
 
     @Override
     public void doPositiveClick(int alarmId){
-        this.getSupportLoaderManager().restartLoader(AbstractActionModeCompatListActivity.LISTVIEW_LOADER_ID, null, this).forceLoad();
+        this.getSupportLoaderManager().restartLoader(this.getLoaderId(), null, this).forceLoad();
     }
 
     @Override
@@ -77,16 +82,20 @@ public class AlarmManagerActivity extends AbstractActionModeCompatListActivity i
 
     @Override
     public void doNeutralClick(int setId, int alarmId){
-        SavedAlarm.delete(alarmId);
-        this.getSupportLoaderManager().restartLoader(AbstractActionModeCompatListActivity.LISTVIEW_LOADER_ID, null, this).forceLoad();
+        this.getSupportLoaderManager().restartLoader(this.getLoaderId(), null, this).forceLoad();
     }
 
+    @Override
+    protected int getLoaderId(){
+        return AlarmManagerActivity.LISTVIEW_LOADER_ID;
+    }
 
-
+    /*
+     * Handle CursorLoader
+     */
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle){
-        Loader<Cursor> loader = new SQLiteCursorLoader(this, Application.getDbHelper().getReadableDatabase(), AlarmManagerActivity.QUERY, null);
-        return loader;
+        return new SQLiteCursorLoader(this, Application.getDbHelper().getReadableDatabase(), AlarmManagerActivity.QUERY, null);
     }
 
     @Override

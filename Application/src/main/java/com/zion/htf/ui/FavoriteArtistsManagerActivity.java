@@ -26,7 +26,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -43,12 +42,13 @@ public class FavoriteArtistsManagerActivity extends AbstractActionModeCompatList
     public static final int COLUMN_NAME    = 1;
     public static final int COLUMN_PICTURE = 2;
     private static final int ARTIST_DETAILS_REQUEST_CODE = 1;
+    private static final int LISTVIEW_LOADER_ID = 5001;
 
     protected FavoriteArtistsListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
-        this.getSupportLoaderManager().initLoader(AbstractActionModeCompatListActivity.LISTVIEW_LOADER_ID, null, this).forceLoad();
+        this.getSupportLoaderManager().initLoader(this.getLoaderId(), null, this).forceLoad();
         super.adapter = new FavoriteArtistsListAdapter(this, null, false);
 
         super.setLayoutId(R.layout.activity_favorite_artists_manager);
@@ -91,20 +91,25 @@ public class FavoriteArtistsManagerActivity extends AbstractActionModeCompatList
         super.onActivityResult(requestCode, resultCode, intent);
 
         if(FavoriteArtistsManagerActivity.ARTIST_DETAILS_REQUEST_CODE == requestCode && Activity.RESULT_OK == resultCode){
-            this.getSupportLoaderManager().restartLoader(AbstractActionModeCompatListActivity.LISTVIEW_LOADER_ID, null, this).forceLoad();
+            this.getSupportLoaderManager().restartLoader(this.getLoaderId(), null, this).forceLoad();
         }
     }
 
-        @Override
+    @Override
+    protected int getLoaderId(){
+        return FavoriteArtistsManagerActivity.LISTVIEW_LOADER_ID;
+    }
+
+    /*
+     * Handle CursorLoader
+     */
+    @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args){
-        Log.v("FavoriteArtistsManagerActivity", "Creating loader");
-        Loader<Cursor> loader = new SQLiteCursorLoader(this, Application.getDbHelper().getReadableDatabase(), FavoriteArtistsManagerActivity.QUERY, null);
-        return loader;
+        return new SQLiteCursorLoader(this, Application.getDbHelper().getReadableDatabase(), FavoriteArtistsManagerActivity.QUERY, null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor){
-        Log.v("FavoriteArtistsManagerActivity", "Done loading data");
         super.adapter.swapCursor(cursor);
     }
 

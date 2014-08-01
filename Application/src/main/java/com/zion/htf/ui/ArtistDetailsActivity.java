@@ -26,6 +26,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,7 +40,7 @@ import com.zion.htf.data.Artist;
 import com.zion.htf.data.MusicSet;
 import com.zion.htf.data.SavedAlarm;
 import com.zion.htf.exception.AlarmNotFoundException;
-import com.zion.htf.exception.ArtistNotFoundException;
+import com.zion.htf.exception.InconsistentDatabaseException;
 import com.zion.htf.exception.MissingArgumentException;
 import com.zion.htf.ui.fragment.TimeToPickerFragment;
 
@@ -68,7 +69,7 @@ public class ArtistDetailsActivity extends ActionBarActivity implements View.OnC
 
         try{
             Intent openingIntent = this.getIntent();
-            if(!openingIntent.hasExtra("set_id") && !openingIntent.hasExtra("artist_id")) throw new MissingArgumentException("");
+            if(!openingIntent.hasExtra("set_id") && !openingIntent.hasExtra("artist_id")) throw new MissingArgumentException("Either set_id or artist_id is required for this Activity to work properly. Please provide any of them.");
             this.setId = this.getIntent().getIntExtra("set_id", 0);
             this.artistId = openingIntent.getIntExtra("artist_id", 0);
 
@@ -100,6 +101,7 @@ public class ArtistDetailsActivity extends ActionBarActivity implements View.OnC
             String origin = this.artist.getOrigin();
             if(0 < label.length())  label = origin + " / " + label;
             else					label = origin;
+            Log.v(ArtistDetailsActivity.TAG, String.format(Locale.ENGLISH, "Label = %s", label));
             label_field.setText(label);
 
             // Display picture
@@ -128,16 +130,21 @@ public class ArtistDetailsActivity extends ActionBarActivity implements View.OnC
             String bio = this.artist.getBio("fr".equals(Locale.getDefault().getLanguage()) ? "fr" : "en");
             bio_field.setText(bio);
         }
-        catch(MissingArgumentException e){
+        catch(InconsistentDatabaseException e){
             if(BuildConfig.DEBUG) e.printStackTrace();
-            //TODO: Handle this properly
+
+            // Just display an error message instead of the bio
+            TextView bio_field = (TextView)this.findViewById(R.id.bio);
+            bio_field.setText(this.getString(R.string.error_bio_inconsistent_database));
+
+            // Report this through piwik
         }
-        catch(ArtistNotFoundException e){
+        catch(Exception e){
             if(BuildConfig.DEBUG) e.printStackTrace();
-        }
-        catch (Exception e){
-            if(BuildConfig.DEBUG) e.printStackTrace();
-            //TODO: Handle this properly
+            // Other exceptions are serious enough to trigger a force close
+            // Report this through piwik
+
+            throw new RuntimeException(e);
         }
 	}
 
@@ -303,7 +310,7 @@ public class ArtistDetailsActivity extends ActionBarActivity implements View.OnC
         }
         catch(AlarmNotFoundException e){
             if(BuildConfig.DEBUG) e.printStackTrace();
-            // TODO: Handle this properly
+            // Nothing to do, worst case scenario, the user will set another alarm for this set.
         }
         this.supportInvalidateOptionsMenu();
     }

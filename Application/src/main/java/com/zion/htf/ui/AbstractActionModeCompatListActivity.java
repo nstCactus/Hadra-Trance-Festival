@@ -35,6 +35,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.zion.htf.BuildConfig;
 import com.zion.htf.R;
 import com.zion.htf.adapter.AbstractActionModeListAdapter;
 
@@ -45,7 +46,6 @@ public abstract class AbstractActionModeCompatListActivity extends ActionBarActi
     protected final ActionMode.Callback actionModeCallback = new ActionModeCallback();
     private int listViewId;
     private int layoutId;
-    protected static final int LISTVIEW_LOADER_ID = 5433;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -82,14 +82,7 @@ public abstract class AbstractActionModeCompatListActivity extends ActionBarActi
         }
     }
 
-    @Override
-    abstract public Loader<Cursor> onCreateLoader(int i, Bundle bundle);
-
-    @Override
-    abstract public void onLoadFinished(Loader<Cursor> loader, Cursor cursor);
-
-    @Override
-    abstract public void onLoaderReset(Loader<Cursor> loader);
+    abstract protected int getLoaderId();
 
     protected class ActionModeCallback implements ActionMode.Callback {
         // Called when the action mode is created; startActionMode() was called
@@ -116,7 +109,7 @@ public abstract class AbstractActionModeCompatListActivity extends ActionBarActi
                 case R.id.action_remove_selected:
                     Log.v("AlarmManagerActivity", "User wants to delete all selected items.");
                     AbstractActionModeCompatListActivity.this.adapter.removeSelected();
-                    AbstractActionModeCompatListActivity.this.getSupportLoaderManager().restartLoader(AbstractActionModeCompatListActivity.LISTVIEW_LOADER_ID, null, AbstractActionModeCompatListActivity.this).forceLoad();
+                    AbstractActionModeCompatListActivity.this.getSupportLoaderManager().restartLoader(AbstractActionModeCompatListActivity.this.getLoaderId(), null, AbstractActionModeCompatListActivity.this).forceLoad();
                     mode.finish(); // Action picked, so close the CAB
                     return true;
                 case R.id.action_select_all:
@@ -140,15 +133,14 @@ public abstract class AbstractActionModeCompatListActivity extends ActionBarActi
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id){
             if(null == AbstractActionModeCompatListActivity.this.actionMode){
-                Log.v("AlarmManagerActivity", "Item LONG_CLICK while in NORMAL mode.");
+                if(BuildConfig.DEBUG) Log.v("AlarmManagerActivity", "Item LONG_CLICK while in NORMAL mode.");
                 AbstractActionModeCompatListActivity.this.actionMode = AbstractActionModeCompatListActivity.this.startSupportActionMode(AbstractActionModeCompatListActivity.this.actionModeCallback);
                 AbstractActionModeCompatListActivity.this.adapter.selectItem(position);
                 //FIXME: When entering actionMode, the user-clicked item often gets unselected as the OnItemClickListener is fired
             }
             else{
-                //TODO: Do something
-                Log.v("AlarmManagerActivity", "Item LONG CLICK while in ACTION mode.");
-
+                if(BuildConfig.DEBUG) Log.v("AlarmManagerActivity", "Item LONG CLICK while in ACTION mode.");
+                // Nothing to do
             }
             return false;
         }
@@ -158,13 +150,13 @@ public abstract class AbstractActionModeCompatListActivity extends ActionBarActi
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             if(null != AbstractActionModeCompatListActivity.this.actionMode){
+                if(BuildConfig.DEBUG) Log.v("AlarmManagerActivity", "Item CLICK while in ACTION mode.");
                 AbstractActionModeCompatListActivity.this.adapter.toggleSelection(position);
                 AbstractActionModeCompatListActivity.this.updateTitle();
-                Log.v("AlarmManagerActivity", "Item CLICK while in ACTION mode.");
                 //FIXME: Quit actionMode if no selected item left (when above FIXME is fixed)
             }
             else{
-                Log.v("AlarmManagerActivity", "Item CLICK while in NORMAL mode.");
+                if(BuildConfig.DEBUG) Log.v("AlarmManagerActivity", "Item CLICK while in NORMAL mode.");
                 AbstractActionModeCompatListActivity.this.onItemClick(parent, view, position, id);
             }
         }
@@ -175,4 +167,16 @@ public abstract class AbstractActionModeCompatListActivity extends ActionBarActi
      * @see android.widget.AdapterView.OnItemClickListener#onItemClick(android.widget.AdapterView, android.view.View, int, long)
      */
     protected abstract void onItemClick(AdapterView<?> parent, View view, int position, long id);
+
+    /*
+     * Handle CursorLoader
+     */
+    @Override
+    abstract public Loader<Cursor> onCreateLoader(int i, Bundle bundle);
+
+    @Override
+    abstract public void onLoadFinished(Loader<Cursor> loader, Cursor cursor);
+
+    @Override
+    abstract public void onLoaderReset(Loader<Cursor> loader);
 }

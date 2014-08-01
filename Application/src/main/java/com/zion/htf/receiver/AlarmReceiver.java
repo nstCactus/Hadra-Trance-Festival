@@ -35,6 +35,7 @@ import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 
+import com.zion.htf.BuildConfig;
 import com.zion.htf.R;
 import com.zion.htf.data.Artist;
 import com.zion.htf.data.MusicSet;
@@ -146,8 +147,9 @@ public class AlarmReceiver extends BroadcastReceiver{
                 notificationBuilder.addAction(R.drawable.ic_menu_directions, context.getString(R.string.action_directions), directionsButtonPendingIntent);
             }
             catch(InconsistentDatabaseException e){
-                e.printStackTrace();
-                //TODO: Handle this properly
+                // Although this is a serious error, its impact on functionality is minimal.
+                // Report this through piwik
+                if(BuildConfig.DEBUG) e.printStackTrace();
             }
 
             // Finalize the notification
@@ -158,9 +160,11 @@ public class AlarmReceiver extends BroadcastReceiver{
             notificationManager.notify(set.getStage(), 0, notification);
 
             SavedAlarm.delete(alarmId);
-        } catch (SetNotFoundException e) {
+        }
+        catch(SetNotFoundException e){
             throw new RuntimeException(e.getMessage());
-            //TODO: Handle this properly
+            // TODO: Notify that an alarm was planned but some error prevented to display it properly. Open AlarmManagerActivity on click
+            // Report this through piwik
         }
     }
 

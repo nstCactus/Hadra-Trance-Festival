@@ -31,7 +31,7 @@ import android.view.View;
 
 import com.zion.htf.BuildConfig;
 import com.zion.htf.R;
-import com.zion.htf.data.ArtistOnStageTask;
+import com.zion.htf.data.UpdateArtistOnStageTask;
 
 import java.lang.ref.WeakReference;
 import java.util.Timer;
@@ -71,7 +71,7 @@ public class MainActivity extends ActionBarActivity{
 		if(null == this.artistOnStageTimer) this.artistOnStageTimer = null;
 		this.artistOnStageTimer = new Timer();
 		WeakReference<Activity> activityWeakReference = new WeakReference<Activity>(this);
-		this.artistOnStageTimer.schedule(new ArtistOnStageTask(activityWeakReference), 0, MainActivity.ARTIST_ON_STAGE_UPDATE_INTERVAL);
+		this.artistOnStageTimer.schedule(new UpdateArtistOnStageTask(activityWeakReference), 0, MainActivity.ARTIST_ON_STAGE_UPDATE_INTERVAL);
 	}
 
 	@Override
@@ -85,9 +85,6 @@ public class MainActivity extends ActionBarActivity{
         this.getMenuInflater().inflate(R.menu.main, menu);
         if(BuildConfig.DEBUG){
             this.getMenuInflater().inflate(R.menu.main_debug, menu);
-
-            MenuItem bookmarksMenuItem = menu.findItem(R.id.action_favorite_artists);
-            bookmarksMenuItem.setVisible(true);
 
             MenuItem helpMenuItem = menu.findItem(R.id.action_help);
             helpMenuItem.setVisible(true);

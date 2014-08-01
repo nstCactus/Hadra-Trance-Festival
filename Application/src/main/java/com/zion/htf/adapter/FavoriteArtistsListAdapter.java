@@ -45,15 +45,11 @@ public class FavoriteArtistsListAdapter extends AbstractActionModeListAdapter{
         super(context, cursor, autoRequery);
     }
 
-    public FavoriteArtistsListAdapter(Context context, Cursor cursor, int flags) {
-        super(context, cursor, flags);
-    }
-
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         View rowView = super.layoutInflater.inflate(R.layout.item_favorite_artists_list, parent, false);
         FavoriteArtistsListAdapter.ViewHolder holder = new FavoriteArtistsListAdapter.ViewHolder();
-        holder.artistName = (TextView)rowView.findViewById(R.id.label);
+        holder.artistName = (TextView)rowView.findViewById(R.id.artist_name);
         holder.artistPhoto = (ImageView)rowView.findViewById(R.id.artist_photo);
 
         rowView.setTag(holder);
@@ -64,8 +60,9 @@ public class FavoriteArtistsListAdapter extends AbstractActionModeListAdapter{
     public void bindView(View view, Context context, Cursor cursor){
         FavoriteArtistsListAdapter.ViewHolder holder = (FavoriteArtistsListAdapter.ViewHolder)view.getTag();
         holder.artistName.setText(cursor.getString(FavoriteArtistsManagerActivity.COLUMN_NAME));
+
         holder.artistPhoto.setImageResource(R.drawable.no_image);
-        holder.artistPhoto.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+        this.loadBitmap(Artist.getPictureResourceId(cursor.getString(FavoriteArtistsManagerActivity.COLUMN_PICTURE)), holder.artistPhoto);
     }
 
     @Override

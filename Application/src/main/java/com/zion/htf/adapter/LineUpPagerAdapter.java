@@ -5,8 +5,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.util.Log;
-import android.util.SparseArray;
-import android.view.ViewGroup;
 
 import com.zion.htf.Application;
 import com.zion.htf.BuildConfig;
@@ -17,10 +15,8 @@ import org.michenux.android.db.sqlite.SQLiteDatabaseHelper;
 import java.util.ArrayList;
 
 public class LineUpPagerAdapter extends FragmentPagerAdapter{
-	private String[] tabTitles;
-	private              SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
-	private static final String                TAG                 = "LineUpPagerAdapter";
-	private static       ArrayList<String>     stages              = new ArrayList<String>();
+	private static final ArrayList<String>  stages              = new ArrayList<String>();
+	private static final String             TAG                 = "LineUpPagerAdapter";
 
 	public LineUpPagerAdapter(FragmentManager fm){
 		super(fm);
@@ -32,34 +28,14 @@ public class LineUpPagerAdapter extends FragmentPagerAdapter{
 				LineUpPagerAdapter.stages.add(cursor.getString(0));
 			}
 			cursor.close();
-			dbHelper.close();
 		}
 	}
 
 	@Override
 	public Fragment getItem(int position){
-		if(BuildConfig.DEBUG) Log.v(TAG, "Instantiating a new fragment for the viewPager");
+		if(BuildConfig.DEBUG) Log.v(LineUpPagerAdapter.TAG, "Instantiating a new fragment for the viewPager");
 
-		Fragment fragment = LineUpListFragment.newInstance(this.stages.get(position));
-
-		return fragment;
-	}
-
-	@Override
-	public Object instantiateItem(ViewGroup container, int position){
-		Fragment fragment = (Fragment)super.instantiateItem(container, position);
-		registeredFragments.put(position, fragment);
-		return fragment;
-	}
-
-	@Override
-	public void destroyItem(ViewGroup container, int position, Object object){
-		registeredFragments.remove(position);
-		super.destroyItem(container, position, object);
-	}
-
-	public Fragment getRegisteredFragment(int position){
-		return registeredFragments.get(position);
+        return LineUpListFragment.newInstance(LineUpPagerAdapter.stages.get(position));
 	}
 
 	@Override

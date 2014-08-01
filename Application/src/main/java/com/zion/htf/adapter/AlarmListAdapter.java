@@ -26,25 +26,27 @@ import android.database.Cursor;
 import android.util.SparseBooleanArray;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.zion.htf.BuildConfig;
 import com.zion.htf.R;
+import com.zion.htf.data.Artist;
 import com.zion.htf.data.SavedAlarm;
+import com.zion.htf.exception.AlarmNotFoundException;
 import com.zion.htf.ui.AlarmManagerActivity;
 
-public class AlarmListAdapter extends AbstractActionModeListAdapter {
+public class AlarmListAdapter extends AbstractActionModeListAdapter{
     static class ViewHolder {
-        TextView artistName;
-        TextView stage;
-        TextView time;
+        TextView    artistName;
+        TextView    whereAndWhen;
+        TextView    alarmTime;
+        TextView    setType;
+        ImageView   artistPhoto;
     }
 
     public AlarmListAdapter(Context context, Cursor cursor, boolean autoRequery) {
         super(context, cursor, autoRequery);
-    }
-
-    public AlarmListAdapter(Context context, Cursor cursor, int flags) {
-        super(context, cursor, flags);
     }
 
     @Override
@@ -52,9 +54,11 @@ public class AlarmListAdapter extends AbstractActionModeListAdapter {
         View rowView = super.layoutInflater.inflate(R.layout.item_alarms_list, parent, false);
         AlarmListAdapter.ViewHolder holder = new AlarmListAdapter.ViewHolder();
 
-        holder.artistName = (TextView)rowView.findViewById(R.id.label);
-        holder.stage = (TextView)rowView.findViewById(R.id.stage);
-        holder.time = (TextView)rowView.findViewById(R.id.time);
+        holder.artistName   = (TextView)    rowView.findViewById(R.id.artist_name);
+        holder.whereAndWhen = (TextView)    rowView.findViewById(R.id.where_and_when);
+        holder.alarmTime    = (TextView)    rowView.findViewById(R.id.alarm_time);
+        holder.setType      = (TextView)    rowView.findViewById(R.id.set_type);
+        holder.artistPhoto  = (ImageView)   rowView.findViewById(R.id.artist_photo);
 
         rowView.setTag(holder);
         return rowView;
@@ -65,8 +69,12 @@ public class AlarmListAdapter extends AbstractActionModeListAdapter {
         AlarmListAdapter.ViewHolder holder = (AlarmListAdapter.ViewHolder) view.getTag();
 
         holder.artistName.setText(cursor.getString(AlarmManagerActivity.COLUMN_ARTIST_NAME));
-        holder.time.setText(this.simpleDateFormat.format(cursor.getLong(AlarmManagerActivity.COLUMN_ALARM_TIMESTAMP)));
-        holder.stage.setText(cursor.getString(AlarmManagerActivity.COLUMN_SET_STAGE));
+        holder.alarmTime.setText(this.simpleDateFormat.format(cursor.getLong(AlarmManagerActivity.COLUMN_ALARM_TIMESTAMP)));
+        holder.whereAndWhen.setText(cursor.getString(AlarmManagerActivity.COLUMN_SET_STAGE));
+        holder.setType.setText(cursor.getString(AlarmManagerActivity.COLUMN_SET_TYPE));
+
+        holder.artistPhoto.setImageResource(R.drawable.no_image);
+        this.loadBitmap(Artist.getPictureResourceId(cursor.getString(AlarmManagerActivity.COLUMN_ARTIST_PICTURE_NAME)), holder.artistPhoto);
     }
 
     @Override
@@ -77,6 +85,13 @@ public class AlarmListAdapter extends AbstractActionModeListAdapter {
 
         for(int i = selectedIds.size() - 1; 0 <= i; i--){
             id = ((Cursor)this.getItem(selectedIds.keyAt(i))).getInt(AlarmManagerActivity.COLUMN_ALARM_ID);
+            try{
+                SavedAlarm.getById(id).unregisterAlarm(this.context);
+            }
+            catch(AlarmNotFoundException e){
+                if(BuildConfig.DEBUG) e.printStackTrace();
+                //TODO: Handle this properly
+            }
             if(null == inClause)    inClause = String.valueOf(id);
             else                    inClause += String.format(",%d", id);
         }

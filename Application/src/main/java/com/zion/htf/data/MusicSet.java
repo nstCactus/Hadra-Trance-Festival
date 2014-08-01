@@ -34,12 +34,11 @@ import java.util.Locale;
 
 /**
  * The {@code MusicSet} class holds data related to an {@link com.zion.htf.data.Artist}'s set as well as methods to retrieve this data from the {@code sets} database table.
- * As it extends {@link com.zion.htf.data.Item}, it can be used as an item in a {@link com.hb.views.PinnedSectionListView} using a {@link com.zion.htf.adapter.LineUpListAdapter} as its source.
  * FIXME: Delegate the Artist object creation to {@link com.zion.htf.data.Artist} to ensure all values are set correctly
  */
 public class MusicSet extends Item{
     private static final SQLiteOpenHelper dbOpenHelper = Application.getDbHelper();
-    private static final String QUERY = "SELECT sets.*, artists.* FROM sets JOIN artists ON sets.artist = artists.id ";
+    public static final String QUERY = "SELECT sets.id AS _id, sets.begin_date, sets.end_date, sets.type, sets.artist, sets.stage, artists.* FROM sets JOIN artists ON sets.artist = artists.id ";
     protected int type = Item.TYPE_ITEM;
 
 	/* Sets table fields */
@@ -52,24 +51,24 @@ public class MusicSet extends Item{
     protected String stage;
 
     /* Column indexes for convenience */
-    protected static final int COLUMN_ID                    = 0;
-    protected static final int COLUMN_BEGIN_DATE            = 1;
-    protected static final int COLUMN_END_DATE              = 2;
-    protected static final int COLUMN_TYPE                  = 3;
-    protected static final int COLUMN_ARTIST_ID             = 4;
-    protected static final int COLUMN_STAGE                 = 5;
-    //protected static final int COLUMN_ARTIST_ID  = 6;// Duplicate
-    protected static final int COLUMN_ARTIST_NAME           = 7;
-    protected static final int COLUMN_ARTIST_GENRE          = 8;
-    protected static final int COLUMN_ARTIST_ORIGIN         = 9;
-    protected static final int COLUMN_ARTIST_PICTURE_NAME   = 10;
-    protected static final int COLUMN_ARTIST_COVER_NAME     = 11;
-    protected static final int COLUMN_ARTIST_WEBSITE        = 12;
-    protected static final int COLUMN_ARTIST_FACEBOOK       = 13;
-    protected static final int COLUMN_ARTIST_SOUNDCLOUD     = 14;
-    protected static final int COLUMN_ARTIST_LABEL          = 15;
-    protected static final int COLUMN_ARTIST_BIO_ID         = 16;
-    protected static final int COLUMN_ARTIST_FAVORITE       = 17;
+    public static final int COLUMN_ID                    = 0;
+    public static final int COLUMN_BEGIN_DATE            = 1;
+    public static final int COLUMN_END_DATE              = 2;
+    public static final int COLUMN_TYPE                  = 3;
+    public static final int COLUMN_ARTIST_ID             = 4;
+    public static final int COLUMN_STAGE                 = 5;
+    //public static final int COLUMN_ARTIST_ID  = 6;// Duplicate
+    public static final int COLUMN_ARTIST_NAME           = 7;
+    public static final int COLUMN_ARTIST_GENRE          = 8;
+    public static final int COLUMN_ARTIST_ORIGIN         = 9;
+    public static final int COLUMN_ARTIST_PICTURE_NAME   = 10;
+    public static final int COLUMN_ARTIST_COVER_NAME     = 11;
+    public static final int COLUMN_ARTIST_WEBSITE        = 12;
+    public static final int COLUMN_ARTIST_FACEBOOK       = 13;
+    public static final int COLUMN_ARTIST_SOUNDCLOUD     = 14;
+    public static final int COLUMN_ARTIST_LABEL          = 15;
+    public static final int COLUMN_ARTIST_BIO_ID         = 16;
+    public static final int COLUMN_ARTIST_FAVORITE       = 17;
 
     public MusicSet(String name){
 		super(name, Item.TYPE_ITEM);
@@ -149,15 +148,24 @@ public class MusicSet extends Item{
         MusicSet musicSet = MusicSet.newInstance(cursor);
 
         if(!cursor.isClosed()) cursor.close();
-        MusicSet.dbOpenHelper.close();
         return musicSet;
     }
+
+    /**
+     * Get the query used to fetch the list of all sets
+     * @param order the {@code ORDER} clause, without the {@code ORDER BY} keywords
+     * @return the query
+     */
+    public static String getSetsQuery(String order){
+        if(!order.matches("^\\s*ORDER\\sBY\\s.*")) order = " ORDER BY " + order;
+        return String.format("%s %s", MusicSet.QUERY, order);
+    }
+
 
     public static List<Item> getListByStage(String stage, String order, Boolean addDateSeparators){
         Cursor cursor = MusicSet.dbOpenHelper.getReadableDatabase().rawQuery(String.format("%s WHERE stage = ? %s", MusicSet.QUERY, order), new String[]{ stage });
         List<Item> list = MusicSet.getList(cursor, addDateSeparators);
-                if(!cursor.isClosed()) cursor.close();
-        MusicSet.dbOpenHelper.close();
+        if(!cursor.isClosed()) cursor.close();
 
         return list;
     }
@@ -200,7 +208,6 @@ public class MusicSet extends Item{
         }
 
         if(!cursor.isClosed()) cursor.close();
-        MusicSet.dbOpenHelper.close();
 
         return sets;
     }
@@ -217,7 +224,6 @@ public class MusicSet extends Item{
             if(cursor.moveToFirst()) musicSet = MusicSet.newInstance(cursor);
             cursor.close();
         }
-        MusicSet.dbOpenHelper.close();
         return musicSet;
     }
 

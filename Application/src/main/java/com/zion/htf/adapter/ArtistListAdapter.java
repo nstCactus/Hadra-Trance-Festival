@@ -20,48 +20,56 @@
 package com.zion.htf.adapter;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.zion.htf.R;
+import com.zion.htf.data.Artist;
 import com.zion.htf.data.MusicSet;
 
-import java.util.List;
+public class ArtistListAdapter extends CachedImageCursorAdapter{
+    private final LayoutInflater layoutInflater;
 
-public class ArtistListAdapter<T> extends ArrayAdapter<T>{
-	static class ItemViewHolder {
+	static class ViewHolder {
 		TextView  artistName;
 		TextView  setType;
+        ImageView artistPhoto;
 	}
 
-	public ArtistListAdapter(Context context, int resource, int textViewResourceId, List<T> objects){
-		super(context, resource, textViewResourceId, objects);
-	}
+    public ArtistListAdapter(Context context, Cursor cursor, boolean autoRequery){
+        super(context, cursor, autoRequery);
 
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent){
-        ItemViewHolder holder;
-        MusicSet musicSet = (MusicSet)this.getItem(position);
+        this.layoutInflater = LayoutInflater.from(context);
+    }
 
-        if(null == convertView){
-            // Inflate the view
-            convertView = super.getView(position, convertView, parent);
+    @Override
+    public View newView(Context context, Cursor cursor, ViewGroup parent){
+        // Inflate the view
+        View rowView = this.layoutInflater.inflate(R.layout.item_artists_list, parent, false);
+        ArtistListAdapter.ViewHolder holder = new ArtistListAdapter.ViewHolder();
+        
+        // Get references to its fields and store them in the ViewHolder
+        holder.artistName = (TextView)rowView.findViewById(R.id.artist_name);
+        holder.setType = (TextView)rowView.findViewById(R.id.set_type);
+        holder.artistPhoto = (ImageView)rowView.findViewById(R.id.artist_photo);
 
-            // Get references to its fields and store them in the ViewHolder
-            holder = new ItemViewHolder();
-            holder.artistName = (TextView)convertView.findViewById(R.id.label);
-            holder.setType = (TextView)convertView.findViewById(R.id.set_type);
+        rowView.setTag(holder);
 
-            convertView.setTag(holder);
-        }
-        else{
-            holder = (ItemViewHolder)convertView.getTag();
-        }
+        return rowView;
+    }
 
-        holder.artistName.setText(musicSet.getArtist().getName());
-        holder.setType.setText(musicSet.getSetType());
-		return convertView;
-	}
+    @Override
+    public void bindView(View view, Context context, Cursor cursor){
+        ArtistListAdapter.ViewHolder holder = (ArtistListAdapter.ViewHolder)view.getTag();
+
+        holder.artistName.setText(cursor.getString(MusicSet.COLUMN_ARTIST_NAME));
+        holder.setType.setText(cursor.getString(MusicSet.COLUMN_TYPE));
+
+        holder.artistPhoto.setImageResource(R.drawable.no_image);
+        this.loadBitmap(Artist.getPictureResourceId(cursor.getString(MusicSet.COLUMN_ARTIST_PICTURE_NAME)), holder.artistPhoto);
+    }
 }

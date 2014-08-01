@@ -61,7 +61,7 @@ public class DonateActivity extends ActionBarActivity implements SeekBar.OnSeekB
 
 	private final static String TAG = "AboutActivity";
 
-    private static CurrencySet currencySet = null;
+    private static DonateActivity.CurrencySet currencySet = null;
 
 	private SeekBar     seekBar;
     private EditText    amountEditText;
@@ -89,21 +89,21 @@ public class DonateActivity extends ActionBarActivity implements SeekBar.OnSeekB
 
 		Intent intent = new Intent(this, PayPalService.class);
 
-		intent.putExtra(PaymentActivity.EXTRA_PAYPAL_ENVIRONMENT, PAYPAL_ENVIRONMENT);
-		intent.putExtra(PaymentActivity.EXTRA_CLIENT_ID, PAYPAL_CLIENT_ID);
+		intent.putExtra(PaymentActivity.EXTRA_PAYPAL_ENVIRONMENT, DonateActivity.PAYPAL_ENVIRONMENT);
+		intent.putExtra(PaymentActivity.EXTRA_CLIENT_ID, DonateActivity.PAYPAL_CLIENT_ID);
 
 		this.startService(intent);
 
         // Initializes the amountEditText to reflects the internal value of amount
-        this.amount = this.seekBar.getProgress() + SEEKBAR_MIN;
+        this.amount = this.seekBar.getProgress() + DonateActivity.SEEKBAR_MIN;
         this.updateControls();
 
 		if(null == DonateActivity.currencySet){
-			DonateActivity.currencySet = new CurrencySet();
-			DonateActivity.currencySet.add(new Currency("US", "USD", "$"));
-			DonateActivity.currencySet.add(new Currency("CA", "CAD", "$CA"));
-			DonateActivity.currencySet.add(new Currency("GB", "GBP", "£"));
-			DonateActivity.currencySet.add(new Currency("EU", "EUR", "€"), true);
+			DonateActivity.currencySet = new DonateActivity.CurrencySet();
+			DonateActivity.currencySet.add(new DonateActivity.Currency("US", "USD", "$"));
+			DonateActivity.currencySet.add(new DonateActivity.Currency("CA", "CAD", "$CA"));
+			DonateActivity.currencySet.add(new DonateActivity.Currency("GB", "GBP", "£"));
+			DonateActivity.currencySet.add(new DonateActivity.Currency("EU", "EUR", "€"), true);
 		}
 
 		this.currencySpinner = (Spinner)this.findViewById(R.id.currencySpinner);
@@ -118,18 +118,18 @@ public class DonateActivity extends ActionBarActivity implements SeekBar.OnSeekB
 	}
 
 	public void onDonatePressed(View pressed){
-		if(BuildConfig.DEBUG) Log.v(TAG, String.valueOf(this.amount));
+		if(BuildConfig.DEBUG) Log.v(DonateActivity.TAG, String.valueOf(this.amount));
 
 		int selectedIndex = this.currencySpinner.getSelectedItemPosition();
-		String currencyCode = (selectedIndex >= 0 && selectedIndex < DonateActivity.currencySet.size()) ? DonateActivity.currencySet.get(selectedIndex).currencyCode : PAYPAL_DEFAULT_CURRENCY;
+		String currencyCode = (0 <= selectedIndex && selectedIndex < DonateActivity.currencySet.size()) ? DonateActivity.currencySet.get(selectedIndex).currencyCode : DonateActivity.PAYPAL_DEFAULT_CURRENCY;
 
 		PayPalPayment payment = new PayPalPayment(new BigDecimal(String.format(Locale.US, "%.2f", this.amount / 100f)), currencyCode, this.getString(R.string.donation_label));
 
 		Intent intent = new Intent(this, PaymentActivity.class);
-		intent.putExtra(PaymentActivity.EXTRA_PAYPAL_ENVIRONMENT, PAYPAL_ENVIRONMENT);
-		intent.putExtra(PaymentActivity.EXTRA_CLIENT_ID, PAYPAL_CLIENT_ID);
+		intent.putExtra(PaymentActivity.EXTRA_PAYPAL_ENVIRONMENT, DonateActivity.PAYPAL_ENVIRONMENT);
+		intent.putExtra(PaymentActivity.EXTRA_CLIENT_ID, DonateActivity.PAYPAL_CLIENT_ID);
 		intent.putExtra(PaymentActivity.EXTRA_PAYER_ID, "<sbooob@gmail.com>");
-		intent.putExtra(PaymentActivity.EXTRA_RECEIVER_EMAIL, PAYPAL_RECEIVER_EMAIL);
+		intent.putExtra(PaymentActivity.EXTRA_RECEIVER_EMAIL, DonateActivity.PAYPAL_RECEIVER_EMAIL);
 		intent.putExtra(PaymentActivity.EXTRA_PAYMENT, payment);
 
 		this.startActivityForResult(intent, 0);
@@ -137,31 +137,31 @@ public class DonateActivity extends ActionBarActivity implements SeekBar.OnSeekB
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data){
-		if(resultCode == Activity.RESULT_OK){
+		if(Activity.RESULT_OK == resultCode){
 			PaymentConfirmation confirm = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
-			if(confirm != null){
+			if(null != confirm){
 				try{
-					if(BuildConfig.DEBUG) Log.i(TAG, confirm.toJSONObject().toString(4));
+					if(BuildConfig.DEBUG) Log.i(DonateActivity.TAG, confirm.toJSONObject().toString(4));
 
 					// TODO: send 'confirm' to your server for verification.
 					// see https://developer.paypal.com/webapps/developer/docs/integration/mobile/verify-mobile-payment/
 					// for more details.
 				}
 				catch(JSONException e){
-					Log.e(TAG, "an extremely unlikely failure occurred: ", e);
+					Log.e(DonateActivity.TAG, "an extremely unlikely failure occurred: ", e);
 				}
 			}
 		}
-		else if(resultCode == Activity.RESULT_CANCELED){
-			if(BuildConfig.DEBUG) Log.i(TAG, "The user canceled.");
+		else if(Activity.RESULT_CANCELED == resultCode){
+			if(BuildConfig.DEBUG) Log.i(DonateActivity.TAG, "The user canceled.");
 		}
-		else if(resultCode == PaymentActivity.RESULT_PAYMENT_INVALID){
-			Log.e(TAG, "An invalid payment was submitted. Please see the docs.");
+		else if(PaymentActivity.RESULT_PAYMENT_INVALID == resultCode){
+			Log.e(DonateActivity.TAG, "An invalid payment was submitted. Please see the docs.");
 		}
 	}
 
     private void updateControls(){
-        this.seekBar.setProgress(this.amount - SEEKBAR_MIN);
+        this.seekBar.setProgress(this.amount - DonateActivity.SEEKBAR_MIN);
         this.amountEditText.setText(String.format("%.2f", this.amount / 100f));
     }
 
@@ -171,7 +171,7 @@ public class DonateActivity extends ActionBarActivity implements SeekBar.OnSeekB
 		    this.amount = DonateActivity.SEEKBAR_MIN + progress;
             // Limits to roughly 30 updates per second to avoid InputConnectionWrapper warning flood
             long now = new Date().getTime();
-            if(now - this.lastUpdate > 0.3f){
+            if(0.3f < now - this.lastUpdate){
                 this.lastUpdate = now;
                 this.updateControls();
             }
@@ -210,11 +210,11 @@ public class DonateActivity extends ActionBarActivity implements SeekBar.OnSeekB
             value = 0;
         }
 
-        if(value < DonateActivity.MIN_DONATION){
+        if(DonateActivity.MIN_DONATION > value){
             this.amount = DonateActivity.MIN_DONATION;
             previousAmount = -1;// Forces controls update
         }
-        else if(value > DonateActivity.MAX_DONATION){
+        else if(DonateActivity.MAX_DONATION < value){
             this.amount = DonateActivity.MAX_DONATION;
             previousAmount = -1;// Forces controls update
         }
@@ -256,17 +256,17 @@ public class DonateActivity extends ActionBarActivity implements SeekBar.OnSeekB
 
 		@Override
 		public boolean equals(Object o){
-			return o instanceof Currency
-				   && ((Currency)o).symbol.equals(this.symbol)
-				   && ((Currency)o).currencyCode.equals(this.currencyCode)
-				   && ((Currency)o).countryCode.equals(this.countryCode);
+			return o instanceof DonateActivity.Currency
+				   && ((DonateActivity.Currency)o).symbol.equals(this.symbol)
+				   && ((DonateActivity.Currency)o).currencyCode.equals(this.currencyCode)
+				   && ((DonateActivity.Currency)o).countryCode.equals(this.countryCode);
 		}
 	}
 
-	class CurrencySet extends ArrayList<Currency>{
+	class CurrencySet extends ArrayList<DonateActivity.Currency>{
 		private int defaultCurrencyPosition = -1;
 
-		public boolean add(Currency currency, boolean isDefault){
+		public boolean add(DonateActivity.Currency currency, boolean isDefault){
 			boolean ret = false;
 
 			if(!this.contains(currency)){
@@ -277,7 +277,7 @@ public class DonateActivity extends ActionBarActivity implements SeekBar.OnSeekB
 		}
 
 		@Override
-		public void add(int index, Currency object){
+		public void add(int index, DonateActivity.Currency object){
 			throw new UnsupportedOperationException("Calling this method could potentially mess with the defaultCurrencyPosition. No time to write useless but safe implementation for this method.");
 		}
 
@@ -290,8 +290,8 @@ public class DonateActivity extends ActionBarActivity implements SeekBar.OnSeekB
 			boolean found = false;
 			int position = -1;
 
-			Currency item;
-			Iterator<Currency> iterator = this.iterator();
+			DonateActivity.Currency item;
+			Iterator<DonateActivity.Currency> iterator = this.iterator();
 			while(!found && iterator.hasNext()){
 				item = iterator.next();
 				position++;
@@ -300,14 +300,14 @@ public class DonateActivity extends ActionBarActivity implements SeekBar.OnSeekB
 				}
 			}
 
-			return position == -1 && returnDefault ? this.defaultCurrencyPosition : position;
+			return -1 == position && returnDefault ? this.defaultCurrencyPosition : position;
 		}
 
 		public String[] getLabelArray(){
 			String[] labels = new String[this.size()];
 
 			for(int i = 0; i < this.size(); i++){
-				Currency currentItem = this.get(i);
+				DonateActivity.Currency currentItem = this.get(i);
 				labels[i] = currentItem.symbol;
 			}
 

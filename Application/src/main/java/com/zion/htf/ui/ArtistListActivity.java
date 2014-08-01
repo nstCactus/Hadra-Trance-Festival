@@ -19,23 +19,29 @@
 
 package com.zion.htf.ui;
 
-
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.CursorAdapter;
 import android.widget.ListView;
 
+import com.zion.content.SQLiteCursorLoader;
+import com.zion.htf.Application;
 import com.zion.htf.R;
 import com.zion.htf.adapter.ArtistListAdapter;
-import com.zion.htf.data.Item;
 import com.zion.htf.data.MusicSet;
 
-public class ArtistListActivity extends ActionBarActivity implements AdapterView.OnItemClickListener{
-    private         ListView                listView;
+public class ArtistListActivity extends ActionBarActivity implements AdapterView.OnItemClickListener, LoaderManager.LoaderCallbacks<Cursor> {
+    private static final    int             LISTVIEW_LOADER_ID = 5002;
+    private                 ListView        listView;
+    private                 CursorAdapter   adapter;
 
     @Override
 	protected void onCreate(Bundle savedInstanceState){
@@ -47,7 +53,11 @@ public class ArtistListActivity extends ActionBarActivity implements AdapterView
 		actionBar.setDisplayHomeAsUpEnabled(true);
 
         this.listView = (ListView)this.findViewById(R.id.artist_list);
-        this.listView.setAdapter(new ArtistListAdapter<Item>(this, R.layout.item_artists_list, R.id.label, MusicSet.getList()));
+        this.adapter = new ArtistListAdapter(this, null, false);
+        this.listView.setAdapter(this.adapter);
+
+        this.getSupportLoaderManager().initLoader(ArtistListActivity.LISTVIEW_LOADER_ID, null, this).forceLoad();
+
         this.listView.setOnItemClickListener(this);
     }
 
@@ -69,10 +79,27 @@ public class ArtistListActivity extends ActionBarActivity implements AdapterView
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-        MusicSet item = (MusicSet)this.listView.getAdapter().getItem(position);
         Intent intent = new Intent(this, ArtistDetailsActivity.class);
-        intent.putExtra("set_id", item.getId());
+        intent.putExtra("set_id", ((Cursor)this.listView.getAdapter().getItem(position)).getInt(MusicSet.COLUMN_ID));
         this.startActivity(intent);
         this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    }
+
+    /*
+     * Handle CursorLoader
+     */
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args){
+        return new SQLiteCursorLoader(this, Application.getDbHelper().getReadableDatabase(), MusicSet.getSetsQuery("sets.stage ASC, artists.name ASC"), null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor){
+        this.adapter.swapCursor(cursor);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader){
+        this.adapter.changeCursor(null);
     }
 }

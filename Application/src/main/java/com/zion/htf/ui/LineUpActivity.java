@@ -21,26 +21,27 @@ package com.zion.htf.ui;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
-import com.hb.views.PinnedSectionListView;
 import com.viewpagerindicator.PageIndicator;
 import com.zion.htf.R;
 import com.zion.htf.adapter.LineUpPagerAdapter;
 import com.zion.htf.data.Festival;
-import com.zion.htf.data.Item;
 import com.zion.htf.data.MusicSet;
 
 import java.util.Date;
 
-public class LineUpActivity extends ActionBarActivity {
+import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
+
+public class LineUpActivity extends ActionBarActivity{
 	private static final int CAUSE_TOO_EARLY = 0;
 	private static final int CAUSE_TOO_LATE  = 1;
 
@@ -93,6 +94,7 @@ public class LineUpActivity extends ActionBarActivity {
 		return ret;
 	}
 
+    // FIXME: NullPointerException when using this feature when displaying last tab
 	private boolean scrollToCurrentSet(){
 		boolean ret = false;
 
@@ -108,27 +110,25 @@ public class LineUpActivity extends ActionBarActivity {
 			ret = true;
 			boolean found = false;
 
-			Fragment fragment = this.pagerAdpater.getRegisteredFragment(this.viewPager.getCurrentItem());
 
-			PinnedSectionListView listView = (PinnedSectionListView)fragment.getView().findViewById(R.id.line_up_list);
+			View currentView = this.viewPager.getChildAt(this.viewPager.getCurrentItem());
+
+            StickyListHeadersListView listView = (StickyListHeadersListView)currentView.findViewById(R.id.line_up_list);// FIXME: occasional NPE here
 
 			int i = -1;
-			Item item;
 
 			while(!found && ++i < listView.getCount()){
-				item = (Item)listView.getItemAtPosition(i);
-				if(Item.TYPE_ITEM == item.getType()){
-					if(((MusicSet)item).getEndDate().after(now)){
-						found = true;
+				Cursor cursor = (Cursor)listView.getItemAtPosition(i);
+                if(new Date(cursor.getLong(MusicSet.COLUMN_BEGIN_DATE) * 1000).after(now)){
+                    found = true;
 
-						if(11 <= Build.VERSION.SDK_INT){
-							listView.smoothScrollToPositionFromTop(i, LineUpActivity.sectionHeaderHeight);
-						}
-						else{
-							listView.setSelectionFromTop(i, LineUpActivity.sectionHeaderHeight);
-						}
-					}
-				}
+                    if(11 <= Build.VERSION.SDK_INT){
+                        listView.smoothScrollToPositionFromTop(i, LineUpActivity.sectionHeaderHeight);
+                    }
+                    else{
+                        listView.setSelectionFromTop(i, LineUpActivity.sectionHeaderHeight);
+                    }
+                }
 			}
 		}
 

@@ -136,9 +136,6 @@ public class MapActivity extends ActionBarActivity implements ActionBar.OnNaviga
 				Toast.makeText(this, this.getString(R.string.error_failed_fetching_poi), Toast.LENGTH_SHORT).show();
 				Log.e(this.TAG, "Impossible de récupérer la liste des POI", e);
 			}
-			finally{
-				this.dbOpenHelper.close();
-			}
 		}
 	}
 

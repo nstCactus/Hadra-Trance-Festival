@@ -25,7 +25,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.content.AsyncTaskLoader;
-import android.util.Log;
 
 public class SQLiteCursorLoader extends AsyncTaskLoader<Cursor> {
     SQLiteDatabase db;
@@ -42,7 +41,6 @@ public class SQLiteCursorLoader extends AsyncTaskLoader<Cursor> {
 
     @Override
     public Cursor loadInBackground(){
-        Log.v("SQLiteCursorLoader", "Begin loading data from db");
         return this.db.rawQuery(this.rawQuery, this.queryArgs);
     }
 }

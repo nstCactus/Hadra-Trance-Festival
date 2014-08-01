@@ -74,7 +74,7 @@ dependencies {
     compile 'com.viewpagerindicator:library:2.4.1@aar'
     compile 'net.simonvt:android-numberpicker:1.0.0'
     compile 'com.mobsandgeeks.ui.library:TypefaceTextview:1.0.0@aar'
-    // You must install or update the Support Repository through the SDK manager to use this dependency.
+    compile 'se.emilsjolander:stickylistheaders:2.5.0'
     compile 'com.android.support:support-v4:20.+'
     compile 'com.android.support:appcompat-v7:20.+'
     compile files('libs/servlet-api.jar')

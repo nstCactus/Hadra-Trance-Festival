@@ -31,9 +31,9 @@ import org.michenux.android.db.sqlite.SQLiteDatabaseHelper;
 import java.util.ArrayList;
 
 public class Stage {
-    private String name;
-    private double latitude;
-    private double longitude;
+    private final String name;
+    private final double latitude;
+    private final double longitude;
     private static final String QUERY = "SELECT lst__stages.*, locations.latitude, locations.longitude FROM lst__stages JOIN locations ON location_id = id ";
     private static final SQLiteDatabaseHelper dbOpenHelper = Application.getDbHelper();
 
@@ -60,7 +60,6 @@ public class Stage {
             }
             cursor.close();
         }
-        Stage.dbOpenHelper.close();
 
         return stage;
     }
@@ -91,7 +90,6 @@ public class Stage {
             }
             cursor.close();
         }
-        Stage.dbOpenHelper.close();
         return stages;
     }
 }

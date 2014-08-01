@@ -28,28 +28,21 @@ import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CursorAdapter;
 
 import com.zion.htf.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-public abstract class AbstractActionModeListAdapter<T> extends CursorAdapter {
+public abstract class AbstractActionModeListAdapter<T> extends CachedImageCursorAdapter{
     protected final Context context;
     protected final LayoutInflater layoutInflater;
     private SparseBooleanArray selectedPositions = new SparseBooleanArray();
 
 	protected SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEE HH:mm", "fr".equals(Locale.getDefault().getLanguage()) ? Locale.FRANCE : Locale.ENGLISH);
 
-	public AbstractActionModeListAdapter(Context context, Cursor cursor, boolean autoRequery){
-		super(context, cursor, autoRequery);
-        this.context = context;
-        this.layoutInflater = LayoutInflater.from(context);
-    }
-
-    public AbstractActionModeListAdapter(Context context, Cursor cursor, int flags){
-        super(context, cursor, flags);
+    public AbstractActionModeListAdapter(Context context, Cursor cursor, boolean autoRequery){
+        super(context, cursor, autoRequery);
         this.context = context;
         this.layoutInflater = LayoutInflater.from(context);
     }

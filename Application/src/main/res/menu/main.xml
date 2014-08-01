@@ -26,8 +26,7 @@
         android:title="@string/action_favorite_artists"
         android:orderInCategory="1"
         app:showAsAction="ifRoom"
-        android:icon="@drawable/ic_menu_favorite"
-        android:visible="false" />
+        android:icon="@drawable/ic_menu_favorite" />
     <item
         android:id="@+id/action_alarms"
         android:title="@string/action_alarms"

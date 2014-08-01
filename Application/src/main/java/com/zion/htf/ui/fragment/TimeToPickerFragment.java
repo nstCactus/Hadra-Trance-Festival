@@ -25,6 +25,7 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.database.SQLException;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.text.Editable;
 import android.util.Log;
@@ -40,7 +41,6 @@ import com.zion.htf.data.MusicSet;
 import com.zion.htf.data.SavedAlarm;
 import com.zion.htf.exception.AlarmNotFoundException;
 import com.zion.htf.exception.MissingArgumentException;
-import com.zion.htf.exception.SetNotFoundException;
 
 /**
  * An {@link android.app.AlertDialog} used to set or edit an alarm.
@@ -57,6 +57,7 @@ public class TimeToPickerFragment extends DialogFragment{
     private SavedAlarm alarm;
     private MusicSet set;
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Bundle args = this.getArguments();
@@ -124,19 +125,12 @@ public class TimeToPickerFragment extends DialogFragment{
 
             return dialog;
         }
-        catch(MissingArgumentException e){
-            throw new RuntimeException(e.getMessage(), e);
-            //TODO: Handle this properly
-        }
-        catch(SetNotFoundException e){
-            e.printStackTrace();
-            throw new RuntimeException(e.getMessage(), e);
-            //TODO: Handle this properly
-        }
-        catch(AlarmNotFoundException e){
-            e.printStackTrace();
-            throw new RuntimeException(e.getMessage(), e);
-            //TODO: Handle this properly
+        catch(Exception e){
+            if(BuildConfig.DEBUG) e.printStackTrace();
+
+            // These errors are serious enough to trigger a force close
+            // Report this through piwik
+            throw new RuntimeException(e);
         }
     }
 
@@ -174,11 +168,10 @@ public class TimeToPickerFragment extends DialogFragment{
             }
             catch(NumberFormatException e){
                 amount = 0;
-                // TODO: Validate user input
+                // TODO: Validate user input if not using a spinner
             }
 
             long minutes;
-            Log.v(TimeToPickerFragment.TAG, String.format("User pressed OK, number = %s, unit = %s", amount, TimeToPickerFragment.this.unitSpinner.getSelectedItem()));
 
             // Compute alarm timestamp
             long alarmTimestamp = TimeToPickerFragment.this.set.getBeginDateAsTimestamp();
@@ -196,8 +189,6 @@ public class TimeToPickerFragment extends DialogFragment{
                     throw new RuntimeException("Inconsistent selected item position for time_units array");
             }
             alarmTimestamp -= minutes * 60000;// * 60000 to convert to ms
-
-            Log.v(TimeToPickerFragment.TAG, String.format("Alarm timestamp is %1$s, or %1$tc in a human-readable fashion", alarmTimestamp));
 
             // Save it in the database so it can be restored after reboots
             ContentValues values = new ContentValues(2);
@@ -223,7 +214,7 @@ public class TimeToPickerFragment extends DialogFragment{
             catch(AlarmNotFoundException e){
                 databaseOperationSucceeded = false;
                 if(BuildConfig.DEBUG) e.printStackTrace();
-                // TODO: Handle this properly
+                // TODO: Try to delete and recreate the alarm
             }
 
             // Set or update the alarm
@@ -236,15 +227,14 @@ public class TimeToPickerFragment extends DialogFragment{
         }
     }
 
-    class NegativeClickListener implements DialogInterface.OnClickListener {
+    class NegativeClickListener implements DialogInterface.OnClickListener{
         @Override
-        public void onClick(DialogInterface dialog, int which) {
-            Log.v(TimeToPickerFragment.TAG, "User pressed Cancel");
-            //((ArtistDetailsActivity) getActivity()).doNegativeClick();
+        public void onClick(DialogInterface dialog, int which){
+            // No action needed
         }
     }
 
-    class NeutralClickListener implements DialogInterface.OnClickListener {
+    class NeutralClickListener implements DialogInterface.OnClickListener{
         @Override
         public void onClick(DialogInterface dialog, int which){
             TimeToPickerFragment.this.alarm.unregisterAlarm(TimeToPickerFragment.this.getActivity());

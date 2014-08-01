@@ -20,103 +20,108 @@
 package com.zion.htf.adapter;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.hb.views.PinnedSectionListView;
 import com.zion.htf.R;
-import com.zion.htf.data.Item;
+import com.zion.htf.data.Artist;
 import com.zion.htf.data.MusicSet;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.List;
+import java.util.Date;
 import java.util.Locale;
 
-public class LineUpListAdapter<T> extends ArrayAdapter<T> implements PinnedSectionListView.PinnedSectionListAdapter{
-	static class ItemViewHolder {
+import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
+
+public class LineUpListAdapter extends CachedImageCursorAdapter implements StickyListHeadersAdapter{
+    private final LayoutInflater layoutInflater;
+	protected final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", "fr".equals(Locale.getDefault().getLanguage()) ? Locale.FRANCE : Locale.ENGLISH);
+    private static final SimpleDateFormat FORMATTER_DAY_IN_YEAR = new SimpleDateFormat("D", Locale.ENGLISH);
+    private static final DateFormat FORMATTER_HEADER_DATE = "fr".equals(Locale.getDefault().getLanguage()) ? DateFormat.getDateInstance(DateFormat.FULL, Locale.FRENCH) : DateFormat.getDateInstance(DateFormat.FULL);
+
+
+    static class ItemViewHolder{
 		TextView  artistName;
 		TextView  setType;
 		TextView  hour;
+        ImageView artistPhoto;
 	}
 
 	static class SectionViewHolder{
 		TextView sectionHeader;
 	}
 
-	protected SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", "fr".equals(Locale.getDefault().getLanguage()) ? Locale.FRANCE : Locale.ENGLISH);
+    public LineUpListAdapter(Context context, Cursor cursor, boolean autoRequery){
+        super(context, cursor, autoRequery);
 
-	public LineUpListAdapter(Context context, int resource, int textViewResourceId, List<T> objects){
-		super(context, resource, textViewResourceId, objects);
-	}
+        this.layoutInflater = LayoutInflater.from(context);
+    }
 
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent){
-		if(Item.TYPE_SECTION == this.getItemViewType(position)){
-			LineUpListAdapter.SectionViewHolder holder;
+    @Override
+    public View newView(Context context, Cursor cursor, ViewGroup parent){
+        View rowView = this.layoutInflater.inflate(R.layout.item_line_up_list, parent, false);
 
-			if(null == convertView){
-				// Inflate the view
-                LayoutInflater layoutInflater = (LayoutInflater)this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				convertView = layoutInflater.inflate(R.layout.section_line_up_list, parent, false);
-                assert null != convertView;
+        LineUpListAdapter.ItemViewHolder holder = new LineUpListAdapter.ItemViewHolder();
 
-				// Get reference to its field and store it in the ViewHolder
-				holder = new LineUpListAdapter.SectionViewHolder();
-                holder.sectionHeader = (TextView)convertView.findViewById(R.id.list_item_section_header);
+        holder.artistName = (TextView)rowView.findViewById(R.id.artist_name);
+        holder.setType = (TextView)rowView.findViewById(R.id.set_type);
+        holder.hour = (TextView)rowView.findViewById(R.id.hour);
+        holder.artistPhoto = (ImageView) rowView.findViewById(R.id.artist_photo);
+        rowView.setTag(holder);
 
-				// Store the ViewHolder in the View's tag for future retrieval
-				convertView.setTag(holder);
-			}
-			else{
-				holder = (LineUpListAdapter.SectionViewHolder)convertView.getTag();
-			}
+        return rowView;
+    }
 
-			holder.sectionHeader.setText(this.getItem(position).toString());
-		}
-		else{
-			LineUpListAdapter.ItemViewHolder holder;
-			MusicSet musicSet = (MusicSet)this.getItem(position);
+    @Override
+    public void bindView(View view, Context context, Cursor cursor){
+        LineUpListAdapter.ItemViewHolder holder = (LineUpListAdapter.ItemViewHolder) view.getTag();
 
-			if(null == convertView){
-				// Inflate the view
-				convertView = super.getView(position, null, parent);
-                assert null != convertView;
+        holder.artistName.setText(cursor.getString(MusicSet.COLUMN_ARTIST_NAME));
+        holder.setType.setText(cursor.getString(MusicSet.COLUMN_TYPE));
+        holder.hour.setText(String.format(Locale.ENGLISH, "%s-%s", this.simpleDateFormat.format(cursor.getLong(MusicSet.COLUMN_BEGIN_DATE) * 1000), this.simpleDateFormat.format(cursor.getLong(MusicSet.COLUMN_END_DATE) * 1000)));
 
-                // Get references to its fields and store them in the ViewHolder
-				holder = new LineUpListAdapter.ItemViewHolder();
-				holder.artistName = (TextView)convertView.findViewById(R.id.label);
-				holder.setType = (TextView)convertView.findViewById(R.id.set_type);
-				holder.hour = (TextView)convertView.findViewById(R.id.hour);
+        holder.artistPhoto.setImageResource(R.drawable.no_image);
+        this.loadBitmap(Artist.getPictureResourceId(cursor.getString(MusicSet.COLUMN_ARTIST_PICTURE_NAME)), holder.artistPhoto);
+    }
 
-				convertView.setTag(holder);
-			}
-			else{
-				holder = (LineUpListAdapter.ItemViewHolder)convertView.getTag();
-			}
+    public View newHeaderView(Context context, Cursor cursor, ViewGroup parent){
+        View headerView = this.layoutInflater.inflate(R.layout.section_line_up_list, parent, false);
+        
+        LineUpListAdapter.SectionViewHolder holder = new LineUpListAdapter.SectionViewHolder();
+        holder.sectionHeader = (TextView) headerView.findViewById(R.id.list_item_section_header);
 
-			holder.artistName.setText(musicSet.toString());
-			holder.hour.setText(String.format("%s-%s", this.simpleDateFormat.format(musicSet.getBeginDate()), this.simpleDateFormat.format(musicSet.getEndDate())));
-			holder.setType.setText(musicSet.getSetType());
-		}
-		return convertView;
-	}
+        headerView.setTag(holder);
+        return headerView;
+    }
 
-	@Override
-	public int getViewTypeCount(){
-		return 2;
-	}
+    public void bindHeaderView(View view, Context context, Cursor cursor){
+        LineUpListAdapter.SectionViewHolder holder = (LineUpListAdapter.SectionViewHolder) view.getTag();
 
-	@Override
-	public int getItemViewType(int position){
-		Item item = (Item)this.getItem(position);
-		return item.getType();
-	}
+        holder.sectionHeader.setText(LineUpListAdapter.FORMATTER_HEADER_DATE.format(new Date(cursor.getLong(MusicSet.COLUMN_BEGIN_DATE) * 1000)));
+    }
 
-	@Override
-	public boolean isItemViewTypePinned(int viewType){
-		return Item.TYPE_SECTION == viewType;
-	}
+    @Override
+    public View getHeaderView(int position, View view, ViewGroup parent){
+        Cursor cursor = this.getCursor();
+        if(!cursor.moveToPosition(position)) {
+            throw new IllegalStateException("couldn't move cursor to position " + position);
+        }
+        if(null == view){
+            view = this.newHeaderView(this.context, cursor, parent);
+        }
+        this.bindHeaderView(view, this.context, cursor);
+        return view;
+
+    }
+
+    @Override
+    public long getHeaderId(int position){
+        Cursor cursor = (Cursor) this.getItem(position);
+        return Integer.valueOf(LineUpListAdapter.FORMATTER_DAY_IN_YEAR.format(new Date(cursor.getLong(MusicSet.COLUMN_BEGIN_DATE) * 1000)));
+    }
 }

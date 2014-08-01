@@ -22,53 +22,81 @@
   -->
 
 <RelativeLayout
-		xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/active_list_item">
+
+    <ImageView
+        tools:src="@drawable/ph_adn_smith"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/artist_photo"
+        android:src="@drawable/no_image"
+        android:scaleType="centerCrop"
+        android:layout_marginRight="10dp" />
+
+	<TextView
+		android:layout_width="0dp"
+		android:layout_height="wrap_content"
+		tools:text="The Temple - ven 0h00"
+		android:id="@+id/where_and_when"
+		android:singleLine="true"
+		android:clickable="false"
+		android:textSize="12sp"
+        android:layout_below="@+id/artist_name"
+        android:layout_toRightOf="@+id/artist_photo"
+        android:layout_toLeftOf="@+id/alarm_icon" />
+
+	<TextView
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		tools:text="ADN Smith"
+		android:id="@+id/artist_name"
+		android:singleLine="true"
+		android:textAppearance="?android:attr/textAppearanceLarge"
+		android:clickable="false"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@id/artist_photo"
+        android:layout_toLeftOf="@+id/set_type" />
+
+	<TextView
+        android:layout_width="35sp"
         android:layout_height="wrap_content"
-		android:padding="10dp"
-        android:background="@drawable/active_list_item">
+        tools:text="Live"
+        android:id="@+id/set_type"
+        android:singleLine="true"
+		android:layout_centerVertical="true"
+		android:layout_alignParentRight="true"
+		android:background="@drawable/pill_set_type"
+		android:textColor="@color/brand_black"
+		android:clickable="false"
+		android:layout_gravity="center_vertical"
+		android:layout_marginLeft="10dp"
+		android:textSize="13sp"
+		android:gravity="center"
+        android:layout_marginRight="10dp" />
 
-	<TextView
-			android:layout_width="60sp"
-			android:layout_height="wrap_content"
-			tools:text="jeu. 23h45"
-			android:id="@+id/time"
-			android:singleLine="true"
-			android:layout_centerVertical="true"
-			android:layout_alignParentLeft="true"
-			android:clickable="false"
-			android:layout_gravity="center_vertical"
-			android:textSize="11sp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="jeu. 23h45"
+        android:id="@+id/alarm_time"
+        android:layout_toLeftOf="@+id/set_type"
+        android:layout_below="@+id/artist_name"
+        android:textSize="12sp" />
 
-	<TextView
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			tools:text="ADN Smith"
-			android:id="@+id/label"
-			android:singleLine="true"
-			android:textAppearance="?android:attr/textAppearanceLarge"
-			android:clickable="false"
-			android:layout_gravity="center_vertical"
-			android:layout_centerVertical="true"
-			android:layout_toRightOf="@id/time"
-			android:layout_toLeftOf="@id/stage"/>
-
-	<TextView
-			android:layout_width="55sp"
-			android:layout_height="wrap_content"
-			tools:text="Temple"
-			android:id="@+id/stage"
-			android:singleLine="true"
-			android:layout_centerVertical="true"
-			android:layout_alignParentRight="true"
-			android:background="@drawable/pill_set_type"
-			android:textColor="@color/brand_black"
-			android:clickable="false"
-			android:layout_gravity="center_vertical"
-			android:layout_marginLeft="10dp"
-			android:textSize="13sp"
-			android:gravity="center"/>
+    <ImageView
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:id="@+id/alarm_icon"
+        android:layout_alignParentBottom="false"
+        android:layout_toLeftOf="@+id/alarm_time"
+        android:layout_alignBottom="@+id/alarm_time"
+        android:src="@drawable/ic_menu_alarms"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp" />
 
 </RelativeLayout>

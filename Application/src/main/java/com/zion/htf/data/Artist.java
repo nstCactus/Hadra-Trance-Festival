@@ -23,20 +23,20 @@ import java.util.Locale;
  * The {@code Artist} class holds data related to an artist as well as methods to retrieve this data from the {@code artists} database table.
  */
 public class Artist {
-    private static final String TAG = "ArtistDetailsActivity";
-    private static final int COLUMN_ID = 0;
-    private static final int COLUMN_NAME = 1;
-    private static final int COLUMN_GENRE = 2;
-    private static final int COLUMN_ORIGIN = 3;
-    private static final int COLUMN_PICTURE = 4;
-    private static final int COLUMN_COVER = 5;
-    private static final int COLUMN_WEBSITE = 6;
-    private static final int COLUMN_FACEBOOK = 7;
-    private static final int COLUMN_SOUNDCLOUD = 8;
-    private static final int COLUMN_LABEL = 9;
-    private static final int COLUMN_BIO_ID = 10;
-    private static final int COLUMN_FAVORITE = 11;
-    private static final String QUERY = "SELECT artists.* FROM artists INNER JOIN sets ON sets.artist = artists.id ";
+    public static final String TAG = "Artist";
+    public static final int COLUMN_ID = 0;
+    public static final int COLUMN_NAME = 1;
+    public static final int COLUMN_GENRE = 2;
+    public static final int COLUMN_ORIGIN = 3;
+    public static final int COLUMN_PICTURE = 4;
+    public static final int COLUMN_COVER = 5;
+    public static final int COLUMN_WEBSITE = 6;
+    public static final int COLUMN_FACEBOOK = 7;
+    public static final int COLUMN_SOUNDCLOUD = 8;
+    public static final int COLUMN_LABEL = 9;
+    public static final int COLUMN_BIO_ID = 10;
+    public static final int COLUMN_FAVORITE = 11;
+    private static final String QUERY = "SELECT artists.id AS _id, name, genre, origin, picture_name, cover_name, website, facebook, soundcloud, label, bio AS bio_id, favorite AS is_favorite FROM artists INNER JOIN sets ON sets.artist = artists.id ";
 
     /* Sets table fields */
     protected int id;
@@ -109,7 +109,6 @@ public class Artist {
         Artist artist = Artist.newInstance(cursor);
 
         if (!cursor.isClosed()) cursor.close();
-        Artist.dbOpenHelper.close();
 
         return artist;
     }
@@ -135,6 +134,21 @@ public class Artist {
                 .setFavorite(cursor.getInt(Artist.COLUMN_FAVORITE));
 
         return artist;
+    }
+
+    public static int getPictureResourceId(String picResName){
+        int resId;
+
+        // Sanitize picture resource name
+        picResName = picResName.toLowerCase(Locale.ENGLISH)
+                .replaceAll("\\.(?:jpe?g|png|gif)$", "")// Remove the extension if present in DB
+                .replace(".", "_");
+
+        if (0 == (resId = Application.getContext().getResources().getIdentifier(picResName, "drawable", "com.zion.htf"))) {
+            resId = R.drawable.no_image;
+            if (BuildConfig.DEBUG) Log.w(Artist.TAG, "Not found: " + picResName);
+        }
+        return resId;
     }
 
     public String getName() {
@@ -198,22 +212,9 @@ public class Artist {
         return this.setOrigin(null == value ? defaultValue : value);
     }
 
-
     public int getPictureResourceId() {
         if(0 == this.pictureResourceId){
-            String picResName = this.getPictureResName();
-            int resId;
-
-            // Sanitize picture resource name
-            picResName = picResName.toLowerCase(Locale.ENGLISH)
-                    .replaceAll("\\.(?:jpe?g|png|gif)$", "")// Remove the extension if present in DB
-                    .replace(".", "_");
-
-            if (0 == (resId = Application.getContext().getResources().getIdentifier(picResName, "drawable", "com.zion.htf"))) {
-                resId = R.drawable.no_image;
-                if (BuildConfig.DEBUG) Log.w(Artist.TAG, "Not found: " + picResName);
-            }
-            this.setPictureResourceId(resId);
+            this.setPictureResourceId(Artist.getPictureResourceId(this.getPictureResName()));
         }
         return this.pictureResourceId;
     }
@@ -306,7 +307,6 @@ public class Artist {
         }
 
         if (!cursor.isClosed()) cursor.close();
-        dbHelper.close();
 
         // Fallback to the other lang if empty
         if(null == this.bioFr || 0 == this.bioFr.length()) this.bioFr = this.bioEn;
@@ -332,8 +332,7 @@ public class Artist {
     }
 
     public static Cursor getFavoriteArtists(){
-        SQLiteDatabaseHelper dbHelper = Application.getDbHelper();
-        return dbHelper.getReadableDatabase().rawQuery(String.format("%s WHERE artists.favorite = 1", Artist.QUERY), null);
+        return Application.getDbHelper().getReadableDatabase().rawQuery(String.format("%s WHERE artists.favorite = 1", Artist.QUERY), null);
     }
 
     public static List<Artist> getFavoriteArtistsList(){
@@ -389,8 +388,6 @@ public class Artist {
         }
 
         db.endTransaction();
-        db.close();
-        Artist.dbOpenHelper.close();
 
         return ret;
     }

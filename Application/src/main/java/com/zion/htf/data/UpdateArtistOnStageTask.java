@@ -32,23 +32,25 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimerTask;
-
+/*
+This task manages the children tasks that retrieve data from db and updates UI periodically
+ */
 /* TODO: Create one task per stage and make them smart.
     Each task should execute once and stop until the next set (use an alarm to run it when time comes)
     A parent task should manage the periodical UI updates
 */
-public class ArtistOnStageTask extends TimerTask{
+public class UpdateArtistOnStageTask extends TimerTask{
 	private static final String               TAG          = "ArtistOnStageTimerTask";
 	private static ArrayList<Stage> stages;
-	private final  Activity          hostActivity;
-	private static int currentItem = -1;
+	private final  Activity         hostActivity;
+	private static int              currentItem = -1;
 
 	private WeakReference<TextView> stageField;
 	private WeakReference<TextView> artistField;
     private WeakReference<TextView> hourField;
     private WeakReference<TextView> separatorField;
 
-	public ArtistOnStageTask(WeakReference<Activity> hostActivity){
+	public UpdateArtistOnStageTask(WeakReference<Activity> hostActivity){
 		this.hostActivity = hostActivity.get();
 		if(null != this.hostActivity){
 			this.stageField		= new WeakReference<TextView>((TextView) hostActivity.get().findViewById(R.id.stage));
@@ -60,22 +62,22 @@ public class ArtistOnStageTask extends TimerTask{
 
 	@Override
 	public void run(){
-		Log.v(ArtistOnStageTask.TAG, "Getting artist on stage");
-		if(null == ArtistOnStageTask.stages){
-			Log.v(ArtistOnStageTask.TAG, "Fetching stages");
-            ArtistOnStageTask.stages = Stage.getList();
+		Log.v(UpdateArtistOnStageTask.TAG, "Getting artist on stage");
+		if(null == UpdateArtistOnStageTask.stages){
+			Log.v(UpdateArtistOnStageTask.TAG, "Fetching stages");
+            UpdateArtistOnStageTask.stages = Stage.getList();
 		}
 
-		if(1 > ArtistOnStageTask.stages.size()) throw new RuntimeException("No stages were found in the database.");
+		if(1 > UpdateArtistOnStageTask.stages.size()) throw new RuntimeException("No stages were found in the database.");
 
 		Date currentDate = new Date();
 		Date bound;
 
-        ArtistOnStageTask.DataHolder data = new ArtistOnStageTask.DataHolder();
+        UpdateArtistOnStageTask.DataHolder data = new UpdateArtistOnStageTask.DataHolder();
 
         if(currentDate.before(bound = Festival.getFestivalStartDate())){
             // Festival hasn't begun yet
-			Log.v(ArtistOnStageTask.TAG, "Pas commencé. Début à " + bound.toString());
+			Log.v(UpdateArtistOnStageTask.TAG, "Pas commencé. Début à " + bound.toString());
 			int secondsFromStart = (int)(bound.getTime() / 1000 - currentDate.getTime() / 1000);
 			int daysFromStart = secondsFromStart / 86400;
 			int remainingSeconds = secondsFromStart % 86400;
@@ -90,7 +92,7 @@ public class ArtistOnStageTask extends TimerTask{
 		}
 		else if(currentDate.after(bound = Festival.getFestivalEndDate())){
             // Festival is over
-			Log.v(ArtistOnStageTask.TAG, "Déjà fini depuis " + bound.toString());
+			Log.v(UpdateArtistOnStageTask.TAG, "Déjà fini depuis " + bound.toString());
             data.main = Application.getContext().getString(R.string.festival_over);
             data.field1 = data.field2 = data.separator = "";
 		}
@@ -98,9 +100,9 @@ public class ArtistOnStageTask extends TimerTask{
             // Festival is on but we may fail to retrieve data so just in case...
 			int failureCount = 0;
             MusicSet currentSet = null;
-			while(failureCount < ArtistOnStageTask.stages.size() && null == data.main){
-                ArtistOnStageTask.currentItem = ++ArtistOnStageTask.currentItem % ArtistOnStageTask.stages.size();
-                currentSet = MusicSet.fetchCurrent(ArtistOnStageTask.stages.get(ArtistOnStageTask.currentItem).getName());
+			while(failureCount < UpdateArtistOnStageTask.stages.size() && null == data.main){
+                UpdateArtistOnStageTask.currentItem = ++UpdateArtistOnStageTask.currentItem % UpdateArtistOnStageTask.stages.size();
+                currentSet = MusicSet.fetchCurrent(UpdateArtistOnStageTask.stages.get(UpdateArtistOnStageTask.currentItem).getName());
                 if(null != currentSet){
                     data.main = currentSet.getArtist().getName();
                     data.field1 = currentSet.getStage();
@@ -110,7 +112,7 @@ public class ArtistOnStageTask extends TimerTask{
                 }
 			}
 			if(null == currentSet){
-				if(BuildConfig.DEBUG) Log.v(ArtistOnStageTask.TAG, "Daily break on all stages at the same time... Very unlikely to happen.");
+				if(BuildConfig.DEBUG) Log.v(UpdateArtistOnStageTask.TAG, "Daily break on all stages at the same time... Very unlikely to happen.");
 				data.main = Application.getContext().getString(R.string.daily_break);
 				data.field2 = Application.getContext().getString(R.string.all_stages);
                 data.field1 = data.separator = "";
@@ -120,15 +122,15 @@ public class ArtistOnStageTask extends TimerTask{
 		this.updateUI(data);
 	}
 
-	private void updateUI(final ArtistOnStageTask.DataHolder data){
+	private void updateUI(final UpdateArtistOnStageTask.DataHolder data){
 		this.hostActivity.runOnUiThread(new Runnable(){
 			@Override
 			public void run(){
-				if(null != ArtistOnStageTask.this.stageField && null != ArtistOnStageTask.this.artistField && null != ArtistOnStageTask.this.hourField)
-                ArtistOnStageTask.this.stageField.get().setText(data.field1);
-                ArtistOnStageTask.this.artistField.get().setText(data.main);
-                ArtistOnStageTask.this.hourField.get().setText(data.field2);
-                ArtistOnStageTask.this.separatorField.get().setText(data.separator);
+				if(null != UpdateArtistOnStageTask.this.stageField && null != UpdateArtistOnStageTask.this.artistField && null != UpdateArtistOnStageTask.this.hourField)
+                UpdateArtistOnStageTask.this.stageField.get().setText(data.field1);
+                UpdateArtistOnStageTask.this.artistField.get().setText(data.main);
+                UpdateArtistOnStageTask.this.hourField.get().setText(data.field2);
+                UpdateArtistOnStageTask.this.separatorField.get().setText(data.separator);
 			}
 		});
 	}

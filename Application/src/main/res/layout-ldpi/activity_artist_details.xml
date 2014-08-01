@@ -40,7 +40,7 @@
             <ImageView
                     style="@style/artist.photo"
                     android:id="@+id/artist_photo"
-                    tools:src="@drawable/ph_bytherain"/>
+                    tools:src="@drawable/ph_by_the_rain"/>
 
             <com.mobsandgeeks.ui.TypefaceTextView
                     android:layout_width="fill_parent"
