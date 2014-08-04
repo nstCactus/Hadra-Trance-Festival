@@ -24,4 +24,8 @@
     <string name="alarm_set">Programmer</string>
     <string name="alarm_cancel">Annuler</string>
     <string name="alarm_delete">Supprimer</string>
+
+    <string name="time_1_hr">1 heures</string>
+    <string name="time_2_hr">2 heures</string>
+    <string name="time_3_hr">3 heures</string>
 </resources>

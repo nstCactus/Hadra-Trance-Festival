@@ -21,59 +21,61 @@
   -->
 
 <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_alignParentBottom="true"
-		android:layout_alignParentLeft="true"
-		android:id="@+id/relativeLayout"
-		android:onClick="onNowOnStageClicked"
-        android:background="#CC10020D"
-        android:clickable="false">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:layout_alignParentLeft="true"
+    android:id="@+id/relativeLayout"
+    android:onClick="onNowOnStageClicked"
+    android:background="#CC10020D"
+    android:clickable="false">
 
 	<ImageView
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:id="@+id/speaker_left"
-			android:src="@drawable/speaker_left"
-			android:layout_alignParentLeft="true"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/speaker_left"
+        android:src="@drawable/speaker_left"
+        android:layout_alignParentLeft="true"
+        tools:ignore="ContentDescription" />
 
 	<ImageView
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:id="@+id/speaker_right"
-			android:src="@drawable/speaker_right"
-			android:layout_alignParentRight="true"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/speaker_right"
+        android:src="@drawable/speaker_right"
+        android:layout_alignParentRight="true"
+        tools:ignore="ContentDescription" />
 
 	<LinearLayout
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:orientation="vertical"
-			android:layout_centerVertical="true"
-			android:layout_centerHorizontal="true"
-			android:gravity="center">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="center">
 
 		<com.mobsandgeeks.ui.TypefaceTextView
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				tools:text="Main stage"
-				android:id="@+id/stage"
-				style="@style/now_playing" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Main stage"
+            android:id="@+id/stage"
+            style="@style/now_playing" />
 
 		<com.mobsandgeeks.ui.TypefaceTextView
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				tools:text="Penta (live)"
-				android:id="@+id/artist_name"
-				style="@style/now_playing.artist" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Penta (live)"
+            android:id="@+id/artist_name"
+            style="@style/now_playing.artist" />
 
 		<com.mobsandgeeks.ui.TypefaceTextView
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				tools:text="20h - 22h30"
-				style="@style/now_playing"
-				android:id="@+id/hour" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="20h - 22h30"
+            style="@style/now_playing"
+            android:id="@+id/hour" />
 
         <TextView
             android:id="@+id/separator"

@@ -7,4 +7,17 @@
     <string name="action_alarms">Reminders</string>
     <string name="action_info">Useful information</string>
     <string name="action_help">Help</string>
+
+    <string name="button_artists">Artists</string>
+    <string name="button_lineup" translatable="false">Line Up</string>
+    <string name="button_tickets">Tickets</string>
+    <string name="button_map">Map</string>
+    <string name="button_infos">Infos</string>
+
+    <string name="button_facebook">Hadra on Facebook</string>
+    <string name="button_soundcloud">Hadra on Soundcloud</string>
+    <string name="button_youtube">Hadra on Youtube</string>
+    <string name="button_hadra_website">Hadra\'s website</string>
+    <string name="button_compilation">Hadra Trance Festival compilation</string>
+    <string name="button_photos">Photos</string>
 </resources>

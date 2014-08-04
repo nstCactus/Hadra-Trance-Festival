@@ -29,11 +29,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class PiwikDatabaseHelper extends SQLiteOpenHelper{
     private final Context context;
 
-    public PiwikDatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version, DatabaseErrorHandler errorHandler){
-        super(context, name, factory, version, errorHandler);
-        this.context = context;
-    }
-
     public PiwikDatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version){
         super(context, name, factory, version);
         this.context = context;

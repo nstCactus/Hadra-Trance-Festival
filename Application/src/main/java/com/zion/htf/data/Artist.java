@@ -3,7 +3,6 @@ package com.zion.htf.data;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 
 import com.zion.htf.Application;
@@ -398,7 +397,8 @@ public class Artist {
      * @return int the number of updated artists
      */
     public static int unsetFavorite(String inClause){
-        SQLiteStatement statement = Artist.dbOpenHelper.getWritableDatabase().compileStatement(String.format(Locale.ENGLISH, "UPDATE artists SET favorite = 0 WHERE id IN(%s);", inClause));
-        return statement.executeUpdateDelete();
+        ContentValues values = new ContentValues();
+        values.put("favorite", 0);
+        return Artist.dbOpenHelper.getWritableDatabase().update("artists", values, String.format(Locale.ENGLISH, "id IN(%s)", inClause), null);
     }
 }

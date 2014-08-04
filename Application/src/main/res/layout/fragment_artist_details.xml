@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    Copyright 2013 Yohann Bianchi
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+    or see <http://www.gnu.org/licenses/>.
+-->
+
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+	android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:baselineAligned="false"
+        android:orientation="vertical"
+        android:id="@+id/header">
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:layout_weight="1"
+		android:padding="10dp">
+		<ImageView
+			style="@style/artist.photo"
+			android:id="@+id/artist_photo"
+            tools:src="@drawable/ph_by_the_rain"
+            tools:ignore="ContentDescription" />
+
+		<com.mobsandgeeks.ui.TypefaceTextView
+			android:layout_width="fill_parent"
+			android:layout_height="@dimen/artist_photo"
+            android:id="@+id/artist_name"
+            android:gravity="center|center_horizontal"
+            tools:text="By the rain"
+            style="@style/artist.name" />
+
+	</LinearLayout>
+
+	<RelativeLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:layout_gravity="center_horizontal"
+		android:layout_weight="1"
+		android:layout_marginLeft="10dp"
+		android:layout_marginRight="10dp">
+
+		<TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/label"
+            android:layout_alignParentLeft="true"
+            tools:text="TR / Epic Tribe/ BMMS/Trimurti"
+            android:layout_toLeftOf="@+id/facebook"
+            android:layout_alignTop="@+id/facebook"
+            style="@style/artist.label" />
+
+		<com.zion.htf.widget.TintImageButton
+            android:id="@+id/facebook"
+            android:src="@drawable/social_facebook"
+            android:onClick="onClick"
+            style="@style/imageButtons"
+            android:layout_gravity="center_vertical"
+            android:layout_alignTop="@+id/soundcloud"
+            android:layout_toLeftOf="@+id/soundcloud"/>
+
+		<com.zion.htf.widget.TintImageButton
+            android:id="@+id/soundcloud"
+            android:src="@drawable/social_soundcloud"
+            android:onClick="onClick"
+            style="@style/imageButtons"
+            android:layout_gravity="center_vertical"
+            android:layout_alignTop="@+id/website"
+            android:layout_toLeftOf="@+id/website"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"/>
+
+		<com.zion.htf.widget.TintImageButton
+            android:id="@+id/website"
+            android:src="@drawable/social_www"
+            android:onClick="onClick"
+            style="@style/imageButtons"
+            android:layout_gravity="center_vertical"
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true" />
+	    </RelativeLayout>
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView"
+        android:layout_margin="10dp"
+        android:layout_below="@id/header">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/bio"
+            tools:text="By The Rain is a music project by Burak Ozsoy.
+Burak was born in turkey, but since he has lived in many countries such as Australia, Bahrain, Malaysia, Thailand, Singapore, USA, Turkey; sharing his music and art.
+
+It was long ago when he started music with bands and rocking heavy tunes.
+In the last few years, he has been actively in the psychedelic scene with his live chill out project By The Rain and blasting psytrance dj sets, Releasing By The Rain Music on records such as; Trimurti records,Microcosmos records, Altar records, Spiritech records, Speed sounds records &amp; various other label compilations.
+Burak has been an active part of Epic Tribe in Malaysia, creating most artworks for the psychedelic community and managing Belantara’s Alternative / chill out stage for the last 2 gatherings.
+
+Burak is also a part of &quot;Art of Nabura&quot; which is an art project with his partner Nabeela."
+style="@style/artistBio" />
+    </ScrollView>
+</RelativeLayout>

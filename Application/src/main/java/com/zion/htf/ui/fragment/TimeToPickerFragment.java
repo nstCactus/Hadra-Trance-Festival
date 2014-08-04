@@ -49,6 +49,7 @@ import com.zion.htf.exception.MissingArgumentException;
 // TODO: Consider using a spinner as in Calendar app
 public class TimeToPickerFragment extends DialogFragment{
     protected static final String TAG = "TimeToPickerFragment";
+    TimeToPickerFragment.TimeToPickerInterface listener;
 
     private Spinner unitSpinner;
     private EditText numberBox;
@@ -59,8 +60,12 @@ public class TimeToPickerFragment extends DialogFragment{
 
     @NonNull
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
+    public Dialog onCreateDialog(Bundle savedInstanceState){
         Bundle args = this.getArguments();
+
+        this.listener = (TimeToPickerFragment.TimeToPickerInterface)this.getTargetFragment();
+        if(null == this.listener) this.listener = (TimeToPickerFragment.TimeToPickerInterface) this.getActivity();
+        
         try{
             // Get required arguments (general)
             if(null == args) throw new MissingArgumentException("You must provide the following arguments for this fragment to work properly: timestamp (long), set_id (int)");
@@ -222,7 +227,7 @@ public class TimeToPickerFragment extends DialogFragment{
             
             // Notify the activity that something changed
             if(databaseOperationSucceeded){
-                ((TimeToPickerFragment.TimeToPickerInterface)TimeToPickerFragment.this.getActivity()).doPositiveClick(TimeToPickerFragment.this.alarm.getId());
+                TimeToPickerFragment.this.listener.doPositiveClick(TimeToPickerFragment.this.alarm.getId());
             }
         }
     }
@@ -239,7 +244,7 @@ public class TimeToPickerFragment extends DialogFragment{
         public void onClick(DialogInterface dialog, int which){
             TimeToPickerFragment.this.alarm.unregisterAlarm(TimeToPickerFragment.this.getActivity());
             SavedAlarm.delete(TimeToPickerFragment.this.alarm.getId());
-            ((TimeToPickerFragment.TimeToPickerInterface)TimeToPickerFragment.this.getActivity()).doNeutralClick(TimeToPickerFragment.this.set.getId(), TimeToPickerFragment.this.alarm.getId());
+            TimeToPickerFragment.this.listener.doNeutralClick(TimeToPickerFragment.this.set.getId(), TimeToPickerFragment.this.alarm.getId());
         }
     }
 }

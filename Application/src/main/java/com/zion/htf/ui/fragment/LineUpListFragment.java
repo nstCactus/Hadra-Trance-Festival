@@ -19,6 +19,7 @@
 
 package com.zion.htf.ui.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
@@ -49,7 +50,7 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 public class LineUpListFragment extends Fragment implements AdapterView.OnItemClickListener, LoaderManager.LoaderCallbacks<Cursor>{
 	private static final String TAG             = "LineUpListFragment";
-    public static  final String STAGE_NAME      = "STAGE_NAME";
+    public static  final String ARG_STAGE_NAME = "com.zion.htf.arg.stage_name";
     private static int autoIncrement            = 0; //FIXME: Find a better way than this hack (possible solution with Fragment#getId())
 
     protected   String                      stage;
@@ -65,8 +66,8 @@ public class LineUpListFragment extends Fragment implements AdapterView.OnItemCl
 
             super.onCreate(savedInstance);
 
-            this.stage = this.getArguments().getString(LineUpListFragment.STAGE_NAME);
-            if(null == this.stage) throw new MissingArgumentException(LineUpListFragment.STAGE_NAME, "String");
+            this.stage = this.getArguments().getString(LineUpListFragment.ARG_STAGE_NAME);
+            if(null == this.stage) throw new MissingArgumentException(LineUpListFragment.ARG_STAGE_NAME, "String");
 
             this.adapter = new LineUpListAdapter(this.getActivity(), null, false);
             this.getActivity().getSupportLoaderManager().initLoader(fragmentId, null, this).forceLoad();
@@ -94,6 +95,7 @@ public class LineUpListFragment extends Fragment implements AdapterView.OnItemCl
 				viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener(){
 					@SuppressWarnings("ConstantConditions")
 					@Override
+                    @SuppressLint("NewApi")
 					public void onGlobalLayout(){
 						if(1 > LineUpListFragment.this.listView.getChildCount()) throw new RuntimeException("No children found in ListView. This is most likely due to an empty result set for this.getAllSets()");
 						LineUpActivity.sectionHeaderHeight = LineUpListFragment.this.listView.getChildAt(0).getMeasuredHeight();
@@ -112,21 +114,21 @@ public class LineUpListFragment extends Fragment implements AdapterView.OnItemCl
 
 	@Override
 	public void onSaveInstanceState(Bundle outState){
-		outState.putString(LineUpListFragment.STAGE_NAME, this.stage);
+		outState.putString(LineUpListFragment.ARG_STAGE_NAME, this.stage);
 	}
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id){
 		Cursor cursor = (Cursor)this.listView.getAdapter().getItem(position);
         Intent intent = new Intent(this.getActivity(), ArtistDetailsActivity.class);
-        intent.putExtra("set_id", cursor.getInt(MusicSet.COLUMN_ID));
+        intent.putExtra(ArtistDetailsActivity.EXTRA_SET_ID, cursor.getInt(MusicSet.COLUMN_ID));
         this.getActivity().startActivity(intent);
         this.getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 	}
 
 	public static LineUpListFragment newInstance(String stageName){
 		Bundle args = new Bundle(1);
-		args.putString(LineUpListFragment.STAGE_NAME, stageName);
+		args.putString(LineUpListFragment.ARG_STAGE_NAME, stageName);
         LineUpListFragment fragment = new LineUpListFragment();
         fragment.setArguments(args);
 		return fragment;

@@ -34,7 +34,8 @@
         android:src="@drawable/no_image"
         tools:src="@drawable/ph_adn_smith"
         android:scaleType="centerCrop"
-        android:layout_marginRight="10dp" />
+        android:layout_marginRight="10dp"
+        tools:ignore="ContentDescription" />
 
     <TextView
 		android:layout_width="70sp"

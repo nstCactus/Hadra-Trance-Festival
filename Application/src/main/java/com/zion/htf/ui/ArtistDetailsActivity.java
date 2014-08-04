@@ -21,28 +21,19 @@ package com.zion.htf.ui;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.zion.htf.BuildConfig;
 import com.zion.htf.R;
-import com.zion.htf.data.Artist;
-import com.zion.htf.data.MusicSet;
-import com.zion.htf.data.SavedAlarm;
-import com.zion.htf.exception.AlarmNotFoundException;
-import com.zion.htf.exception.InconsistentDatabaseException;
+import com.zion.htf.adapter.ArtistDetailsPagerAdapter;
 import com.zion.htf.exception.MissingArgumentException;
-import com.zion.htf.ui.fragment.TimeToPickerFragment;
+import com.zion.htf.ui.fragment.ArtistDetailsFragment;
+import com.zion.htf.ui.fragment.ArtistSoundcloudFragment;
 
 import java.util.Locale;
 
@@ -51,216 +42,100 @@ import java.util.Locale;
  * The user can add a reminder to its set (if he navigated to the artist from {@link com.zion.htf.ui.LineUpActivity} or {@link com.zion.htf.ui.ArtistListActivity}).
  * For this activity to load properly, a {@code set_id} or {@code artist_id} (which are database identifiers of rows in tables {@code sets} and {@code artists}) is required.
  */
-public class ArtistDetailsActivity extends ActionBarActivity implements View.OnClickListener, TimeToPickerFragment.TimeToPickerInterface{
-	private static final String TAG = "ArtistDetailsActivity";
-	private String facebook_url;
-	private String website_url;
-	private String soundcloud_url;
-    private int setId;
-    private int artistId;
+public class ArtistDetailsActivity extends ActionBarActivity implements ArtistDetailsFragment.OnArtistFavoriteStatusChangedListener{
+	@SuppressWarnings("UnusedDeclaration")
+    private static final String TAG = "ArtistDetailsActivity";
+    public static final String EXTRA_SET_ID = "com.zion.htf.extra.set_id";
+    public static final String EXTRA_ARTIST_ID = "com.zion.htf.extra.artist_id";
+    private ActionBar actionBar;
 
-    private Artist artist;
-    private SavedAlarm alarm = null;
+    private ViewPager viewPager;
+    private FragmentPagerAdapter pagerAdapter;
+
 
     @Override
-	protected void onCreate(Bundle savedInstanceState){
-		super.onCreate(savedInstanceState);
-		this.setContentView(R.layout.activity_artist_details);
+    protected void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+        this.setContentView(R.layout.activity_artist_details);
+        this.actionBar = this.getSupportActionBar();
 
+        Intent openingIntent = this.getIntent();
         try{
-            Intent openingIntent = this.getIntent();
-            if(!openingIntent.hasExtra("set_id") && !openingIntent.hasExtra("artist_id")) throw new MissingArgumentException("Either set_id or artist_id is required for this Activity to work properly. Please provide any of them.");
-            this.setId = this.getIntent().getIntExtra("set_id", 0);
-            this.artistId = openingIntent.getIntExtra("artist_id", 0);
+            Bundle args = new Bundle(1);
 
-            if(openingIntent.hasExtra("set_id")){
-                MusicSet musicSet = MusicSet.getById(this.setId);
-                this.artist = musicSet.getArtist();
-                this.artistId = this.artist.getId();
-
-                try{
-                    this.alarm = SavedAlarm.findBySetId(musicSet.getId());
-                }
-                catch(AlarmNotFoundException e){
-                    // Nothing to do, it's ok for a set not to have an alarm
-                }
+            if(openingIntent.hasExtra(ArtistDetailsActivity.EXTRA_SET_ID)){
+                args.putInt(ArtistDetailsFragment.ARG_SET_ID, openingIntent.getIntExtra(ArtistDetailsActivity.EXTRA_SET_ID, 0));
+                args.putInt(ArtistSoundcloudFragment.ARG_SET_ID, openingIntent.getIntExtra(ArtistDetailsActivity.EXTRA_SET_ID, 0));
             }
-            else if(openingIntent.hasExtra("artist_id")){
-                this.artist = Artist.getById(this.artistId);
+            else if(openingIntent.hasExtra(ArtistDetailsActivity.EXTRA_ARTIST_ID)){
+                args.putInt(ArtistDetailsFragment.ARG_ARTIST_ID, openingIntent.getIntExtra(ArtistDetailsActivity.EXTRA_ARTIST_ID, 0));
+                args.putInt(ArtistSoundcloudFragment.ARG_ARTIST_ID, openingIntent.getIntExtra(ArtistDetailsActivity.EXTRA_ARTIST_ID, 0));
+            }
+            else{
+                throw new MissingArgumentException(String.format(Locale.ENGLISH, "Either %s or %s is required for this Activity to work properly. Please provide any of them.", ArtistDetailsFragment.ARG_SET_ID, ArtistDetailsFragment.ARG_ARTIST_ID));
             }
 
-            this.getSupportActionBar().setTitle(this.artist.getName());
+            this.pagerAdapter = new ArtistDetailsPagerAdapter(this.getSupportFragmentManager(), args);
+            this.viewPager = (ViewPager)this.findViewById(R.id.artist_details_pager);
 
-            // Display artist name
-            TextView artist_name_field = (TextView)this.findViewById(R.id.artist_name);
-            artist_name_field.setText(this.artist.getName());
+            this.initViewPager();
+            this.initTabs();
 
-            // Display label
-            TextView label_field = (TextView)this.findViewById(R.id.label);
-            String label = this.artist.getLabel();
-            String origin = this.artist.getOrigin();
-            if(0 < label.length())  label = origin + " / " + label;
-            else					label = origin;
-            Log.v(ArtistDetailsActivity.TAG, String.format(Locale.ENGLISH, "Label = %s", label));
-            label_field.setText(label);
-
-            // Display picture
-            ImageView artist_photo_field = (ImageView)this.findViewById(R.id.artist_photo);
-            int resId = this.artist.getPictureResourceId();
-            if(R.drawable.no_image == resId) artist_photo_field.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-            artist_photo_field.setImageResource(resId);
-
-            // Handle website button
-            ImageButton website_button = (ImageButton)this.findViewById(R.id.website);
-            this.website_url = this.artist.getWebsite();
-            if(0 == this.website_url.length()) this.disable(website_button);
-
-            // Handle facebook button
-            ImageButton facebook_button = (ImageButton)this.findViewById(R.id.facebook);
-            this.facebook_url = this.artist.getFacebook();
-            if(0 == this.facebook_url.length()) this.disable(facebook_button);
-
-            // Handle soundcloud button
-            ImageButton soundcloud_button = (ImageButton)this.findViewById(R.id.soundcloud);
-            this.soundcloud_url = this.artist.getSoundcloud();
-            if(0 == this.soundcloud_url.length()) this.disable(soundcloud_button);
-
-            // Display bio
-            TextView bio_field = (TextView)this.findViewById(R.id.bio);
-            String bio = this.artist.getBio("fr".equals(Locale.getDefault().getLanguage()) ? "fr" : "en");
-            bio_field.setText(bio);
+//            if(0 < this.artist.getSoundcloud().length()){
+//                new RetrieveTracksTask().execute(this.artist.getSoundcloud());
+//            }
         }
-        catch(InconsistentDatabaseException e){
+        catch(MissingArgumentException e){
             if(BuildConfig.DEBUG) e.printStackTrace();
 
-            // Just display an error message instead of the bio
-            TextView bio_field = (TextView)this.findViewById(R.id.bio);
-            bio_field.setText(this.getString(R.string.error_bio_inconsistent_database));
-
-            // Report this through piwik
-        }
-        catch(Exception e){
-            if(BuildConfig.DEBUG) e.printStackTrace();
-            // Other exceptions are serious enough to trigger a force close
             // Report this through piwik
 
             throw new RuntimeException(e);
         }
-	}
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu){
-        this.getMenuInflater().inflate(R.menu.artist_details, menu);
-
-        if(!this.getIntent().hasExtra("set_id")){
-            MenuItem addAlarmMenuItem = menu.findItem(R.id.action_addAlarm);
-            MenuItem editAlarmMenuItem = menu.findItem(R.id.action_editAlarm);
-            if(null != addAlarmMenuItem){
-                addAlarmMenuItem.setVisible(false);
-                addAlarmMenuItem.setEnabled(false);
-            }
-            if(null != editAlarmMenuItem){
-                editAlarmMenuItem.setVisible(false);
-                editAlarmMenuItem.setEnabled(false);
-            }
-        }
-        return true;
     }
 
-    @Override
-    public boolean onPrepareOptionsMenu (Menu menu){
-        MenuItem addAlarmItem = menu.findItem(R.id.action_addAlarm);
-        MenuItem editAlarmItem = menu.findItem(R.id.action_editAlarm);
-        MenuItem toggleFavorite = menu.findItem(R.id.action_toggle_favorite);
-
-        boolean areAlarmsEnabled = this.getIntent().hasExtra("set_id");
-        boolean hasAlarm = null != this.alarm;
-
-        // Add / edit alarm button
-        if(null != addAlarmItem){
-            addAlarmItem.setVisible(areAlarmsEnabled && null == this.alarm);
-            addAlarmItem.setEnabled(areAlarmsEnabled && null == this.alarm);
-        }
-        if(null != editAlarmItem){
-            editAlarmItem.setVisible(areAlarmsEnabled && null != this.alarm);
-            editAlarmItem.setEnabled(areAlarmsEnabled && null != this.alarm);
-        }
-
-        // Favorite button
-        if(this.artist.isFavorite()){
-            toggleFavorite.setTitle(R.string.action_unset_favorite);
-            toggleFavorite.setIcon(R.drawable.ic_menu_favorite);
-        }
-        else{
-            toggleFavorite.setTitle(R.string.action_set_favorite);
-            toggleFavorite.setIcon(R.drawable.ic_menu_not_favorite);
-        }
-
-        return super.onPrepareOptionsMenu(menu);
+    private void initViewPager() {
+        ViewPager.SimpleOnPageChangeListener pageChangeListener = new ViewPager.SimpleOnPageChangeListener(){
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                if(ActionBar.NAVIGATION_MODE_TABS == ArtistDetailsActivity.this.actionBar.getNavigationMode()){
+                    ArtistDetailsActivity.this.actionBar.setSelectedNavigationItem(position);
+                }
+            }
+        };
+        this.viewPager.setAdapter(this.pagerAdapter);
+        this.viewPager.setOnPageChangeListener(pageChangeListener);
     }
 
-    @Override
-	public void onClick(View v){
-		Intent intent = null;
+    private void initTabs(){
+        ActionBar.TabListener tabListener = new ActionBar.TabListener(){
+            @Override
+            public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft){
+            }
 
-		switch(v.getId()){
-			case R.id.website:
-				intent = new Intent(Intent.ACTION_VIEW, Uri.parse(this.website_url));
-				break;
+            @Override
+            public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft){
+                ArtistDetailsActivity.this.viewPager.setCurrentItem(tab.getPosition());
+            }
 
-			case R.id.soundcloud:
-				intent = new Intent(Intent.ACTION_VIEW, Uri.parse(this.soundcloud_url));
-				break;
+            @Override
+            public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft){
+            }
+        };
 
-			case R.id.facebook:
-				try{
-					String facebookId = this.facebook_url.substring(this.facebook_url.lastIndexOf('/') + 1);
-					if(!facebookId.matches("\\d+")) throw new Exception("Non-numeric facebook id.");
+        this.actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        ActionBar.Tab tab = this.actionBar.newTab()
+                .setText("Tab1")
+                .setTabListener(tabListener);
 
-					intent = new Intent(Intent.ACTION_VIEW, Uri.parse("fb://profile/" + facebookId));
-					this.startActivity(intent);
-				}
-				catch(Exception e){
-					intent = new Intent(Intent.ACTION_VIEW, Uri.parse(this.facebook_url));
-				}
+        this.actionBar.addTab(tab);
 
-				break;
-		}
-		if(null != intent) this.startActivity(intent);
-	}
+        tab = this.actionBar.newTab()
+                .setText("Tab2")
+                .setTabListener(tabListener);
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item){
-		boolean ret = true;
-
-		switch(item.getItemId()){
-            case R.id.action_addAlarm:
-                this.showAddAlarmDialog();
-                break;
-
-            case R.id.action_editAlarm:
-                this.showEditAlarmDialog();
-                break;
-
-            case R.id.action_toggle_favorite:
-                this.toggleFavoriteArtist();
-                break;
-
-			default:
-				ret = false;
-		}
-
-		return ret;
-	}
-
-    /**
-     * Toggle the favorite status of the current artist
-     */
-    private void toggleFavoriteArtist(){
-        if(this.artist.toggleFavorite()){
-            this.supportInvalidateOptionsMenu();
-            this.setResult(this.artist.isFavorite() ? Activity.RESULT_CANCELED : Activity.RESULT_OK);
-        }
+        this.actionBar.addTab(tab);
     }
 
     @Override
@@ -270,59 +145,9 @@ public class ArtistDetailsActivity extends ActionBarActivity implements View.OnC
         this.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
-    /**
-     * Displays a dialog to configure a new reminder for the current set
-     */
-    private void showAddAlarmDialog(){
-        Bundle args = new Bundle();
-        args.putInt("set_id", this.setId);
-        DialogFragment newFragment = TimeToPickerFragment.newInstance(args);
-        newFragment.show(this.getSupportFragmentManager(), "timeToPicker");
-    }
-
-    /**
-     * Displays a dialog to edit a reminder for the current set
-     */
-    private void showEditAlarmDialog(){
-        Bundle args = new Bundle();
-        args.putInt("set_id", this.setId);
-        args.putInt("alarm_id", this.alarm.getId());
-        args.putBoolean("edit_mode", true);
-        DialogFragment newFragment = TimeToPickerFragment.newInstance(args);
-        newFragment.show(this.getSupportFragmentManager(), "timeToPicker");
-    }
-
-    /**
-     * Disable an button (delete the onclick listener and set its alpha to 0.5)
-     * @param imageButton The ImageButton to disable
-     */
-    private void disable(ImageButton imageButton){
-		imageButton.setClickable(false);
-		if(16 <= Build.VERSION.SDK_INT) imageButton.setImageAlpha(64);
-		else imageButton.setAlpha(64);
-	}
-
     @Override
-    public void doPositiveClick(int id) {
-        // Change the alarm icon
-        try{
-            this.alarm = SavedAlarm.getById(id);
-        }
-        catch(AlarmNotFoundException e){
-            if(BuildConfig.DEBUG) e.printStackTrace();
-            // Nothing to do, worst case scenario, the user will set another alarm for this set.
-        }
-        this.supportInvalidateOptionsMenu();
-    }
+    public void onArtistFavoriteStatusChanged(boolean isFavorite) {
+        this.setResult(isFavorite ? Activity.RESULT_CANCELED : Activity.RESULT_OK);
 
-    @Override
-    public void doNegativeClick() {
-
-    }
-
-    @Override
-    public void doNeutralClick(int setId, int alarmId) {
-        this.alarm = null;
-        this.supportInvalidateOptionsMenu();
     }
 }

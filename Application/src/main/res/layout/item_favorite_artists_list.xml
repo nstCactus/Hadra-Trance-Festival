@@ -34,7 +34,8 @@
         android:layout_height="50dp"
         android:id="@+id/artist_photo"
         tools:src="@drawable/ph_adn_smith"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"
+        tools:ignore="ContentDescription" />
 
     <TextView
 	    android:layout_width="fill_parent"

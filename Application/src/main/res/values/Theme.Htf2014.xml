@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Generated with http://android-holo-colors.com -->
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <style name="Theme.Htf2014" parent="Theme.AppCompat">
+
+    <item name="android:editTextStyle">@style/EditTextHTF2014</item>
+
+    <item name="android:textColorHighlight">@color/brand_yellow_dimmed</item>
+
+    <item name="android:radioButtonStyle">@style/RadioButtonHTF2014</item>
+
+    <item name="android:spinnerStyle">@style/SpinnerHTF2014</item>
+
+    <item name="android:spinnerDropDownItemStyle">@style/SpinnerDropDownItemHTF2014</item>
+
+    <item name="android:progressBarStyleHorizontal">@style/ProgressBarHTF2014</item>
+
+    <item name="android:seekBarStyle">@style/SeekBarHTF2014</item>
+
+  </style>
+
+</resources>

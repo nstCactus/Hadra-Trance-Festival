@@ -60,7 +60,7 @@ public class FavoriteArtistsManagerActivity extends AbstractActionModeCompatList
     protected void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent(this, ArtistDetailsActivity.class);
         super.adapter.getItem(position);
-        intent.putExtra("artist_id", ((Cursor)super.adapter.getItem(position)).getInt(FavoriteArtistsManagerActivity.COLUMN_ID));
+        intent.putExtra(ArtistDetailsActivity.EXTRA_ARTIST_ID, ((Cursor)super.adapter.getItem(position)).getInt(FavoriteArtistsManagerActivity.COLUMN_ID));
         this.startActivityForResult(intent, FavoriteArtistsManagerActivity.ARTIST_DETAILS_REQUEST_CODE);
     }
 

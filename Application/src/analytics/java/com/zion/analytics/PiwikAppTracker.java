@@ -21,6 +21,8 @@
 
 package com.zion.analytics;
 
+import android.annotation.SuppressLint;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -264,6 +266,7 @@ public class PiwikAppTracker{
     /**
      * Fetch screen dimensions in pixel for use by {@code getScreenWidth()} and {@code getScreenHeight()} methods
      */
+    @SuppressLint("NewApi")
     private static void getScreenDimensions(){
         WindowManager windowManager = (WindowManager) PiwikAppTracker.context.getSystemService(Context.WINDOW_SERVICE);
         Display display = windowManager.getDefaultDisplay();

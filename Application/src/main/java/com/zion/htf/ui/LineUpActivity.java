@@ -24,6 +24,9 @@ import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -31,41 +34,71 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.viewpagerindicator.PageIndicator;
+import com.zion.content.SQLiteCursorLoader;
+import com.zion.htf.Application;
 import com.zion.htf.R;
 import com.zion.htf.adapter.LineUpPagerAdapter;
 import com.zion.htf.data.Festival;
 import com.zion.htf.data.MusicSet;
+import com.zion.htf.ui.fragment.LineUpListFragment;
 
 import java.util.Date;
 
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
-public class LineUpActivity extends ActionBarActivity{
+public class LineUpActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 	private static final int CAUSE_TOO_EARLY = 0;
 	private static final int CAUSE_TOO_LATE  = 1;
+    private static final int LOADER_ID = 5003;
 
-	private LineUpPagerAdapter pagerAdpater;
-	private ViewPager          viewPager;
+    private ViewPager          viewPager;
 
     public static int sectionHeaderHeight = 0;
+    private LineUpPagerAdapter pagerAdapter;
+    private ActionBar actionBar;
 
-	@Override
+    private final ActionBar.TabListener tabListener = new ActionBar.TabListener() {
+
+        @Override
+        public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
+        }
+
+        @Override
+        public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
+            LineUpActivity.this.viewPager.setCurrentItem(tab.getPosition());
+        }
+
+        @Override
+        public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
+        }
+    };
+
+    @Override
 	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.activity_line_up);
 
-		ActionBar actionBar = this.getSupportActionBar();
-		actionBar.setHomeButtonEnabled(true);
-		actionBar.setDisplayHomeAsUpEnabled(true);
+        this.actionBar = this.getSupportActionBar();
+        this.actionBar.setHomeButtonEnabled(true);
+        this.actionBar.setDisplayHomeAsUpEnabled(true);
+        this.actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-		this.pagerAdpater = new LineUpPagerAdapter(this.getSupportFragmentManager());
+        ViewPager.OnPageChangeListener pageChangeListener = new ViewPager.SimpleOnPageChangeListener(){
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                LineUpActivity.this.actionBar.setSelectedNavigationItem(position);
+            }
+        };
 
 		this.viewPager = (ViewPager)this.findViewById(R.id.line_up_pager);
-		this.viewPager.setAdapter(this.pagerAdpater);
 
-        PageIndicator pageIndicator = (PageIndicator) this.findViewById(R.id.indicator);
-		pageIndicator.setViewPager(this.viewPager);
+        this.viewPager.getAdapter();
+        this.pagerAdapter = new LineUpPagerAdapter(this.getSupportFragmentManager(), LineUpListFragment.class, new String[]{LineUpListFragment.ARG_STAGE_NAME}, null);
+        this.getSupportLoaderManager().initLoader(LineUpActivity.LOADER_ID, null, this).forceLoad();
+
+        this.viewPager.setOnPageChangeListener(pageChangeListener);
+		this.viewPager.setAdapter(this.pagerAdapter);
 	}
 
 	@Override
@@ -154,4 +187,36 @@ public class LineUpActivity extends ActionBarActivity{
 		});
 		alertBuilder.create().show();
 	}
+
+
+    /***********************************************/
+    /* BEGIN LoaderManager.LoaderCallbacks methods */
+    /***********************************************/
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle){
+        return new SQLiteCursorLoader(this, Application.getDbHelper().getReadableDatabase(), "SELECT stage FROM lst__stages;", null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor){
+        this.pagerAdapter.swapCursor(cursor);
+
+        this.actionBar.removeAllTabs();
+        ActionBar.Tab tab;
+        for(int i = 0; i < this.pagerAdapter.getCount(); i++){
+            tab = this.actionBar.newTab()
+                    .setText(this.pagerAdapter.getPageTitle(i))
+                    .setTabListener(this.tabListener);
+            this.actionBar.addTab(tab);
+        }
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> cursorLoader){
+        this.pagerAdapter.changeCursor(null);
+    }
+    /*********************************************/
+    /* END LoaderManager.LoaderCallbacks methods */
+    /*********************************************/
 }

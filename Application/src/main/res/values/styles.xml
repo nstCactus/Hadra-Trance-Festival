@@ -22,55 +22,19 @@
 <resources
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-	<style name="AppTheme" parent="Theme.AppCompat">
-		<item name="actionBarStyle">@style/ActionBar</item>
-		<item name="android:actionBarStyle">@style/ActionBar</item>
+
+	<style name="Theme.Htf2014.Custom" parent="Theme.Htf2014.ActionBar">
 		<item name="android:textColor">@color/brand_yellow</item>
-        <item name="vpiTabPageIndicatorStyle">@style/TabStyle</item>
         <item name="android:windowBackground">@drawable/background_blur</item>
     </style>
 
-    <!-- Theme for LinupUpActivity -->
-    <style name="Theme.LineUp" parent="AppTheme">
-        <item name="vpiTabPageIndicatorStyle">@style/CustomTabPageIndicator</item>
+    <style name="HomeTheme" parent="Theme.Htf2014.Custom">
+        <item name="android:windowBackground">@drawable/background</item>
     </style>
 
-    <!-- ActionBar style -->
-	<style name="ActionBar" parent="Widget.AppCompat.ActionBar">
-        <item name="android:titleTextStyle">@style/TitleText</item>
-		<item name="android:background">@drawable/actionbar_bg</item>
 
-        <!-- Support library compatibility  -->
-		<item name="titleTextStyle">@style/TitleText</item>
-		<item name="background">@drawable/actionbar_bg</item>
-	</style>
 
-    <!-- ActionBar title style -->
-    <style name="TitleText" tools:ignore="SpUsage">
-        <item name="android:textColor">@color/brand_yellow</item>
-        <item name="android:textSize">17dip</item>
-    </style>
-
-	<!-- ViewPagerIndicator theme -->
-	<style name="CustomTabPageIndicator" parent="Widget.TabPageIndicator">
-		<item name="android:textColor">@color/brand_orange</item>
-		<item name="android:background">@drawable/tab_indicator_selector</item>
-	</style>
-
-    <style name="TabStyle" parent="Widget.TabPageIndicator">
-        <item name="android:textColor">#FF33AA33</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:textStyle">italic</item>
-        <item name="android:paddingLeft">16dp</item>
-        <item name="android:paddingRight">16dp</item>
-        <item name="android:fadingEdge">horizontal</item>
-        <item name="android:fadingEdgeLength">8dp</item>
-    </style>
-
-	<!--<style name="FullscreenActivity" parent="Theme.Sherlock.NoActionBar">
-		<item name="android:windowBackground">@color/brand_black</item>
-	</style>-->
-
+    <!-- Styles for various elements -->
 	<style name="imageButtons">
 		<item name="android:background">#00FFFFFF</item>
 		<item name="android:layout_width">wrap_content</item>
@@ -87,7 +51,6 @@
 	</style>
 
 	<style name="now_playing">
-        <item name="android:fontFamily">Arial Rounded MT Bold</item>
 		<item name="android:layout_centerHorizontal">true</item>
 		<item name="android:textColor">@color/brand_orange</item>
 		<item name="android:textSize">17sp</item>

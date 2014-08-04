@@ -32,65 +32,71 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-    android:background="@drawable/background"
     android:clickable="false">
 
 	<ImageView
-			android:layout_width="fill_parent"
-			android:layout_height="fill_parent"
-			android:id="@+id/title"
-			android:src="@drawable/title"
-			android:layout_alignParentTop="true"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:id="@+id/title"
+		android:src="@drawable/title"
+		android:layout_alignParentTop="true"
         android:paddingTop="20dp"
         android:layout_above="@+id/small_buttons"
-        android:layout_centerInParent="true" />
+        android:layout_centerInParent="true"
+        tools:ignore="ContentDescription" />
 
 	<LinearLayout
-			xmlns:android="http://schemas.android.com/apk/res/android"
-			android:id="@+id/small_buttons"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-            android:layout_above="@+id/row1"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
+        android:id="@+id/small_buttons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/row1"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
         android:importantForAccessibility="noHideDescendants"
-        android:padding="10dp">
+        android:padding="10dp"
+        tools:ignore="UnusedAttribute">
 
 		<com.zion.htf.widget.TintImageButton
-				style="@style/smallButtons"
-				android:id="@+id/button_facebook"
-				android:src="@drawable/button_facebook"
-            android:onClick="onButtonClicked"/>
+		    style="@style/smallButtons"
+		    android:id="@+id/button_facebook"
+		    android:src="@drawable/button_facebook"
+            android:onClick="onButtonClicked"
+            android:contentDescription="@string/button_facebook" />
 
 		<com.zion.htf.widget.TintImageButton
-				android:id="@+id/button_soundcloud"
-				android:src="@drawable/button_soundcloud"
+			android:id="@+id/button_soundcloud"
+			android:src="@drawable/button_soundcloud"
             style="@style/smallButtons"
-				android:onClick="onButtonClicked"/>
+			android:onClick="onButtonClicked"
+            android:contentDescription="@string/button_soundcloud" />
 
 		<com.zion.htf.widget.TintImageButton
-				android:id="@+id/button_youtube"
-				android:src="@drawable/button_youtube"
-				style="@style/smallButtons"
-            android:onClick="onButtonClicked"/>
+			android:id="@+id/button_youtube"
+			android:src="@drawable/button_youtube"
+			style="@style/smallButtons"
+            android:onClick="onButtonClicked"
+            android:contentDescription="@string/button_youtube" />
 
 		<com.zion.htf.widget.TintImageButton
-				android:id="@+id/button_hadra"
-				android:src="@drawable/button_hadra"
-				style="@style/smallButtons"
-            android:onClick="onButtonClicked"/>
+			android:id="@+id/button_hadra"
+			android:src="@drawable/button_hadra"
+			style="@style/smallButtons"
+            android:onClick="onButtonClicked"
+            android:contentDescription="@string/button_hadra_website" />
 
         <com.zion.htf.widget.TintImageButton
             android:id="@+id/button_music"
             android:src="@drawable/button_music"
             style="@style/smallButtons"
-            android:onClick="onButtonClicked"/>
+            android:onClick="onButtonClicked"
+            android:contentDescription="@string/button_compilation" />
 
         <com.zion.htf.widget.TintImageButton
             android:id="@+id/button_flickr"
             android:src="@drawable/button_flickr"
             style="@style/smallButtons"
-            android:onClick="onButtonClicked"/>
+            android:onClick="onButtonClicked"
+            android:contentDescription="@string/button_photos" />
 	</LinearLayout>
 	<LinearLayout
 		android:layout_width="wrap_content"
@@ -99,7 +105,8 @@
         android:layout_above="@+id/row2"
         android:layout_centerHorizontal="true"
         android:layout_alignParentLeft="false"
-        android:importantForAccessibility="noHideDescendants">
+        android:importantForAccessibility="noHideDescendants"
+        tools:ignore="UnusedAttribute">
 
         <ImageButton
             android:visibility="gone"
@@ -107,20 +114,23 @@
             android:id="@+id/button_lineup"
             android:onClick="onButtonClicked"
             android:src="@drawable/button_lineup_selector"
-            android:layout_width="wrap_content" />
+            android:layout_width="wrap_content"
+            android:contentDescription="@string/button_lineup" />
 
         <ImageButton
             style="@style/bigButtons"
             android:id="@+id/button_artists"
             android:onClick="onButtonClicked"
             android:src="@drawable/button_artists_selector"
-            android:layout_width="wrap_content" />
+            android:layout_width="wrap_content"
+            android:contentDescription="@string/button_artists" />
 
 		<ImageButton
 			style="@style/bigButtons"
 			android:id="@+id/button_tickets"
             android:onClick="onButtonClicked"
-            android:src="@drawable/button_tickets_selector" />
+            android:src="@drawable/button_tickets_selector"
+            android:contentDescription="@string/button_tickets" />
 	</LinearLayout>
 
 	<LinearLayout
@@ -129,19 +139,22 @@
         android:id="@+id/row2"
         android:layout_above="@+id/include"
         android:layout_centerHorizontal="true"
-        android:importantForAccessibility="noHideDescendants">
+        android:importantForAccessibility="noHideDescendants"
+        tools:ignore="UnusedAttribute">
 
 		<ImageButton
-				style="@style/bigButtons"
-				android:id="@+id/button_map"
-				android:onClick="onButtonClicked"
-				android:src="@drawable/button_map_selector" />
+			style="@style/bigButtons"
+			android:id="@+id/button_map"
+			android:onClick="onButtonClicked"
+			android:src="@drawable/button_map_selector"
+            android:contentDescription="@string/button_map"/>
 
 		<ImageButton
-				style="@style/bigButtons"
-				android:id="@+id/button_infos"
-                android:onClick="onButtonClicked"
-                android:src="@drawable/button_infos_selector" />
+			style="@style/bigButtons"
+			android:id="@+id/button_infos"
+            android:onClick="onButtonClicked"
+            android:src="@drawable/button_infos_selector"
+            android:contentDescription="@string/button_infos"/>
 
 	</LinearLayout>
 	<include layout="@layout/fragment_now_on_stage"

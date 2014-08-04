@@ -85,7 +85,7 @@ public class AlarmReceiver extends BroadcastReceiver{
             // Creates an explicit intent for an Activity in your app
             Intent resultIntent = new Intent(context, ArtistDetailsActivity.class);
             resultIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);// Do not start a  new activity but reuse the existing one (if any)
-            resultIntent.putExtra("set_id", setId);
+            resultIntent.putExtra(ArtistDetailsActivity.EXTRA_SET_ID, setId);
 
             // Manipulate the TaskStack in order to get a good back button behaviour. See http://developer.android.com/guide/topics/ui/notifiers/notifications.html
             TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);

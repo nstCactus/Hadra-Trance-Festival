@@ -30,7 +30,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.v4.util.LruCache;
-import android.widget.CursorAdapter;
+import android.support.v4.widget.CursorAdapter;
 import android.widget.ImageView;
 
 import com.zion.htf.R;
@@ -53,7 +53,7 @@ public abstract class CachedImageCursorAdapter extends CursorAdapter{
         this.memoryCache = new LruCache<String, Bitmap>( maxMemory / 8){
             protected int sizeOf(String key, Bitmap bitmap) {
                 // The cache size will be measured in bytes rather than number of items.
-                return bitmap.getByteCount();
+                return bitmap.getRowBytes() * bitmap.getHeight();
             }
         };
     }

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Generated with http://android-holo-colors.com -->
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <style name="Theme.Htf2014" parent="Theme.AppCompat">
+
+    <item name="android:textSelectHandleLeft">@drawable/htf2014_text_select_handle_left</item>
+    <item name="android:textSelectHandleRight">@drawable/htf2014_text_select_handle_right</item>
+    <item name="android:textSelectHandle">@drawable/htf2014_text_select_handle_middle</item>
+
+    <item name="android:textColorHighlight">@color/brand_yellow_dimmed</item>
+  </style>
+
+</resources>

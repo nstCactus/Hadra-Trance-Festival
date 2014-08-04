@@ -35,7 +35,8 @@
         android:layout_centerVertical="true"
         tools:src="@drawable/ph_adn_smith"
         android:cropToPadding="false"
-        android:scaleType="fitCenter" />
+        android:scaleType="fitCenter"
+        tools:ignore="ContentDescription" />
 
     <TextView
 	    android:layout_width="fill_parent"

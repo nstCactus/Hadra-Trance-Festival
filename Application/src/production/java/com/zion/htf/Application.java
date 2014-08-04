@@ -36,7 +36,7 @@ public class Application extends android.app.Application{
 
 	public static SQLiteDatabaseHelper getDbHelper(){
 		if(null == Application.dbHelper)
-			Application.dbHelper = new SQLiteDatabaseHelper(Application.context, "hadra", null, VersionUtils.getVersionCode(context));
+			Application.dbHelper = new SQLiteDatabaseHelper(Application.context, "hadra", null, VersionUtils.getVersionCode(Application.context));
 		return Application.dbHelper;
 	}
 

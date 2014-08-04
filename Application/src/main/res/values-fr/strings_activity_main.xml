@@ -7,4 +7,16 @@
     <string name="action_alarms">Rappels</string>
     <string name="action_info">Infos pratiques</string>
     <string name="action_help">Aide</string>
+
+    <string name="button_artists">Artistes</string>
+    <string name="button_tickets">Billets</string>
+    <string name="button_map">Plan</string>
+    <string name="button_infos">Infos</string>
+
+    <string name="button_facebook">Hadra sur Facebook</string>
+    <string name="button_soundcloud">Soundcloud d\'Hadra</string>
+    <string name="button_youtube">Hadra sur Youtube</string>
+    <string name="button_hadra_website">Site web d\'Hadra</string>
+    <string name="button_compilation">Compilation Hadra Trance Festival</string>
+    <string name="button_photos">Photos</string>
 </resources>

@@ -36,7 +36,8 @@
         android:id="@+id/artist_photo"
         android:src="@drawable/no_image"
         android:scaleType="centerCrop"
-        android:layout_marginRight="10dp" />
+        android:layout_marginRight="10dp"
+        tools:ignore="ContentDescription" />
 
 	<TextView
 		android:layout_width="0dp"
@@ -97,6 +98,7 @@
         android:layout_alignBottom="@+id/alarm_time"
         android:src="@drawable/ic_menu_alarms"
         android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp" />
+        android:layout_marginRight="5dp"
+        tools:ignore="ContentDescription" />
 
 </RelativeLayout>

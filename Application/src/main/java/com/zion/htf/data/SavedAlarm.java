@@ -21,12 +21,12 @@
 
 package com.zion.htf.data;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteStatement;
 import android.os.Build;
 import android.util.Log;
 
@@ -228,8 +228,7 @@ public class SavedAlarm extends Item{
      * @return the number of deleted rows
      */
     public static int delete(String in){
-        SQLiteStatement statement = SavedAlarm.dbOpenHelper.getWritableDatabase().compileStatement(String.format(Locale.ENGLISH, "DELETE FROM alarms WHERE id IN(%s);", in));
-        return statement.executeUpdateDelete();
+        return SavedAlarm.dbOpenHelper.getWritableDatabase().delete("alarms", String.format(Locale.ENGLISH, "id IN(%s)", in), null);
     }
 
     /**
@@ -259,6 +258,7 @@ public class SavedAlarm extends Item{
      * @param context   The {@link android.content.Context} in which the application is currently running
      * @see <a href="http://stackoverflow.com/a/16853300/509484">This StackOverflow answer</a> for more details
      */
+    @SuppressLint("NewApi")
     public void registerAlarm(Context context){
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         PendingIntent alarmIntent = this.getPendingIntent(context);

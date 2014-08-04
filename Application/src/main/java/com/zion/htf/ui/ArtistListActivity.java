@@ -29,7 +29,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.CursorAdapter;
+import android.support.v4.widget.CursorAdapter;
 import android.widget.ListView;
 
 import com.zion.content.SQLiteCursorLoader;
@@ -80,7 +80,7 @@ public class ArtistListActivity extends ActionBarActivity implements AdapterView
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id){
         Intent intent = new Intent(this, ArtistDetailsActivity.class);
-        intent.putExtra("set_id", ((Cursor)this.listView.getAdapter().getItem(position)).getInt(MusicSet.COLUMN_ID));
+        intent.putExtra(ArtistDetailsActivity.EXTRA_SET_ID, ((Cursor)this.listView.getAdapter().getItem(position)).getInt(MusicSet.COLUMN_ID));
         this.startActivity(intent);
         this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
