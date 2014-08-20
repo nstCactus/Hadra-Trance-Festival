@@ -35,8 +35,8 @@
     android:clickable="false">
 
 	<ImageView
-		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
 		android:id="@+id/title"
 		android:src="@drawable/title"
 		android:layout_alignParentTop="true"
@@ -56,42 +56,42 @@
         android:padding="10dp"
         tools:ignore="UnusedAttribute">
 
-		<com.zion.htf.widget.TintImageButton
+		<com.zion.widget.TintImageButton
 		    style="@style/smallButtons"
 		    android:id="@+id/button_facebook"
 		    android:src="@drawable/button_facebook"
             android:onClick="onButtonClicked"
             android:contentDescription="@string/button_facebook" />
 
-		<com.zion.htf.widget.TintImageButton
+		<com.zion.widget.TintImageButton
 			android:id="@+id/button_soundcloud"
 			android:src="@drawable/button_soundcloud"
             style="@style/smallButtons"
 			android:onClick="onButtonClicked"
             android:contentDescription="@string/button_soundcloud" />
 
-		<com.zion.htf.widget.TintImageButton
+		<com.zion.widget.TintImageButton
 			android:id="@+id/button_youtube"
 			android:src="@drawable/button_youtube"
 			style="@style/smallButtons"
             android:onClick="onButtonClicked"
             android:contentDescription="@string/button_youtube" />
 
-		<com.zion.htf.widget.TintImageButton
+		<com.zion.widget.TintImageButton
 			android:id="@+id/button_hadra"
 			android:src="@drawable/button_hadra"
 			style="@style/smallButtons"
             android:onClick="onButtonClicked"
             android:contentDescription="@string/button_hadra_website" />
 
-        <com.zion.htf.widget.TintImageButton
+        <com.zion.widget.TintImageButton
             android:id="@+id/button_music"
             android:src="@drawable/button_music"
             style="@style/smallButtons"
             android:onClick="onButtonClicked"
             android:contentDescription="@string/button_compilation" />
 
-        <com.zion.htf.widget.TintImageButton
+        <com.zion.widget.TintImageButton
             android:id="@+id/button_flickr"
             android:src="@drawable/button_flickr"
             style="@style/smallButtons"
@@ -109,7 +109,6 @@
         tools:ignore="UnusedAttribute">
 
         <ImageButton
-            android:visibility="gone"
             style="@style/bigButtons"
             android:id="@+id/button_lineup"
             android:onClick="onButtonClicked"
@@ -118,6 +117,7 @@
             android:contentDescription="@string/button_lineup" />
 
         <ImageButton
+            android:visibility="gone"
             style="@style/bigButtons"
             android:id="@+id/button_artists"
             android:onClick="onButtonClicked"

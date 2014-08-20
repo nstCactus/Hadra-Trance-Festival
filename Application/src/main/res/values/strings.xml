@@ -19,12 +19,7 @@
 -->
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name" tools:ignore="MissingTranslation">Hadra Trance Festival</string>
-    <string name="title_activity_map">Map</string>
     <string name="title_activity_line_up" tools:ignore="MissingTranslation">Line Up</string>
-    <string name="error_failed_fetching_poi">Failed fetching the list of locations</string>
-    <string name="action_switchToTerrain" tools:ignore="MissingTranslation">Terrain</string>
-    <string name="action_switchToSatellite" tools:ignore="MissingTranslation">Satellite</string>
-    <string name="action_directions">Get directions</string>
     <string name="action_onStage">Now on stage</string>
     <string name="action_addAlarm">Add an alarm</string>
     <string name="action_editAlarm">Edit an alarm</string>

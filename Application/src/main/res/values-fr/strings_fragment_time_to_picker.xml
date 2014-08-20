@@ -25,6 +25,13 @@
     <string name="alarm_cancel">Annuler</string>
     <string name="alarm_delete">Supprimer</string>
 
+	<string name="time_0_min">0 minute avant</string>
+    <string name="time_5_min">5 minutes avant</string>
+    <string name="time_10_min">10 minutes avant</string>
+    <string name="time_15_min">15 minutes avant</string>
+    <string name="time_20_min">20 minutes avant</string>
+    <string name="time_30_min">30 minutes avant</string>
+    <string name="time_45_min">45 minutes avant</string>
     <string name="time_1_hr">1 heures</string>
     <string name="time_2_hr">2 heures</string>
     <string name="time_3_hr">3 heures</string>

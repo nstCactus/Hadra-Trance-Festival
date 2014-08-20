@@ -27,6 +27,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.zion.adapter.CachedImageCursorAdapter;
 import com.zion.htf.R;
 import com.zion.htf.data.Artist;
 import com.zion.htf.data.MusicSet;
@@ -40,9 +41,9 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 public class LineUpListAdapter extends CachedImageCursorAdapter implements StickyListHeadersAdapter{
     private final LayoutInflater layoutInflater;
-	protected final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", "fr".equals(Locale.getDefault().getLanguage()) ? Locale.FRANCE : Locale.ENGLISH);
-    private static final SimpleDateFormat FORMATTER_DAY_IN_YEAR = new SimpleDateFormat("D", Locale.ENGLISH);
-    private static final DateFormat FORMATTER_HEADER_DATE = "fr".equals(Locale.getDefault().getLanguage()) ? DateFormat.getDateInstance(DateFormat.FULL, Locale.FRENCH) : DateFormat.getDateInstance(DateFormat.FULL);
+	private static final SimpleDateFormat   DATE_FORMAT_SET_BOUNDS  = new SimpleDateFormat("HH:mm", "fr".equals(Locale.getDefault().getLanguage()) ? Locale.FRANCE : Locale.ENGLISH);
+    private static final SimpleDateFormat   DATE_FORMAT_DAY_IN_YEAR = new SimpleDateFormat("D", Locale.ENGLISH);
+    private static final DateFormat         DATE_FORMAT_HEADER_DATE = "fr".equals(Locale.getDefault().getLanguage()) ? DateFormat.getDateInstance(DateFormat.FULL, Locale.FRENCH) : DateFormat.getDateInstance(DateFormat.FULL);
 
 
     static class ItemViewHolder{
@@ -60,6 +61,11 @@ public class LineUpListAdapter extends CachedImageCursorAdapter implements Stick
         super(context, cursor, autoRequery);
 
         this.layoutInflater = LayoutInflater.from(context);
+
+	    //TODO: Honor timezone setting
+	    //DATE_FORMAT_SET_BOUNDS.setTimeZone(TimeZone.getTimeZone("Europe/Paris"));
+	    //DATE_FORMAT_DAY_IN_YEAR.setTimeZone(TimeZone.getTimeZone("Europe/Paris"));
+	    //DATE_FORMAT_HEADER_DATE.setTimeZone(TimeZone.getTimeZone("Europe/Paris"));
     }
 
     @Override
@@ -83,7 +89,7 @@ public class LineUpListAdapter extends CachedImageCursorAdapter implements Stick
 
         holder.artistName.setText(cursor.getString(MusicSet.COLUMN_ARTIST_NAME));
         holder.setType.setText(cursor.getString(MusicSet.COLUMN_TYPE));
-        holder.hour.setText(String.format(Locale.ENGLISH, "%s-%s", this.simpleDateFormat.format(cursor.getLong(MusicSet.COLUMN_BEGIN_DATE) * 1000), this.simpleDateFormat.format(cursor.getLong(MusicSet.COLUMN_END_DATE) * 1000)));
+        holder.hour.setText(String.format(Locale.ENGLISH, "%s - %s", LineUpListAdapter.DATE_FORMAT_SET_BOUNDS.format(cursor.getLong(MusicSet.COLUMN_BEGIN_DATE) * 1000), LineUpListAdapter.DATE_FORMAT_SET_BOUNDS.format(cursor.getLong(MusicSet.COLUMN_END_DATE) * 1000)));
 
         holder.artistPhoto.setImageResource(R.drawable.no_image);
         this.loadBitmap(Artist.getPictureResourceId(cursor.getString(MusicSet.COLUMN_ARTIST_PICTURE_NAME)), holder.artistPhoto);
@@ -91,7 +97,7 @@ public class LineUpListAdapter extends CachedImageCursorAdapter implements Stick
 
     public View newHeaderView(Context context, Cursor cursor, ViewGroup parent){
         View headerView = this.layoutInflater.inflate(R.layout.section_line_up_list, parent, false);
-        
+
         LineUpListAdapter.SectionViewHolder holder = new LineUpListAdapter.SectionViewHolder();
         holder.sectionHeader = (TextView) headerView.findViewById(R.id.list_item_section_header);
 
@@ -102,7 +108,7 @@ public class LineUpListAdapter extends CachedImageCursorAdapter implements Stick
     public void bindHeaderView(View view, Context context, Cursor cursor){
         LineUpListAdapter.SectionViewHolder holder = (LineUpListAdapter.SectionViewHolder) view.getTag();
 
-        holder.sectionHeader.setText(LineUpListAdapter.FORMATTER_HEADER_DATE.format(new Date(cursor.getLong(MusicSet.COLUMN_BEGIN_DATE) * 1000)));
+        holder.sectionHeader.setText(LineUpListAdapter.DATE_FORMAT_HEADER_DATE.format(new Date(cursor.getLong(MusicSet.COLUMN_BEGIN_DATE) * 1000)));
     }
 
     @Override
@@ -122,6 +128,6 @@ public class LineUpListAdapter extends CachedImageCursorAdapter implements Stick
     @Override
     public long getHeaderId(int position){
         Cursor cursor = (Cursor) this.getItem(position);
-        return Integer.valueOf(LineUpListAdapter.FORMATTER_DAY_IN_YEAR.format(new Date(cursor.getLong(MusicSet.COLUMN_BEGIN_DATE) * 1000)));
+        return Integer.valueOf(LineUpListAdapter.DATE_FORMAT_DAY_IN_YEAR.format(new Date(cursor.getLong(MusicSet.COLUMN_BEGIN_DATE) * 1000)));
     }
 }

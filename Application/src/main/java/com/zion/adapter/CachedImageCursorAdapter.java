@@ -19,7 +19,7 @@
  *
  */
 
-package com.zion.htf.adapter;
+package com.zion.adapter;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -141,7 +141,7 @@ public abstract class CachedImageCursorAdapter extends CursorAdapter{
         // Once complete, see if ImageView is still around and set bitmap.
         @Override
         protected void onPostExecute(Bitmap bitmap) {
-            if(null != this.imageViewReference && null != bitmap) {
+            if(null != bitmap) {
                 final ImageView imageView = this.imageViewReference.get();
                 if (null != imageView) {
                     imageView.setImageBitmap(bitmap);

@@ -19,7 +19,7 @@
  *
  */
 
-package com.zion.htf.adapter;
+package com.zion.adapter;
 
 import android.database.Cursor;
 import android.os.Bundle;

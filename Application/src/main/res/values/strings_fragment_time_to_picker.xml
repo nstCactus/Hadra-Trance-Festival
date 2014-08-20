@@ -21,22 +21,22 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="alarm_set">Set alarm</string>
+    <string name="alarm_set">Schedule</string>
     <string name="alarm_cancel">Cancel</string>
     <string name="alarm_delete">Delete</string>
 
-    <string name="time_0_min" tools:ignore="MissingTranslation">0 minute</string>
-    <string name="time_5_min" tools:ignore="MissingTranslation">5 minutes</string>
-    <string name="time_10_min" tools:ignore="MissingTranslation">10 minutes</string>
-    <string name="time_15_min" tools:ignore="MissingTranslation">15 minutes</string>
-    <string name="time_20_min" tools:ignore="MissingTranslation">20 minutes</string>
-    <string name="time_30_min" tools:ignore="MissingTranslation">30 minutes</string>
-    <string name="time_45_min" tools:ignore="MissingTranslation">45 minutes</string>
-    <string name="time_1_hr">1 hour</string>
-    <string name="time_2_hr">2 hours</string>
-    <string name="time_3_hr">3 hours</string>
+    <string name="time_0_min">0 minute before</string>
+    <string name="time_5_min">5 minutes before</string>
+    <string name="time_10_min">10 minutes before</string>
+    <string name="time_15_min">15 minutes before</string>
+    <string name="time_20_min">20 minutes before</string>
+    <string name="time_30_min">30 minutes before</string>
+    <string name="time_45_min">45 minutes before</string>
+    <string name="time_1_hr">1 hour before</string>
+    <string name="time_2_hr">2 hours before</string>
+    <string name="time_3_hr">3 hours before</string>
 
-    <string-array name="times_from_alarm_to_set">
+    <string-array name="minutes_to_set_labels">
         <item>@string/time_0_min</item>
         <item>@string/time_5_min</item>
         <item>@string/time_10_min</item>
@@ -48,4 +48,17 @@
         <item>@string/time_2_hr</item>
         <item>@string/time_3_hr</item>
     </string-array>
+
+	<integer-array name="minutes_to_set_values">
+		<item>0</item>
+		<item>5</item>
+		<item>10</item>
+		<item>15</item>
+		<item>20</item>
+		<item>30</item>
+		<item>45</item>
+		<item>60</item>
+		<item>120</item>
+		<item>180</item>
+	</integer-array>
 </resources>

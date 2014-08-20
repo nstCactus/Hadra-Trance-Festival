@@ -27,11 +27,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.zion.adapter.CachedImageCursorAdapter;
 import com.zion.htf.R;
 import com.zion.htf.data.Artist;
 import com.zion.htf.data.MusicSet;
 
-public class ArtistListAdapter extends CachedImageCursorAdapter{
+public class ArtistListAdapter extends CachedImageCursorAdapter {
     private final LayoutInflater layoutInflater;
 
 	static class ViewHolder {

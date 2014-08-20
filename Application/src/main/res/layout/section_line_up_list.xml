@@ -20,15 +20,17 @@
 -->
 
 <LinearLayout
-		xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="@color/brand_yellow"
-        android:background="@color/brand_orange">
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:divider="@color/brand_yellow"
+    android:background="@color/brand_orange">
 
 	<TextView
-			android:id="@+id/list_item_section_header"
-			style="?android:attr/listSeparatorTextViewStyle"
-			android:textColor="@color/brand_yellow" />
+		android:id="@+id/list_item_section_header"
+		style="?android:attr/listSeparatorTextViewStyle"
+		android:textColor="@color/brand_yellow"
+		tools:text="Vendredi 22 août 2014" />
 </LinearLayout>

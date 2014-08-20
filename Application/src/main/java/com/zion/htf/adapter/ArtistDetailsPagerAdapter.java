@@ -25,13 +25,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.util.Log;
 
-import com.zion.htf.BuildConfig;
 import com.zion.htf.ui.fragment.ArtistDetailsFragment;
 import com.zion.htf.ui.fragment.ArtistSoundcloudFragment;
-
-import java.util.Locale;
 
 public class ArtistDetailsPagerAdapter extends FragmentPagerAdapter{
     private static final int PAGE_COUNT = 2;
@@ -45,7 +41,6 @@ public class ArtistDetailsPagerAdapter extends FragmentPagerAdapter{
 
     @Override
     public Fragment getItem(int position){
-        if(BuildConfig.DEBUG) Log.v(this.getClass().getName(), String.format(Locale.ENGLISH, "Creating a new fragment at position %d", position));
         switch(position){
             case 0:
                 Fragment artistDetailsFragment = new ArtistDetailsFragment();

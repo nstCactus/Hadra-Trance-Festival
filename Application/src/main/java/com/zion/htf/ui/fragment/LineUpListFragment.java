@@ -19,10 +19,8 @@
 
 package com.zion.htf.ui.fragment;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -31,18 +29,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 
 import com.zion.content.SQLiteCursorLoader;
 import com.zion.htf.Application;
-import com.zion.htf.BuildConfig;
 import com.zion.htf.R;
 import com.zion.htf.adapter.LineUpListAdapter;
 import com.zion.htf.data.MusicSet;
 import com.zion.htf.exception.MissingArgumentException;
 import com.zion.htf.ui.ArtistDetailsActivity;
-import com.zion.htf.ui.LineUpActivity;
 
 import java.util.Locale;
 
@@ -60,8 +55,6 @@ public class LineUpListFragment extends Fragment implements AdapterView.OnItemCl
 	@Override
 	public void onCreate(Bundle savedInstance){
         try{
-            if(BuildConfig.DEBUG) Log.v(LineUpListFragment.TAG, String.format(Locale.ENGLISH, "Fragment id = %d", this.getId()));
-
             int fragmentId = LineUpListFragment.autoIncrement++;
 
             super.onCreate(savedInstance);
@@ -84,27 +77,6 @@ public class LineUpListFragment extends Fragment implements AdapterView.OnItemCl
 
         this.listView = (StickyListHeadersListView)view.findViewById(R.id.line_up_list);
 		this.listView.setAdapter(this.adapter);
-
-		if(0 == LineUpActivity.sectionHeaderHeight){
-			final ViewTreeObserver viewTreeObserver = this.listView.getViewTreeObserver();
-			if(null == viewTreeObserver){
-				if(BuildConfig.DEBUG) Log.e(LineUpListFragment.TAG, "Can't get a ViewTreeObserver to get the height of a ListView section header. Falling back to default value");
-				LineUpActivity.sectionHeaderHeight = 64;
-			}
-			else{
-				viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener(){
-					@SuppressWarnings("ConstantConditions")
-					@Override
-                    @SuppressLint("NewApi")
-					public void onGlobalLayout(){
-						if(1 > LineUpListFragment.this.listView.getChildCount()) throw new RuntimeException("No children found in ListView. This is most likely due to an empty result set for this.getAllSets()");
-						LineUpActivity.sectionHeaderHeight = LineUpListFragment.this.listView.getChildAt(0).getMeasuredHeight();
-						if(16 <= Build.VERSION.SDK_INT) LineUpListFragment.this.listView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-						else                            LineUpListFragment.this.listView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-					}
-				});
-			}
-		}
 
 		this.listView.setOnItemClickListener(this);
 
@@ -154,4 +126,7 @@ public class LineUpListFragment extends Fragment implements AdapterView.OnItemCl
         this.adapter.changeCursor(null);
     }
 
+	public String getStage(){
+		return this.stage;
+	}
 }

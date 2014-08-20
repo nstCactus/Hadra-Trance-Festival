@@ -167,7 +167,7 @@ public class MainActivity extends ActionBarActivity{
 				intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/user/hadrarecords"));
 				break;
             case R.id.button_music:
-                intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/music/album?id=Bzgehxymgika5tgar5nlhfjkhqq"));
+                intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/search?q=hadra+trance+festival&c=music&docType=2"));
                 break;
             case R.id.button_flickr:
                 intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.flickr.com/photos/118919035@N06/sets/"));

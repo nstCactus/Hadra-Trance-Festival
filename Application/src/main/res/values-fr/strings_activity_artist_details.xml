@@ -21,5 +21,9 @@
   -->
 
 <resources>
-    <string name="error_bio_inconsistent_database">A serious error happened while retrieving this artist\'s biography.</string>
+    <string name="error_bio_inconsistent_database">Une erreur s\'est produite lors de la recherche de la biographie de cet artiste.</string>
+    <string name="tab_artist">Artiste</string>
+    <string name="tab_soundcloud">Soundcloud</string>
+    <string name="error_no_soundcloud">Cet artiste n\'a pas de profil Soundcloud.</string>
+    <string name="error_finding_soundcloud_profile">Nous n\'avons pas été en mesure de trouver un profil Soundcloud associé à cet artiste.</string>
 </resources>

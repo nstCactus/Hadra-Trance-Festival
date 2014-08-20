@@ -26,153 +26,152 @@
 	in the editor. They are when running the app. Not sure what causes this.
 -->
 
-<LinearLayout
+<RelativeLayout
 	xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:orientation="vertical"
-	android:gravity="bottom">
+	>
 
-	<LinearLayout
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:orientation="horizontal">
+	<include layout="@layout/fragment_now_on_stage"
+	         android:layout_height="wrap_content"
+	         android:layout_width="wrap_content"
+	         android:layout_alignParentLeft="true"
+	         android:layout_alignParentRight="true"
+	         android:layout_alignParentStart="true"
+	         android:layout_alignParentEnd="true"
+	         android:layout_alignParentBottom="true"
+	         android:layout_centerHorizontal="true"
+	         android:id="@+id/include"/><RelativeLayout
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:id="@+id/relativeLayout"
+	android:layout_above="@+id/include"
+	>
+          <RelativeLayout
+		          android:layout_width="wrap_content"
+		          android:layout_height="match_parent"
+		          android:id="@+id/buttons"
+		          android:layout_alignParentRight="true"
+		          android:layout_alignParentEnd="true"
+		          android:gravity="center">
 
-		<ImageView
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:id="@+id/title"
-			android:src="@drawable/title"
-			android:paddingTop="20dp"
-			android:layout_weight="3"
-            tools:ignore="ContentDescription" />
+		          <LinearLayout
+			          android:id="@+id/small_buttons"
+			          android:layout_width="wrap_content"
+			          android:layout_height="wrap_content"
+			          android:importantForAccessibility="noHideDescendants"
+			          tools:ignore="UnusedAttribute"
+			          android:layout_centerHorizontal="true">
 
-		<RelativeLayout
-			android:layout_width="0dp"
-			android:layout_height="fill_parent"
-			android:orientation="vertical"
-			android:layout_weight="7">
+			          <com.zion.widget.TintImageButton
+				          style="@style/smallButtons"
+				          android:id="@+id/button_facebook"
+				          android:src="@drawable/button_facebook"
+				          android:onClick="onButtonClicked"
+				          android:contentDescription="@string/button_facebook"/>
 
-			<LinearLayout
-				android:id="@+id/small_buttons"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_above="@+id/row1"
-				android:layout_centerInParent="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentStart="true"
-                android:gravity="center"
-                android:importantForAccessibility="noHideDescendants"
-                tools:ignore="UnusedAttribute">
+			          <com.zion.widget.TintImageButton
+				          android:id="@+id/button_soundcloud"
+				          android:src="@drawable/button_soundcloud"
+				          style="@style/smallButtons"
+				          android:onClick="onButtonClicked"
+				          android:contentDescription="@string/button_soundcloud"/>
 
-				<com.zion.htf.widget.TintImageButton
-					style="@style/smallButtons"
-					android:id="@+id/button_facebook"
-					android:src="@drawable/button_facebook"
-                    android:onClick="onButtonClicked"
-                    android:contentDescription="@string/button_facebook" />
+			          <com.zion.widget.TintImageButton
+				          android:id="@+id/button_youtube"
+				          android:src="@drawable/button_youtube"
+				          style="@style/smallButtons"
+				          android:onClick="onButtonClicked"
+				          android:contentDescription="@string/button_youtube"/>
 
-				<com.zion.htf.widget.TintImageButton
-					android:id="@+id/button_soundcloud"
-					android:src="@drawable/button_soundcloud"
-                    style="@style/smallButtons"
-					android:onClick="onButtonClicked"
-                    android:contentDescription="@string/button_soundcloud" />
+			          <com.zion.widget.TintImageButton
+				          android:id="@+id/button_hadra"
+				          android:src="@drawable/button_hadra"
+				          style="@style/smallButtons"
+				          android:onClick="onButtonClicked"
+				          android:contentDescription="@string/button_hadra_website"/>
 
-				<com.zion.htf.widget.TintImageButton
-					android:id="@+id/button_youtube"
-					android:src="@drawable/button_youtube"
-					style="@style/smallButtons"
-                    android:onClick="onButtonClicked"
-                    android:contentDescription="@string/button_youtube" />
+			          <com.zion.widget.TintImageButton
+				          android:id="@+id/button_music"
+				          android:src="@drawable/button_music"
+				          style="@style/smallButtons"
+				          android:onClick="onButtonClicked"
+				          android:contentDescription="@string/button_compilation"/>
 
-				<com.zion.htf.widget.TintImageButton
-					android:id="@+id/button_hadra"
-					android:src="@drawable/button_hadra"
-					style="@style/smallButtons"
-                    android:onClick="onButtonClicked"
-                    android:contentDescription="@string/button_hadra_website" />
+			          <com.zion.widget.TintImageButton
+				          android:id="@+id/button_flickr"
+				          android:src="@drawable/button_flickr"
+				          style="@style/smallButtons"
+				          android:onClick="onButtonClicked"
+				          android:contentDescription="@string/button_photos"/>
+	          </LinearLayout><LinearLayout
+	          android:layout_width="wrap_content"
+	          android:layout_height="wrap_content"
+	          android:id="@+id/row1"
+	          android:importantForAccessibility="noHideDescendants"
+	          tools:ignore="UnusedAttribute"
+	          android:gravity="center"
+	          android:layout_centerVertical="true"
+	          android:layout_centerHorizontal="true"
+	          android:layout_below="@+id/small_buttons">
 
-				<com.zion.htf.widget.TintImageButton
-					android:id="@+id/button_music"
-					android:src="@drawable/button_music"
-					style="@style/smallButtons"
-                    android:onClick="onButtonClicked"
-                    android:contentDescription="@string/button_compilation" />
+	          <ImageButton
+		          style="@style/bigButtons"
+		          android:visibility="gone"
+		          android:id="@+id/button_artists"
+		          android:onClick="onButtonClicked"
+		          android:src="@drawable/button_artists_selector"
+		          android:contentDescription="@string/button_artists"/>
 
-                <com.zion.htf.widget.TintImageButton
-                    android:id="@+id/button_flickr"
-                    android:src="@drawable/button_flickr"
-                    style="@style/smallButtons"
-                    android:onClick="onButtonClicked"
-                    android:contentDescription="@string/button_photos" />
-            </LinearLayout>
+	          <ImageButton
+		          style="@style/bigButtons"
+		          android:id="@+id/button_lineup"
+		          android:onClick="onButtonClicked"
+		          android:src="@drawable/button_lineup_selector"
+		          android:contentDescription="@string/button_lineup"/>
 
-			<LinearLayout
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:id="@+id/row1"
-				android:layout_above="@id/row2"
-				android:layout_marginTop="10dp"
-				android:layout_marginBottom="10dp"
-                android:gravity="center"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentStart="true"
-                android:importantForAccessibility="noHideDescendants"
-                tools:ignore="UnusedAttribute">
+	          <ImageButton
+		          style="@style/bigButtons"
+		          android:id="@+id/button_tickets"
+		          android:src="@drawable/button_tickets_selector"
+		          android:onClick="onButtonClicked"
+		          android:contentDescription="@string/button_tickets"/>
+          </LinearLayout><LinearLayout
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:id="@+id/row2"
+          android:gravity="center"
+          android:importantForAccessibility="noHideDescendants"
+          tools:ignore="UnusedAttribute"
+          android:layout_below="@+id/row1"
+          android:layout_centerHorizontal="true">
 
-                <ImageButton
-                    style="@style/bigButtons"
-                    android:id="@+id/button_artists"
-                    android:onClick="onButtonClicked"
-                    android:src="@drawable/button_artists_selector"
-                    android:contentDescription="@string/button_artists" />
+          <ImageButton
+	          style="@style/bigButtons"
+	          android:id="@+id/button_map"
+	          android:onClick="onButtonClicked"
+	          android:src="@drawable/button_map_selector"
+	          android:contentDescription="@string/button_map"/>
 
-                <ImageButton
-                    android:visibility="gone"
-					style="@style/bigButtons"
-					android:id="@+id/button_lineup"
-					android:onClick="onButtonClicked"
-					android:src="@drawable/button_lineup_selector"
-                    android:contentDescription="@string/button_lineup" />
+          <ImageButton
+	          style="@style/bigButtons"
+	          android:id="@+id/button_infos"
+	          android:src="@drawable/button_infos_selector"
+	          android:contentDescription="@string/button_infos"
+	          android:onClick="onButtonClicked"/>
+          </LinearLayout>
 
-				<ImageButton
-					style="@style/bigButtons"
-					android:id="@+id/button_tickets"
-					android:src="@drawable/button_tickets_selector"
-                    android:onClick="onButtonClicked"
-                    android:contentDescription="@string/button_tickets"/>
-			</LinearLayout>
+	          </RelativeLayout><ImageView
+		          android:layout_width="match_parent"
+		          android:layout_height="match_parent"
+		          android:id="@+id/title"
+		          android:src="@drawable/title"
+		          tools:ignore="ContentDescription"
+		          android:layout_alignParentStart="true"
+		          android:layout_alignParentLeft="true"
+		          android:layout_toLeftOf="@+id/buttons"
+		          android:scaleType="centerInside"/></RelativeLayout>
 
-			<LinearLayout
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:id="@+id/row2"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true"
-                android:gravity="center"
-                android:importantForAccessibility="noHideDescendants"
-                tools:ignore="UnusedAttribute">
-
-				<ImageButton
-					style="@style/bigButtons"
-					android:id="@+id/button_map"
-					android:onClick="onButtonClicked"
-					android:src="@drawable/button_map_selector"
-                    android:contentDescription="@string/button_map"/>
-
-				<ImageButton
-					style="@style/bigButtons"
-					android:id="@+id/button_infos"
-					android:src="@drawable/button_infos_selector"
-                    android:onClick="onButtonClicked"
-                    android:contentDescription="@string/button_infos"/>
-			</LinearLayout>
-		</RelativeLayout>
-	</LinearLayout>
-
-	<include layout="@layout/fragment_now_on_stage"/>
-</LinearLayout>
+</RelativeLayout>

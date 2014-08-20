@@ -21,42 +21,95 @@
   ~  */
   -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="wrap_content">
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/media_controller"
+	android:background="#55000000"
+	android:padding="10dp">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="&gt; / ||"
+    <ToggleButton
+	    android:id="@+id/button_shuffle"
+	    android:src="@drawable/ic_media_shuffle_selector"
+	    android:layout_alignTop="@+id/button_play"
+	    android:contentDescription="@string/button_shuffle"
+	    android:background="@drawable/shuffle_button_background"
+	    android:layout_toLeftOf="@+id/button_prev"
+		style="@style/MediaController.Buttons" />
+
+	<ImageButton
+		android:id="@+id/button_prev"
+		android:src="@drawable/ic_media_previous"
+		android:layout_alignTop="@+id/button_play"
+		android:layout_toLeftOf="@+id/button_play"
+		android:layout_toStartOf="@+id/button_play"
+		android:contentDescription="@string/button_prev"
+		style="@style/MediaController.Buttons"/>
+
+	<ToggleButton
         android:id="@+id/button_play"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/seekbar"
+        android:src="@drawable/ic_media_play_selector"
+        android:contentDescription="@string/button_play"
+        android:background="@drawable/play_button_background"
+        style="@style/MediaController.Buttons" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="&lt;&lt;"
-        android:id="@+id/button_prev"
-        android:layout_alignTop="@+id/button_play"
-        android:layout_toLeftOf="@+id/button_play"
-        android:layout_toStartOf="@+id/button_play" />
+    <ImageButton
+	    android:id="@+id/button_next"
+	    android:src="@drawable/ic_media_next"
+	    android:layout_alignTop="@+id/button_play"
+	    android:layout_toRightOf="@+id/button_play"
+	    android:contentDescription="@string/button_next"
+		style="@style/MediaController.Buttons"/>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="&gt;&gt;"
-        android:id="@+id/button_next"
-        android:layout_alignTop="@+id/button_play"
-        android:layout_toRightOf="@+id/button_play"
-        android:layout_toEndOf="@+id/button_play" />
+    <ToggleButton
+	    android:id="@+id/button_repeat"
+	    android:src="@drawable/ic_media_repeat_selector"
+	    android:layout_alignTop="@+id/button_play"
+	    android:layout_toRightOf="@+id/button_next"
+	    android:contentDescription="@string/button_repeat"
+	    android:background="@drawable/repeat_button_background"
+	    style="@style/MediaController.Buttons"/>
 
     <SeekBar
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/seekbar"
-        android:indeterminate="false"
-        android:layout_below="@+id/button_play"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentTop="true"
+	    android:indeterminateDrawable="@drawable/htf2014_progress_indeterminate_horizontal_holo_dark"
+        tools:indeterminate="true"
+	    tools:progress="50"
+	    android:indeterminate="false"/>
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:textAppearance="?android:attr/textAppearanceSmall"
+		tools:text="1:34"
+		android:id="@+id/elapsed_time"
+		android:layout_toLeftOf="@+id/button_shuffle"
+		android:layout_alignTop="@id/button_play"
+		android:layout_alignBottom="@+id/button_play"
+		android:layout_alignParentLeft="true"
+		android:layout_alignParentStart="true"
+		android:gravity="center_vertical|left" />
+
+	<TextView
+		tools:text="3:27"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:textAppearance="?android:attr/textAppearanceSmall"
+		android:id="@+id/duration"
+		android:gravity="center_vertical|right"
+		android:layout_alignTop="@id/button_play"
+		android:layout_alignBottom="@id/button_play"
+		android:layout_toRightOf="@+id/button_repeat"
+		android:layout_alignParentRight="true"
+		android:layout_alignParentEnd="true" />
 
 </RelativeLayout>

@@ -29,8 +29,8 @@
     android:background="@drawable/background_blur">
 
     <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:padding="10dp">
 
@@ -52,21 +52,21 @@
             android:layout_alignParentLeft="true"
             android:layout_marginTop="10dp">
 
-            <com.zion.htf.widget.TintImageButton
+            <com.zion.widget.TintImageButton
                 android:id="@+id/facebook"
                 android:src="@drawable/social_facebook"
                 android:onClick="onClick"
                 android:layout_margin="5dp"
                 style="@style/imageButtons" />
 
-            <com.zion.htf.widget.TintImageButton
+            <com.zion.widget.TintImageButton
                 android:id="@+id/soundcloud"
                 android:src="@drawable/social_soundcloud"
                 android:onClick="onClick"
                 android:layout_margin="5dp"
                 style="@style/imageButtons" />
 
-            <com.zion.htf.widget.TintImageButton
+            <com.zion.widget.TintImageButton
                 android:id="@+id/website"
                 android:src="@drawable/social_www"
                 android:onClick="onClick"
@@ -86,7 +86,7 @@
             android:layout_centerVertical="true">
 
             <com.mobsandgeeks.ui.TypefaceTextView
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:id="@+id/artist_name"

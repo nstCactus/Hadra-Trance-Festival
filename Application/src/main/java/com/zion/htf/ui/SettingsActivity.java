@@ -55,9 +55,8 @@ public class SettingsActivity extends PreferenceActivity{
     }
 
     /**
-     * Shows the simplified settings UI if the device configuration if the
-     * device configuration dictates that a simplified, single-pane UI should be
-     * shown.
+     * Shows the simplified settings UI if the device configuration dictates
+     * that a simplified, single-pane UI should be shown.
      */
     @SuppressWarnings("deprecation")
     private void setupSimplePreferencesScreen() {
@@ -71,13 +70,19 @@ public class SettingsActivity extends PreferenceActivity{
         // Add 'general' preferences.
         this.addPreferencesFromResource(R.xml.pref_general);
 
-        // Add 'notifications' preferences, and a corresponding header.
-        PreferenceCategory fakeHeader = new PreferenceCategory(this);
-        fakeHeader.setTitle(R.string.pref_header_notifications);
-        this.getPreferenceScreen().addPreference(fakeHeader);
-        this.addPreferencesFromResource(R.xml.pref_notification);
+	    // Add 'notifications' preferences, and a corresponding header.
+	    PreferenceCategory preferencesFakeHeader = new PreferenceCategory(this);
+	    preferencesFakeHeader.setTitle(R.string.pref_header_notifications);
+	    this.getPreferenceScreen().addPreference(preferencesFakeHeader);
+	    this.addPreferencesFromResource(R.xml.pref_notification);
 
-        // Bind the summaries of EditText/List/Dialog/Ringtone preferences to their values.
+	    // Add 'Other' preferences, and a corresponding header.
+	    PreferenceCategory otherFakeHeader = new PreferenceCategory(this);
+	    otherFakeHeader.setTitle(R.string.pref_header_other);
+	    this.getPreferenceScreen().addPreference(otherFakeHeader);
+	    this.addPreferencesFromResource(R.xml.pref_other);
+
+	    // Bind the summaries of EditText/List/Dialog/Ringtone preferences to their values.
         // When their values change, their summaries are updated to reflect the new value, per the Android Design guidelines.
         SettingsActivity.bindPreferenceSummaryToValue(this.findPreference(this.getString(R.string.pref_key_notifications_alarms_ringtone)));
     }
@@ -127,7 +132,7 @@ public class SettingsActivity extends PreferenceActivity{
         public boolean onPreferenceChange(Preference preference, Object value) {
             String stringValue = value.toString();
 
-            if (preference instanceof ListPreference) {
+            if (preference instanceof ListPreference){
                 // For list preferences, look up the correct display value in
                 // the preference's 'entries' list.
                 ListPreference listPreference = (ListPreference) preference;
@@ -136,7 +141,7 @@ public class SettingsActivity extends PreferenceActivity{
                 // Set the summary to reflect the new value.
                 preference.setSummary(0 <= index ? listPreference.getEntries()[index] : null);
             }
-            else if (preference instanceof RingtonePreference) {
+            else if (preference instanceof RingtonePreference){
                 // For ringtone preferences, look up the correct display value
                 // using RingtoneManager.
                 if (TextUtils.isEmpty(stringValue)) {
@@ -158,7 +163,7 @@ public class SettingsActivity extends PreferenceActivity{
                     }
                 }
 
-            } else {
+            } else{
                 // For all other preferences, set the summary to the value's simple string representation.
                 preference.setSummary(stringValue);
             }
@@ -195,25 +200,38 @@ public class SettingsActivity extends PreferenceActivity{
 
             // Bind the summaries of EditText/List/Dialog/Ringtone preferences to their values.
             // When their values change, their summaries are updated to reflect the new value, per the Android Design guidelines.
-            SettingsActivity.bindPreferenceSummaryToValue(this.findPreference("example_text"));
-            SettingsActivity.bindPreferenceSummaryToValue(this.findPreference("example_list"));
+//            SettingsActivity.bindPreferenceSummaryToValue(this.findPreference("example_text"));
+//            SettingsActivity.bindPreferenceSummaryToValue(this.findPreference("example_list"));
         }
     }
 
-    /**
-     * This fragment shows notification preferences only. It is used when the
-     * activity is showing a two-pane settings UI.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class NotificationPreferenceFragment extends PreferenceFragment {
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            this.addPreferencesFromResource(R.xml.pref_notification);
+	/**
+	 * This fragment shows notification preferences only. It is used when the
+	 * activity is showing a two-pane settings UI.
+	 */
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	public static class NotificationPreferenceFragment extends PreferenceFragment {
+		@Override
+		public void onCreate(Bundle savedInstanceState) {
+			super.onCreate(savedInstanceState);
+			this.addPreferencesFromResource(R.xml.pref_notification);
 
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences to their values.
-            // When their values change, their summaries are updated to reflect the new value, per the Android Design guidelines.
-            SettingsActivity.bindPreferenceSummaryToValue(this.findPreference(this.getString(R.string.pref_key_notifications_alarms_ringtone)));
-        }
-    }
+			// Bind the summaries of EditText/List/Dialog/Ringtone preferences to their values.
+			// When their values change, their summaries are updated to reflect the new value, per the Android Design guidelines.
+			SettingsActivity.bindPreferenceSummaryToValue(this.findPreference(this.getString(R.string.pref_key_notifications_alarms_ringtone)));
+		}
+	}
+
+	/**
+	 * This fragment shows other preferences only. It is used when the
+	 * activity is showing a two-pane settings UI.
+	 */
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	public static class OtherPreferenceFragment extends PreferenceFragment {
+		@Override
+		public void onCreate(Bundle savedInstanceState) {
+			super.onCreate(savedInstanceState);
+			this.addPreferencesFromResource(R.xml.pref_other);
+		}
+	}
 }

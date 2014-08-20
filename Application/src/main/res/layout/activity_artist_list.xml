@@ -34,8 +34,9 @@
               android:layout_height="match_parent"
               tools:context=".LineUpActivity">
         <ListView
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:id="@+id/artist_list"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            android:cacheColorHint="@android:color/transparent" />
 </LinearLayout>

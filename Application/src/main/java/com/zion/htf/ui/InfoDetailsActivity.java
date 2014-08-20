@@ -70,7 +70,7 @@ public class InfoDetailsActivity extends ActionBarActivity{
 					ret = true;
 				}
 				else if(url.contains("donate.me")){
-                    InfoDetailsActivity.this.startActivity(new Intent(InfoDetailsActivity.this.context, DonateActivity.class));
+                    InfoDetailsActivity.this.startActivity(new Intent(InfoDetailsActivity.this, DonateActivity.class));
 					ret = true;
 				}
 

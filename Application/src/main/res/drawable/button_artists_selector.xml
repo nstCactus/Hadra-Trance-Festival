@@ -2,5 +2,5 @@
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 	<item android:drawable="@drawable/button_artists_selected" android:state_pressed="true" />
-	<item android:drawable="@drawable/button_artists" />
+	<item android:drawable="@drawable/button_artists" android:state_pressed="false" />
 </selector>

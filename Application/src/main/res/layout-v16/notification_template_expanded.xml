@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+  ~ /*
+  ~     Copyright 2013-2014 Yohann Bianchi
+  ~
+  ~     This program is free software; you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation; either version 2 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     This program is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License along
+  ~     with this program; if not, write to the Free Software Foundation, Inc.,
+  ~     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+  ~     or see <http://www.gnu.org/licenses/>.
+  ~  */
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="128.0dip"
+                tools:ignore="ContentDescription" >
+
+    <!-- The height cannot be specified any other way. It must read "128.0dip" and cannot be referenced. I think it's a bug. -->
+
+	<ImageView
+		android:id="@+id/notification_expanded_base_image"
+		android:layout_width="@dimen/notification_mediaplayer_expanded_height"
+		android:layout_height="@dimen/notification_mediaplayer_expanded_height"
+		android:layout_alignParentBottom="true"
+		android:layout_alignParentLeft="true"
+		android:background="@drawable/no_image_wrapper"
+		android:scaleType="fitXY"
+		tools:src="@drawable/ph_lmx" />
+
+    <LinearLayout
+	    android:id="@+id/notification_expanded_buttons"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentBottom="true"
+	    android:layout_alignParentRight="true"
+	    android:layout_toRightOf="@+id/notification_expanded_base_image"
+	    android:divider="?android:listDivider"
+	    android:dividerPadding="@dimen/notification_mediaplayer_expanded_buttons_divider_padding"
+	    android:gravity="center_vertical"
+	    android:orientation="horizontal"
+	    android:showDividers="middle" >
+
+        <ImageButton
+	        android:id="@+id/notification_expanded_previous_track"
+	        android:layout_width="0dp"
+	        android:layout_height="@dimen/notification_mediaplayer_expanded_button_height"
+	        android:layout_weight="1"
+	        android:background="?android:selectableItemBackground"
+	        android:padding="@dimen/notification_mediaplayer_expanded_button_padding"
+	        android:scaleType="fitCenter"
+	        android:src="@drawable/ic_media_previous" />
+
+        <ImageButton
+	        android:id="@+id/notification_expanded_toggle_play_pause"
+	        android:layout_width="0dp"
+	        android:layout_height="@dimen/notification_mediaplayer_expanded_button_height"
+	        android:layout_weight="1"
+	        android:background="?android:selectableItemBackground"
+	        android:padding="@dimen/notification_mediaplayer_expanded_button_padding"
+	        android:scaleType="fitCenter"
+	        android:src="@drawable/ic_media_pause" />
+
+        <ImageButton
+	        android:id="@+id/notification_expanded_next_track"
+	        android:layout_width="0dp"
+	        android:layout_height="@dimen/notification_mediaplayer_expanded_button_height"
+	        android:layout_weight="1"
+	        android:background="?android:selectableItemBackground"
+	        android:padding="@dimen/notification_mediaplayer_expanded_button_padding"
+	        android:scaleType="fitCenter"
+	        android:src="@drawable/ic_media_next" />
+    </LinearLayout>
+
+    <ImageView
+	    android:layout_width="wrap_content"
+	    android:layout_height="1dp"
+	    android:layout_above="@+id/notification_expanded_buttons"
+	    android:layout_alignParentRight="true"
+	    android:layout_toRightOf="@+id/notification_expanded_base_image"
+	    android:background="?android:dividerHorizontal" />
+
+    <ImageButton
+	    android:id="@+id/notification_expanded_close"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentRight="true"
+	    android:layout_alignParentTop="true"
+	    android:background="?android:selectableItemBackground"
+	    android:padding="@dimen/notification_mediaplayer_expanded_collapse_padding"
+	    android:src="@drawable/ic_notify_close" />
+
+    <LinearLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentTop="true"
+	    android:layout_gravity="center_vertical"
+	    android:layout_toLeftOf="@+id/notification_expanded_close"
+	    android:layout_toStartOf="@+id/notification_expanded_close"
+	    android:layout_toRightOf="@+id/notification_expanded_base_image"
+	    android:layout_toEndOf="@+id/notification_expanded_base_image"
+	    android:orientation="vertical"
+	    android:paddingLeft="@dimen/notification_mediaplayer_info_container_padding_left"
+	    android:paddingTop="@dimen/notification_mediaplayer_expanded_content_padding_top"
+	    tools:ignore="RtlSymmetry">
+
+        <TextView
+	        android:id="@+id/notification_expanded_base_line_one"
+	        style="@style/NotificationText"
+	        android:textAppearance="@android:style/TextAppearance.StatusBar.EventContent.Title"
+	        tools:text="LMX" />
+
+        <TextView
+	        android:id="@+id/notification_expanded_base_line_two"
+	        style="@style/NotificationText"
+	        android:textAppearance="@android:style/TextAppearance.StatusBar.EventContent"
+	        tools:text="Gorillaz - Feel Good Inc. (Réchauffé par La Mère à Xav') - FREE DOWNLOAD" />
+
+        <TextView
+	        android:id="@+id/notification_expanded_base_line_three"
+	        style="@style/NotificationText"
+	        android:textAppearance="@android:style/TextAppearance.StatusBar.EventContent"
+	        tools:text="Offbeef EP"/>
+    </LinearLayout>
+</RelativeLayout>

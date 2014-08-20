@@ -6,11 +6,15 @@
         <!--android:fragment="com.zion.htf.ui.SettingsActivity$GeneralPreferenceFragment"-->
         <!--android:title="@string/pref_header_general" />-->
 
-    <header
-        android:fragment="com.zion.htf.ui.SettingsActivity$NotificationPreferenceFragment"
-        android:title="@string/pref_header_notifications" />
+	<header
+		android:fragment="com.zion.htf.ui.SettingsActivity$NotificationPreferenceFragment"
+		android:title="@string/pref_header_notifications" />
 
-    <!--<header-->
+    <header
+	    android:fragment="com.zion.htf.ui.SettingsActivity$OtherPreferenceFragment"
+	    android:title="@string/pref_header_other" />
+
+	<!--<header-->
         <!--android:fragment="com.zion.htf.ui.SettingsActivity$DataSyncPreferenceFragment"-->
         <!--android:title="@string/pref_header_data_sync" />-->
 

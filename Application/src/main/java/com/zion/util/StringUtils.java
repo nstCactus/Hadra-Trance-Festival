@@ -24,6 +24,7 @@ package com.zion.util;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Locale;
 
 public class StringUtils{
     public static String hashMD5(String string) {
@@ -46,4 +47,15 @@ public class StringUtils{
         }
         return result.toString();
     }
+
+	/**
+	 * Format a duration in seconds
+	 * @param duration the duration in seconds
+	 * @return the duration formatted as mm:ss
+	 */
+	public static String formatDuration(int duration){
+		int minutes = duration / 60;
+		int seconds = duration % 60;
+		return String.format(Locale.ENGLISH, "%d:%02d", minutes, seconds);
+	}
 }

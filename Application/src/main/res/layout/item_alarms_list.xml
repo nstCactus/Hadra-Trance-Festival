@@ -42,7 +42,7 @@
 	<TextView
 		android:layout_width="0dp"
 		android:layout_height="wrap_content"
-		tools:text="The Temple - ven 0h00"
+		tools:text="The Temple - ven 00:00"
 		android:id="@+id/where_and_when"
 		android:singleLine="true"
 		android:clickable="false"
@@ -52,7 +52,7 @@
         android:layout_toLeftOf="@+id/alarm_icon" />
 
 	<TextView
-		android:layout_width="fill_parent"
+		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		tools:text="ADN Smith"
 		android:id="@+id/artist_name"

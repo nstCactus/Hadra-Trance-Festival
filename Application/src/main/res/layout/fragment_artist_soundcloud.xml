@@ -21,19 +21,31 @@
   ~  */
   -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <ListView
+        android:id="@+id/artist_tracks_listview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/artist_tracks_listview"
-        android:layout_above="@+id/mediaplayer_controller" />
+        android:layout_above="@+id/media_controller"
+        android:layout_alignWithParentIfMissing="false"
+        android:layout_alignParentTop="true"
+        android:cacheColorHint="@android:color/transparent" />
 
-    <include layout="@layout/fragment_mediaplayer_controller"
-        android:id="@+id/mediaplayer_controller"
+    <ViewStub
+        android:id="@+id/empty_view_stub"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout="@layout/empty_soundcloud_stream" />
+
+    <ViewStub
+        android:id="@+id/mediaplayer_controller_view_stub"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout="@layout/fragment_mediaplayer_controller" />
 </RelativeLayout>

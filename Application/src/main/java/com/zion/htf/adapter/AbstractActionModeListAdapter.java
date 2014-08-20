@@ -29,12 +29,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.zion.adapter.CachedImageCursorAdapter;
 import com.zion.htf.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-public abstract class AbstractActionModeListAdapter<T> extends CachedImageCursorAdapter{
+public abstract class AbstractActionModeListAdapter<T> extends CachedImageCursorAdapter {
+    private static final String TAG = "AbstractActionModeListAdapter";
     protected final Context context;
     protected final LayoutInflater layoutInflater;
     private SparseBooleanArray selectedPositions = new SparseBooleanArray();
@@ -100,7 +102,7 @@ public abstract class AbstractActionModeListAdapter<T> extends CachedImageCursor
      */
     public void selectItem(int position){
         if(position < this.getCount()){
-            Log.v(this.getClass().getName(), String.format(Locale.ENGLISH, "User selected item at position %d.", position));
+            Log.v(AbstractActionModeListAdapter.TAG, String.format(Locale.ENGLISH, "User selected item at position %d.", position));
             this.selectedPositions.put(position, true);
             this.notifyDataSetChanged();
         }

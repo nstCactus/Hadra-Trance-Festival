@@ -17,7 +17,7 @@
     or see <http://www.gnu.org/licenses/>.
  */
 
-package com.zion.htf.widget;
+package com.zion.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;

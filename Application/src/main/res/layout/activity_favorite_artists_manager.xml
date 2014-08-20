@@ -28,5 +28,6 @@
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/favorite_artists_list" />
+        android:id="@+id/favorite_artists_list"
+        android:cacheColorHint="@android:color/transparent" />
 </RelativeLayout>

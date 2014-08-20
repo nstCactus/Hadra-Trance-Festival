@@ -53,6 +53,8 @@ import com.zion.htf.R;
 
 import org.michenux.android.db.sqlite.SQLiteDatabaseHelper;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 public class MapActivity extends ActionBarActivity implements ActionBar.OnNavigationListener, LocationListener{
@@ -109,13 +111,10 @@ public class MapActivity extends ActionBarActivity implements ActionBar.OnNaviga
 
 			// List navigation
 			ActionBar actionBar = this.getSupportActionBar();
-			ArrayAdapter<String> nav = new ArrayAdapter<String>(actionBar.getThemedContext(), android.R.layout.simple_spinner_item, new String[]{
-					this.getString(R.string.action_switchToSatellite),
-					this.getString(R.string.action_switchToTerrain)
-			});
-			nav.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			ArrayAdapter adapter = ArrayAdapter.createFromResource(this, R.array.map_types, android.R.layout.simple_spinner_item);
+			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-			actionBar.setListNavigationCallbacks(nav, this);
+			actionBar.setListNavigationCallbacks(adapter, this);
 			actionBar.setHomeButtonEnabled(true);
 			actionBar.setDisplayHomeAsUpEnabled(true);
 
@@ -160,16 +159,18 @@ public class MapActivity extends ActionBarActivity implements ActionBar.OnNaviga
 
 	@Override
 	public boolean onNavigationItemSelected(int itemPosition, long itemId){
+		boolean ret = true;
 		this.spinnerPosition = itemPosition;
-		switch(itemPosition){
-			case 0:
-				this.map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-				break;
-			default:
-				this.map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-		}
 
-		return true;
+		List<String> mapTypes = Arrays.asList(this.getResources().getStringArray(R.array.map_types));
+		String itemText = mapTypes.get(itemPosition);
+
+		if(itemText.equals(this.getString(R.string.action_switchToHybrid)))         this.map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+		else if(itemText.equals(this.getString(R.string.action_switchToNormal)))    this.map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+		else if(itemText.equals(this.getString(R.string.action_switchToTerrain)))   this.map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+		else ret = false;
+
+		return ret;
 	}
 
 	@Override
@@ -248,7 +249,7 @@ public class MapActivity extends ActionBarActivity implements ActionBar.OnNaviga
 		if(null != this.map){
 			double latitude, longitude;
 			float zoom, bearing, tilt;
-			int mapType;
+			int mapType = savedInstanceState.getInt(MapActivity.GOOGLE_MAP_TYPE);
 
 			CameraPosition.Builder cameraPositionBuilder = new CameraPosition.Builder();
 			if(91l != (latitude = savedInstanceState.getDouble(MapActivity.GOOGLE_MAP_LATITUDE, 91l))
@@ -257,8 +258,14 @@ public class MapActivity extends ActionBarActivity implements ActionBar.OnNaviga
 			if(23 > (zoom = savedInstanceState.getFloat(MapActivity.GOOGLE_MAP_ZOOM_LEVEL, 22))) cameraPositionBuilder.zoom(zoom);
 			if(92 > (tilt = savedInstanceState.getFloat(MapActivity.GOOGLE_MAP_TILT, 91))) cameraPositionBuilder.tilt(tilt);
 			if(362 > (bearing = savedInstanceState.getFloat(MapActivity.GOOGLE_MAP_BEARING))) cameraPositionBuilder.bearing(bearing);
-			if(GoogleMap.MAP_TYPE_SATELLITE == (mapType = savedInstanceState.getInt(MapActivity.GOOGLE_MAP_TYPE))
-			   || GoogleMap.MAP_TYPE_TERRAIN == mapType) this.map.setMapType(mapType);
+			switch(mapType){
+				case GoogleMap.MAP_TYPE_SATELLITE:
+				case GoogleMap.MAP_TYPE_TERRAIN:
+				case GoogleMap.MAP_TYPE_HYBRID:
+				case GoogleMap.MAP_TYPE_NORMAL:
+					this.map.setMapType(mapType);
+					break;
+			}
 
 			this.map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPositionBuilder.build()));
 		}

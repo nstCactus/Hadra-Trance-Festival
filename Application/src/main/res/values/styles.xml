@@ -90,4 +90,17 @@
         <item name="android:textColor">@color/brand_yellow</item>
         <item name="android:textSize">18sp</item>
     </style>
+
+	<style name="MediaController">
+		<item name="android:background">@color/brand_yellow</item>
+	</style>
+
+	<style name="MediaController.Buttons">
+		<item name="android:layout_width">wrap_content</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:padding">@dimen/media_controller_buttons_padding</item>
+		<item name="android:background">@android:color/transparent</item>
+		<item name="android:textOff" />
+		<item name="android:textOn" />
+	</style>
 </resources>

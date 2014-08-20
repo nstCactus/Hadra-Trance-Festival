@@ -46,7 +46,7 @@
             tools:ignore="ContentDescription" />
 
 		<com.mobsandgeeks.ui.TypefaceTextView
-			android:layout_width="fill_parent"
+			android:layout_width="match_parent"
 			android:layout_height="@dimen/artist_photo"
             android:id="@+id/artist_name"
             android:gravity="center|center_horizontal"
@@ -74,7 +74,7 @@
             android:layout_alignTop="@+id/facebook"
             style="@style/artist.label" />
 
-		<com.zion.htf.widget.TintImageButton
+		<com.zion.widget.TintImageButton
             android:id="@+id/facebook"
             android:src="@drawable/social_facebook"
             android:onClick="onClick"
@@ -83,7 +83,7 @@
             android:layout_alignTop="@+id/soundcloud"
             android:layout_toLeftOf="@+id/soundcloud"/>
 
-		<com.zion.htf.widget.TintImageButton
+		<com.zion.widget.TintImageButton
             android:id="@+id/soundcloud"
             android:src="@drawable/social_soundcloud"
             android:onClick="onClick"
@@ -94,7 +94,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"/>
 
-		<com.zion.htf.widget.TintImageButton
+		<com.zion.widget.TintImageButton
             android:id="@+id/website"
             android:src="@drawable/social_www"
             android:onClick="onClick"

@@ -22,7 +22,6 @@ package com.zion.htf.ui;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.database.Cursor;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
@@ -30,6 +29,7 @@ import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -43,6 +43,7 @@ import com.zion.htf.data.MusicSet;
 import com.zion.htf.ui.fragment.LineUpListFragment;
 
 import java.util.Date;
+import java.util.Locale;
 
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
@@ -53,7 +54,6 @@ public class LineUpActivity extends ActionBarActivity implements LoaderManager.L
 
     private ViewPager          viewPager;
 
-    public static int sectionHeaderHeight = 0;
     private LineUpPagerAdapter pagerAdapter;
     private ActionBar actionBar;
 
@@ -99,6 +99,7 @@ public class LineUpActivity extends ActionBarActivity implements LoaderManager.L
 
         this.viewPager.setOnPageChangeListener(pageChangeListener);
 		this.viewPager.setAdapter(this.pagerAdapter);
+	    this.viewPager.setOffscreenPageLimit(2);
 	}
 
 	@Override
@@ -127,9 +128,9 @@ public class LineUpActivity extends ActionBarActivity implements LoaderManager.L
 		return ret;
 	}
 
-    // FIXME: NullPointerException when using this feature when displaying last tab
 	private boolean scrollToCurrentSet(){
 		boolean ret = false;
+		boolean found = false;
 
 		Date now = new Date();
 
@@ -141,31 +142,36 @@ public class LineUpActivity extends ActionBarActivity implements LoaderManager.L
 		}
 		else{
 			ret = true;
-			boolean found = false;
 
 
-			View currentView = this.viewPager.getChildAt(this.viewPager.getCurrentItem());
+			LineUpListFragment currentFragment = this.pagerAdapter.getCurrentFragment();
+			View currentView = currentFragment.getView();
+			if(null != currentView){
+				StickyListHeadersListView listView = (StickyListHeadersListView)currentView.findViewById(R.id.line_up_list);
 
-            StickyListHeadersListView listView = (StickyListHeadersListView)currentView.findViewById(R.id.line_up_list);// FIXME: occasional NPE here
+				int position = -1;
+				int itemCount = listView.getCount();
 
-			int i = -1;
-
-			while(!found && ++i < listView.getCount()){
-				Cursor cursor = (Cursor)listView.getItemAtPosition(i);
-                if(new Date(cursor.getLong(MusicSet.COLUMN_BEGIN_DATE) * 1000).after(now)){
-                    found = true;
-
-                    if(11 <= Build.VERSION.SDK_INT){
-                        listView.smoothScrollToPositionFromTop(i, LineUpActivity.sectionHeaderHeight);
-                    }
-                    else{
-                        listView.setSelectionFromTop(i, LineUpActivity.sectionHeaderHeight);
-                    }
-                }
+				while(!found && ++position < itemCount){
+					Cursor cursor = (Cursor)listView.getItemAtPosition(position);
+					if(new Date(cursor.getLong(MusicSet.COLUMN_END_DATE) * 1000).after(now)){
+						found = true;
+						listView.smoothScrollToPosition(position);
+						Log.v("LineUpActivity", String.format(Locale.ENGLISH, "Current set is %s, at pos %d", cursor.getString(MusicSet.COLUMN_ARTIST_NAME), position));
+					}
+				}
+				if(!found){
+					// Jump to the last set
+					listView.smoothScrollToPosition(itemCount - 1);
+				}
+			}
+			else{
+				throw new RuntimeException("Cannot get the currently displayed fragment.");
+				// Report through piwik
 			}
 		}
 
-		return ret;
+		return ret && found;
 	}
 
 	private void displayErrorMessage(int cause){

@@ -70,7 +70,7 @@ public class ArtistDetailsFragment extends Fragment implements View.OnClickListe
         try{
             this.artistFavoriteStatusChangedListener = (ArtistDetailsFragment.OnArtistFavoriteStatusChangedListener)activity;
         }
-        catch (ClassCastException e){
+        catch(ClassCastException e){
             throw new ClassCastException(activity.toString() + " must implement OnArticleSelectedListener");
         }
     }

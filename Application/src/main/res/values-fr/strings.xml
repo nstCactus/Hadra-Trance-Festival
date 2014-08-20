@@ -20,11 +20,6 @@
 -->
 
 <resources>
-	<string name="title_activity_map">Plan</string>
-
-	<string name="error_failed_fetching_poi">Impossible de récupérer la listes des emplacements</string>
-
-	<string name="action_directions">Itinéraire</string>
 	<string name="action_onStage">À l\'écoute</string>
     <string name="action_addAlarm">Ajouter une alarme</string>
     <string name="action_editAlarm">Modifier une alarme</string>
