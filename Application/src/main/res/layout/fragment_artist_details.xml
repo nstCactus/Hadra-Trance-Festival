@@ -69,27 +69,29 @@
             android:layout_height="wrap_content"
             android:id="@+id/label"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             tools:text="TR / Epic Tribe/ BMMS/Trimurti"
             android:layout_toLeftOf="@+id/facebook"
+            android:layout_toStartOf="@+id/facebook"
             android:layout_alignTop="@+id/facebook"
             style="@style/artist.label" />
 
 		<com.zion.widget.TintImageButton
             android:id="@+id/facebook"
             android:src="@drawable/social_facebook"
-            android:onClick="onClick"
             style="@style/imageButtons"
             android:layout_gravity="center_vertical"
             android:layout_alignTop="@+id/soundcloud"
-            android:layout_toLeftOf="@+id/soundcloud"/>
+            android:layout_toLeftOf="@+id/soundcloud"
+            android:layout_toStartOf="@+id/soundcloud" />
 
 		<com.zion.widget.TintImageButton
             android:id="@+id/soundcloud"
             android:src="@drawable/social_soundcloud"
-            android:onClick="onClick"
             style="@style/imageButtons"
             android:layout_gravity="center_vertical"
             android:layout_alignTop="@+id/website"
+            android:layout_toStartOf="@+id/website"
             android:layout_toLeftOf="@+id/website"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"/>
@@ -97,11 +99,10 @@
 		<com.zion.widget.TintImageButton
             android:id="@+id/website"
             android:src="@drawable/social_www"
-            android:onClick="onClick"
             style="@style/imageButtons"
             android:layout_gravity="center_vertical"
-            android:layout_alignParentLeft="false"
             android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true" />
 	    </RelativeLayout>
     </LinearLayout>

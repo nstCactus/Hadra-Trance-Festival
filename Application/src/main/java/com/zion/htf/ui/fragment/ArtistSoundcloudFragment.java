@@ -21,6 +21,7 @@
 
 package com.zion.htf.ui.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -29,7 +30,6 @@ import android.content.ServiceConnection;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -57,6 +57,7 @@ import com.zion.htf.data.Artist;
 import com.zion.htf.data.SoundcloudTrack;
 import com.zion.htf.exception.MissingArgumentException;
 import com.zion.htf.ui.AbstractServiceProxyActivity;
+import com.zion.music.ServiceUtils;
 import com.zion.util.StringUtils;
 
 import org.apache.http.HttpResponse;
@@ -95,6 +96,7 @@ public class ArtistSoundcloudFragment extends Fragment implements AbstractServic
 	private int currentTrackDuration = 0;
 
 	private boolean fragmentReady = false;
+	private boolean serviceBound = false;
 
 	/** Indicates whether the user is currently using the seekbar */
 	private boolean userSeeking = false;
@@ -163,8 +165,21 @@ public class ArtistSoundcloudFragment extends Fragment implements AbstractServic
 	@Override
 	public void onResume(){
 		super.onResume();
-		if(this.fragmentReady){
+		Log.v("ArtistSoundcloudFragment", "fragment resumed");
+		ServiceUtils.notifyForegroundStateChanged(this.getActivity(), true);
+		if(this.fragmentReady && !this.serviceBound){
 			this.requestServiceBond(this.getActivity());
+		}
+	}
+
+	@Override
+	public void onPause(){
+		super.onPause();
+		Log.v("ArtistSoundcloudFragment", "fragment paused");
+		ServiceUtils.notifyForegroundStateChanged(this.getActivity(), false);
+		if(this.serviceBound){
+			this.service.unregisterClient(this);
+			this.requestServiceUnbind(this.getActivity());
 		}
 	}
 
@@ -229,9 +244,10 @@ public class ArtistSoundcloudFragment extends Fragment implements AbstractServic
 	// BEGIN AbstractServiceProxyActivity.ServiceProxyObserver callbacks //
 	///////////////////////////////////////////////////////////////////////
 	@Override
-	public void onServiceRegistered(IBinder serviceBinder){
+	public void onServiceConnectedToProxy(MediaPlayerService service){
+		this.serviceBound = true;
 		Log.v("ArtistSoundcloudFragment", "Got a reference to the service!");
-		this.service = ((MediaPlayerService.LocalBinder)serviceBinder).getService();
+		this.service = service;
 		this.service.registerClient(this);
 
 		// Synchronise controls' state with the service
@@ -252,13 +268,14 @@ public class ArtistSoundcloudFragment extends Fragment implements AbstractServic
 	}
 
 	@Override
-	public void onServiceUnregistered(ComponentName name){
+	public void onServiceConnectionLost(ComponentName name){
 		Log.v("ArtistSoundcloudFragment", "Lost the reference to the service :-(");
+		this.serviceBound = false;
 		this.service = null;
 	}
-	///////////////////////////////////////////////////////////////////////
-	// BEGIN AbstractServiceProxyActivity.ServiceProxyObserver callbacks //
-	///////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////
+	// END AbstractServiceProxyActivity.ServiceProxyObserver callbacks //
+	/////////////////////////////////////////////////////////////////////
 
 
 	///////////////////////////////////////////////
@@ -325,7 +342,7 @@ public class ArtistSoundcloudFragment extends Fragment implements AbstractServic
 				lruCache = DiskLruCache.open(this.applicationContext.getFilesDir(), VersionUtils.getVersionCode(this.applicationContext), 1, 5 * 1024 * 1024);
 			}
 			catch(IOException e){
-				Log.e(TAG, "Error opening the DiskLruCache.");
+				Log.e(ArtistSoundcloudFragment.RetrieveTracksTask.TAG, "Error opening the DiskLruCache.");
 				if(BuildConfig.DEBUG) e.printStackTrace();
 			}
 
@@ -343,7 +360,7 @@ public class ArtistSoundcloudFragment extends Fragment implements AbstractServic
 		            }
 		            catch(IOException e){
 			            if(BuildConfig.DEBUG) e.printStackTrace();
-			            Log.e(TAG, "Cache hit but unreadable.");
+			            Log.e(ArtistSoundcloudFragment.RetrieveTracksTask.TAG, "Cache hit but unreadable.");
 		            }
 	            }
 
@@ -355,15 +372,15 @@ public class ArtistSoundcloudFragment extends Fragment implements AbstractServic
 				            DiskLruCache.Editor editor = lruCache.edit(cacheKey);
 				            editor.set(0, jsonResponse);
 				            editor.commit();
-				            Log.w(TAG, "Cache not hit, but response cached successfully.");
+				            Log.w(ArtistSoundcloudFragment.RetrieveTracksTask.TAG, "Cache not hit, but response cached successfully.");
 			            }
 			            catch(IOException e){
 				            if(BuildConfig.DEBUG) e.printStackTrace();
-				            Log.e(TAG, "Cache not hit and unable to cache response.");
+				            Log.e(ArtistSoundcloudFragment.RetrieveTracksTask.TAG, "Cache not hit and unable to cache response.");
 			            }
 		            }
 		            else{
-			            Log.e(TAG, "Cache unavailable.");
+			            Log.e(ArtistSoundcloudFragment.RetrieveTracksTask.TAG, "Cache unavailable.");
 		            }
 	            }
 
@@ -431,11 +448,12 @@ public class ArtistSoundcloudFragment extends Fragment implements AbstractServic
 		intent.putExtra(MediaPlayerService.EXTRA_TRACKS, tracks);
 		intent.setAction(MediaPlayerService.ACTION_QUEUE_TRACKS);
 		intent.putExtra(MediaPlayerService.EXTRA_ARTIST_ID, this.artist.getId());
+		intent.putExtra(MediaPlayerService.EXTRA_ARTIST_PHOTO, this.artist.getPictureResourceId());
 		activity.startService(intent);
 	}
 
 	/**
-	 * Requests the activity to bind to the service, to allow easier communication with the service
+	 * Requests the activity to bind to the service, to allow easier communication with the service.
 	 * @param activity the current fragment's activity, acting as a proxy to the service
 	 */
 	private void requestServiceBond(Activity activity){
@@ -444,6 +462,22 @@ public class ArtistSoundcloudFragment extends Fragment implements AbstractServic
 		activity.bindService(new Intent(activity, MediaPlayerService.class), serviceProxy.getServiceConnection(), Context.BIND_AUTO_CREATE);
 	}
 
+	/**
+	 * Requests the activity to unbind from the service.
+	 * @param activity the current fragment's activity, acting as a proxy to the service
+	 */
+	private void requestServiceUnbind(Activity activity){
+		ArtistSoundcloudFragment.MediaPlayerServiceProxy serviceProxy = (ArtistSoundcloudFragment.MediaPlayerServiceProxy)activity;
+		AbstractServiceProxyActivity serviceProxyActivity = (AbstractServiceProxyActivity)activity;
+		if(serviceProxyActivity.isServiceBound()){
+			activity.unbindService(serviceProxy.getServiceConnection());
+		}
+		else{
+			Log.w("ArtistSoundcloudFragment", "Useless call");
+		}
+	}
+
+	@SuppressLint("NewApi")
 	private void setSeekBarIndeterminate(boolean indeterminate){
 		this.seekBar.setIndeterminate(indeterminate);
 		if(16 <= Build.VERSION.SDK_INT) this.seekBar.getThumb().mutate().setAlpha(indeterminate ? 0x00 : 0xFF);

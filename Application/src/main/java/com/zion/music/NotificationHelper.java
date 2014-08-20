@@ -29,7 +29,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.zion.htf.R;
@@ -40,7 +39,7 @@ public class NotificationHelper{
 	/**
 	 * Notification ID
 	 */
-	private static final int NOTIFICATION_ID = 524;
+	private static final int NOTIFICATION_ID = 1;
 
 	private static final int ACTION_TOGGLE_PLAY_PAUSE   = 1;
 	private static final int ACTION_NEXT_TRACK          = 2;
@@ -80,36 +79,36 @@ public class NotificationHelper{
 	/**
 	 * Call this to build the {@link Notification}.
 	 */
-	public void buildNotification(final String albumName, final String artistName, final String trackName, final Long albumId, final Bitmap albumArt, final boolean isPlaying) {
-
-		// Default notfication layout
+	public void buildNotification(final String artistName, final String trackName, final int artistId, final Bitmap albumArt, final boolean isPlaying){
+		// Default notification layout
 		this.notificationTemplate = new RemoteViews(this.service.getPackageName(), R.layout.notification_mediaplayer);
 
 		// Set up the content view
-		initCollapsedLayout(trackName, artistName, albumArt);
+		this.initCollapsedLayout(trackName, artistName, albumArt);
 
 		// Notification Builder
 		this.notification = new NotificationCompat.Builder(this.service)
 				.setSmallIcon(R.drawable.ic_stat_notify_app_icon)
-				.setContentIntent(this.getPendingIntent())
+				.setContentIntent(this.getPendingIntent(artistId))
 				.setPriority(Notification.PRIORITY_DEFAULT)
-				.setContent(notificationTemplate)
+				.setContent(this.notificationTemplate)
 				.setAutoCancel(true)
 				.build();
 
 		// Control playback from the notification
-		initPlaybackActions(isPlaying);
+		this.initPlaybackActions(isPlaying);
 		if(16 <= Build.VERSION.SDK_INT){
 			// Expanded notification style
-			this.expandedView = new RemoteViews(service.getPackageName(), R.layout.notification_template_expanded);
+			this.expandedView = new RemoteViews(this.service.getPackageName(), R.layout.notification_template_expanded);
 			this.notification.bigContentView = this.expandedView;
 
 			// Control playback from the expanded notification
-			initExpandedPlaybackActions(isPlaying);
+			this.initExpandedPlaybackActions(isPlaying);
 
 			// Set up the expanded content view
-			initExpandedLayout(trackName, albumName, artistName, albumArt);
+			this.initExpandedLayout(trackName, artistName, albumArt);
 		}
+//		this.service.stopForeground(false);
 		this.service.startForeground(NotificationHelper.NOTIFICATION_ID, this.notification);
 	}
 
@@ -118,18 +117,36 @@ public class NotificationHelper{
 	 */
 	public void killNotification() {
 		this.service.stopForeground(true);
-		this.notificationManager.cancel(NotificationHelper.NOTIFICATION_ID);
+//		this.notificationManager.cancel(NotificationHelper.NOTIFICATION_ID);
 		this.notification = null;
 	}
 
 	/**
-	 * Open to the now playing screen
+	 * Changes the playback controls in and out of a paused state
+	 *
+	 * @param isPlaying True if music is playing, false otherwise
 	 */
-	private PendingIntent getPendingIntent() {
+	public void updatePlayState(final boolean isPlaying) {
+		if(null == this.notification || null == this.notificationManager){
+			return;
+		}
+		if(null != this.notificationTemplate){
+			this.notificationTemplate.setImageViewResource(R.id.notification_toggle_play_pause, isPlaying ? R.drawable.ic_media_pause : R.drawable.ic_media_play);
+		}
+
+		if(16 <= Build.VERSION.SDK_INT && null != this.expandedView){
+			this.expandedView.setImageViewResource(R.id.notification_expanded_toggle_play_pause, isPlaying ? R.drawable.ic_media_pause : R.drawable.ic_media_play);
+		}
+		this.notificationManager.notify(NotificationHelper.NOTIFICATION_ID, this.notification);
+	}
+
+	/**
+	 * Open to the corresponding ArtistDetailsFragment
+	 */
+	private PendingIntent getPendingIntent(int artistId) {
 		Intent intent = new Intent(this.service, ArtistDetailsActivity.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-		intent.putExtra(ArtistDetailsActivity.EXTRA_ARTIST_ID, service.getCurrentArtistId());
-		Log.v("NotificationHelper", String.format("Artist_id = %d", service.getCurrentArtistId()));
+		intent.putExtra(ArtistDetailsActivity.EXTRA_ARTIST_ID, artistId);
 		return PendingIntent.getActivity(this.service, 0, intent, 0);
 	}
 
@@ -162,10 +179,9 @@ public class NotificationHelper{
 		this.notificationTemplate.setImageViewBitmap(R.id.notification_base_image, albumArt);
 	}
 
-	private void initExpandedLayout(final String trackName, final String albumName, final String artistName, final Bitmap albumArt){
+	private void initExpandedLayout(final String trackName, final String artistName, final Bitmap albumArt){
 		this.expandedView.setTextViewText(R.id.notification_expanded_base_line_one, trackName);
-		this.expandedView.setTextViewText(R.id.notification_expanded_base_line_two, albumName);
-		this.expandedView.setTextViewText(R.id.notification_expanded_base_line_three, artistName);
+		this.expandedView.setTextViewText(R.id.notification_expanded_base_line_two, artistName);
 		this.expandedView.setImageViewBitmap(R.id.notification_expanded_base_image, albumArt);
 	}
 

@@ -62,13 +62,13 @@ public class ArtistDetailsFragment extends Fragment implements View.OnClickListe
     private Artist artist;
     private int setId;
     private SavedAlarm alarm = null;
-    private ArtistDetailsFragment.OnArtistFavoriteStatusChangedListener artistFavoriteStatusChangedListener;
+    private OnArtistFavoriteStatusChangedListener artistFavoriteStatusChangedListener;
 
     @Override
     public void onAttach(Activity activity){
         super.onAttach(activity);
         try{
-            this.artistFavoriteStatusChangedListener = (ArtistDetailsFragment.OnArtistFavoriteStatusChangedListener)activity;
+            this.artistFavoriteStatusChangedListener = (OnArtistFavoriteStatusChangedListener)activity;
         }
         catch(ClassCastException e){
             throw new ClassCastException(activity.toString() + " must implement OnArticleSelectedListener");
@@ -135,17 +135,20 @@ public class ArtistDetailsFragment extends Fragment implements View.OnClickListe
         // Handle website button
         ImageButton website_button = (ImageButton)view.findViewById(R.id.website);
         this.website_url = this.artist.getWebsite();
-        if(0 == this.website_url.length()) this.disable(website_button);
+        if(0 == this.website_url.length())  this.disable(website_button);
+	    else                                website_button.setOnClickListener(this);
 
         // Handle facebook button
         ImageButton facebook_button = (ImageButton)view.findViewById(R.id.facebook);
         this.facebook_url = this.artist.getFacebook();
         if(0 == this.facebook_url.length()) this.disable(facebook_button);
+	    else                                facebook_button.setOnClickListener(this);
 
         // Handle soundcloud button
         ImageButton soundcloud_button = (ImageButton)view.findViewById(R.id.soundcloud);
         this.soundcloud_url = this.artist.getSoundcloud();
-        if(0 == this.soundcloud_url.length()) this.disable(soundcloud_button);
+        if(0 == this.soundcloud_url.length())   this.disable(soundcloud_button);
+	    else                                    soundcloud_button.setOnClickListener(this);
 
         // Display bio
         TextView bio_field = (TextView)view.findViewById(R.id.bio);

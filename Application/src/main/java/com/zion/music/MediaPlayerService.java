@@ -40,11 +40,10 @@ import com.zion.htf.BuildConfig;
 import com.zion.htf.R;
 import com.zion.htf.data.SoundcloudTrack;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Locale;
+
+import gov.nasa.arc.mct.util.WeakHashSet;
 
 import static com.zion.music.MediaPlayerService.State.End;
 import static com.zion.music.MediaPlayerService.State.Idle;
@@ -58,17 +57,12 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 	public static final String ACTION_NEXT_TRACK        = "com.zion.music.MediaPlayerService.next_track";
 	public static final String ACTION_PREVIOUS_TRACK    = "com.zion.music.MediaPlayerService.previous_track";
 	public static final String ACTION_STOP              = "com.zion.music.MediaPlayerService.stop";
+	public static final String ACTION_FOREGROUND_STATE_CHANGED = "com.zion.music.MediaPlayerService.foreground_state_changed";
 
 	public static final String EXTRA_TRACKS             = "com.zion.htf.extra.tracks";
 	public static final String EXTRA_ARTIST_ID          = "com.zion.htf.extra.artist_id";
-
-	private static final int NOTIFICATION_ID = 193;
-
-//	/** The system NotificationManager service */
-//	private static NotificationManager notificationManager;
-//
-//	/** A notification builder used to generate the sticky notification displayed during music playback */
-//	private NotificationCompat.Builder notificationBuilder;
+	public static final String EXTRA_ARTIST_PHOTO       = "com.zion.htf.extra.artist_photo";
+	public static final String EXTRA_NOW_IN_FOREGROUND  = "com.zion.htf.extra.now_in_foreground";
 
 	/** The current internal state */
 	private MediaPlayerService.State state = Idle;
@@ -92,7 +86,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 	private boolean repeat = false;
 
 	/** Collection of clients to be notified of various status changes */
-	private final HashSet<WeakReference<MediaPlayerService.Client>> clients = new HashSet<WeakReference<MediaPlayerService.Client>>();
+	private final WeakHashSet<Client> clients = new WeakHashSet<Client>();
 
 	/** Database identifier of the artist (used to open the correct Artist Details when notification clicked) */
 	private int artist_id;
@@ -109,10 +103,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 	private final AudioManager.OnAudioFocusChangeListener audioFocusChangeListener = new OnAudioFocusChangeListener();
 	private NotificationHelper notificationHelper;
 	private Bitmap artistPhoto;
-
-	public int getCurrentArtistId(){
-		return this.artist_id;
-	}
+	private boolean anyActivityInForeground = false;
 
 	public enum State{
 		Idle,
@@ -125,9 +116,6 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 
 	@Override
 	public void onCreate(){
-		Log.v("MediaPlayerService", "onCreate() called");
-
-//		MediaPlayerService.notificationManager = (NotificationManager)this.getSystemService(Service.NOTIFICATION_SERVICE);
 		this.audioManager = (AudioManager)this.getSystemService(Context.AUDIO_SERVICE);
 		this.notificationHelper = new NotificationHelper(this);
 
@@ -137,14 +125,14 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId){
 		if(null != intent){
-			Log.v("MediaPlayerService", String.format(Locale.ENGLISH, "onStartCommand() called with ACTION = %s", intent.getAction()));
-
 			String action = intent.getAction();
 			if(MediaPlayerService.ACTION_QUEUE_TRACKS.equals(action)){
-				if(intent.hasExtra(MediaPlayerService.EXTRA_TRACKS)) this.tracks = intent.getParcelableArrayListExtra(MediaPlayerService.EXTRA_TRACKS);
 				if(!intent.hasExtra(MediaPlayerService.EXTRA_ARTIST_ID)) throw new RuntimeException(String.format(Locale.ENGLISH, "The intent must contain a %s int extra. Please provide one.", MediaPlayerService.EXTRA_ARTIST_ID));
+				if(!intent.hasExtra(MediaPlayerService.EXTRA_ARTIST_PHOTO)) throw new RuntimeException(String.format(Locale.ENGLISH, "The intent must contain a %s int extra. Please provide one.", MediaPlayerService.EXTRA_ARTIST_PHOTO));
+
+				if(intent.hasExtra(MediaPlayerService.EXTRA_TRACKS)) this.tracks = intent.getParcelableArrayListExtra(MediaPlayerService.EXTRA_TRACKS);
 				if(0 == this.artist_id) this.artist_id = intent.getIntExtra(MediaPlayerService.EXTRA_ARTIST_ID, 0);
-				this.artistPhoto = BitmapFactory.decodeResource(this.getResources(), R.drawable.no_image);
+				this.artistPhoto = BitmapFactory.decodeResource(this.getResources(), intent.getIntExtra(MediaPlayerService.EXTRA_ARTIST_PHOTO, R.drawable.no_image_wrapper));
 			}
 			else if(MediaPlayerService.ACTION_TOGGLE_PLAY_PAUSE.equals(action)){
 				if(this.isPlaying()){
@@ -161,8 +149,11 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 				this.playPrev();
 			}
 			else if(MediaPlayerService.ACTION_STOP.equals(action)){
-				this.notificationHelper.killNotification();
 				this.stopPlayback();
+			}
+			else if(MediaPlayerService.ACTION_FOREGROUND_STATE_CHANGED.equals(action)){
+				this.anyActivityInForeground = intent.getBooleanExtra(MediaPlayerService.ACTION_FOREGROUND_STATE_CHANGED, false);
+				this.updateNotification();
 			}
 		}
 		else{
@@ -182,23 +173,22 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 
 	@Override
 	public IBinder onBind(Intent intent){
-		Log.v("MediaPlayerService", "onBind() called");
-		this.notificationHelper.killNotification();
 		return this.binder;
 	}
 
 	@Override
 	public boolean onUnbind(Intent intent){
-		boolean ret = false;
 		switch(this.state){
 			case Playing:
 			case Paused:
 			case Preparing:
-				this.notificationHelper.buildNotification("", this.getCurrentTrack().getTitle(), this.getCurrentTrack().getArtist(), 0l, this.artistPhoto, this.isPlaying());
+				// set the notification
+				// launch itself
+
 				break;
 		}
 
-		return ret;
+		return super.onUnbind(intent);
 	}
 
 	private void changeState(MediaPlayerService.State state){
@@ -206,12 +196,17 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 			this.playerProgressHandler.removeCallbacks(this.playerProgressRunnable); // Ensure that changing state will not make the Runnable run more than once every second
 			if(state.equals(Playing)){
 				if(null != this.playerProgressRunnable){
-					Log.v("MediaPlayerService", "First UI update, non-delayed");
 					this.playerProgressHandler.post(this.playerProgressRunnable);
 				}
 			}
-			Log.v("MediaPlayerService", String.format(Locale.ENGLISH, "State change from %s to %s", this.state, state));
 			this.state = state;
+
+			if(state.equals(State.Stopped)){
+				this.notificationHelper.killNotification();
+			}
+			else{
+				this.updateNotification();
+			}
 			this.notifyStateChanged();
 		}
 	}
@@ -245,17 +240,6 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 		}
 	}
 
-	private SoundcloudTrack getCurrentTrack(){
-		SoundcloudTrack currentTrack = null;
-		if(null != this.tracks && 0 < this.tracks.size()) currentTrack = this.tracks.get(this.playlistPosition);
-		return currentTrack;
-	}
-
-
-	public void setList(ArrayList<SoundcloudTrack> tracks){
-		this.tracks = tracks;
-	}
-
 	/**
 	 * Sets the currently playing track to the given {@code position}.
 	 * If the given {@code position} matches a track in the {@link MediaPlayerService#tracks playlist},
@@ -266,7 +250,6 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 	 * @param position the position of the track in the playlist (must be between -1 and {@code this.tracks#size()}, both exclusive)
 	 */
 	private void setTrack(int position){
-		Log.v("MediaPlayerService", String.format(Locale.ENGLISH, "COMMAND: setTrack(%s)", position));
 		if(0 > position || position >= this.tracks.size()) throw new IllegalArgumentException("position must be a valid index the tracks Collection.");
 		this.playlistPosition = position;
 		if(null == this.player) this.initPlayer();
@@ -287,14 +270,10 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 	public void startPlayback(){
 		if(this.requestAudioFocus()){
 			if(null == this.player) this.initPlayer();
-			Log.v("MediaPlayerService", String.format(Locale.ENGLISH, "COMMAND: startPlayback()"));
+
 			if(MediaPlayerService.State.Paused.equals(this.state)){
 				this.changeState(Playing);
 				this.player.start();
-				this.notificationHelper.buildNotification("", this.getCurrentTrack().getTitle(), this.getCurrentTrack().getArtist(), 0l, this.artistPhoto, this.isPlaying());
-
-
-				// Update notification text, if any
 			}
 			else{
 				this.preparePlayback();
@@ -309,7 +288,6 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 	 * @param position the position of the track in the playlist
 	 */
 	public void startPlayback(int position){
-		Log.v("MediaPlayerService", String.format(Locale.ENGLISH, "COMMAND: startPlayback(%s)", position));
 		if(this.isPlaying()) this.player.stop();
 		this.setTrack(position);
 		this.startPlayback();
@@ -320,12 +298,10 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 	 * The {@link MediaPlayerService#player}'s state is set to {@link MediaPlayerService.State#Paused}
 	 */
 	public void pausePlayback(){
-		Log.v("MediaPlayerService", String.format(Locale.ENGLISH, "COMMAND: pausePlayback() while in state %s", this.state));
 		if(this.state.equals(Playing)){
 			this.player.pause();
 			this.abandonAudioFocus();
 			this.changeState(MediaPlayerService.State.Paused);
-			this.notificationHelper.buildNotification("", this.getCurrentTrack().getTitle(), this.getCurrentTrack().getArtist(), 0l, this.artistPhoto, this.isPlaying());
 		}
 	}
 
@@ -333,12 +309,13 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 	 * Stops music playback.
 	 */
 	public void stopPlayback(){
-		Log.v("MediaPlayerService", String.format(Locale.ENGLISH, "COMMAND: stopPlayback()"));
-		this.player.stop();
-		this.player.release();
-		this.player = null;
-		this.changeState(Stopped);
-		this.abandonAudioFocus();
+		if(null != this.player){
+			this.player.stop();
+			this.player.release();
+			this.player = null;
+			this.changeState(Stopped);
+			this.abandonAudioFocus();
+		}
 	}
 
 	/**
@@ -348,7 +325,6 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 	 * {@link MediaPlayerService#repeat} mode is activated (In this case the first song is played).
 	 */
 	public void playNext(){
-		Log.v("MediaPlayerService", String.format(Locale.ENGLISH, "COMMAND: playNext(). Current playlistPosition = %s", this.playlistPosition));
 		if(this.isPlaying() || this.isPaused()){
 			int position = this.playlistPosition + 1;
 
@@ -367,8 +343,9 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 
 			if(!Stopped.equals(this.state)){
 				this.preparePlayback();
-				this.updateNotification(this.getCurrentTrack().getTitle());
 			}
+
+			this.updateNotification();
 		}
 	}
 	/**
@@ -378,7 +355,6 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 	 * {@link MediaPlayerService#repeat} mode is activated (In this case the last song is played).
 	 */
 	public void playPrev(){
-		Log.v("MediaPlayerService", String.format(Locale.ENGLISH, "COMMAND: playPrev(). Current playlistPosition = %s", this.playlistPosition));
 		if(this.isPlaying() || this.isPaused()){
 			int position = this.playlistPosition - 1;
 
@@ -397,8 +373,9 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 
 			if(!Stopped.equals(this.state)){
 				this.preparePlayback();
-				this.updateNotification(this.getCurrentTrack().getTitle());
 			}
+
+			this.updateNotification();
 		}
 	}
 
@@ -408,7 +385,6 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 	 * @param offset whether to turn repeat on or off.
 	 */
 	public void seekTo(int offset){
-		Log.v("MediaPlayerService", String.format(Locale.ENGLISH, "COMMAND: seekTo(%s).", offset));
 		this.player.seekTo(offset);
 	}
 
@@ -435,7 +411,6 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 	 */
 
 	public void setShuffle(boolean activate){
-		Log.v("MediaPlayerService", String.format(Locale.ENGLISH, "COMMAND: setShuffle(%b)", activate));
 		this.shuffle = activate;
 	}
 
@@ -445,7 +420,6 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 	 * @param activate whether to turn repeat on or off.
 	 */
 	public void setRepeat(boolean activate){
-		Log.v("MediaPlayerService", String.format(Locale.ENGLISH, "COMMAND: setRepeat(%b)", activate));
 		this.repeat = activate;
 	}
 
@@ -510,7 +484,6 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 		if(AudioManager.AUDIOFOCUS_REQUEST_GRANTED != this.audioManager.requestAudioFocus(this.audioFocusChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN)){
 			ret = false;
 			Toast.makeText(this.getApplicationContext(), R.string.error_audiofocus_request_failed, Toast.LENGTH_SHORT).show();
-			Log.e("MediaPlayerService", "requestAudioFocus() failed");
 		}
 		return ret;
 	}
@@ -519,41 +492,12 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 		boolean ret = true;
 		if(AudioManager.AUDIOFOCUS_REQUEST_GRANTED != this.audioManager.abandonAudioFocus(this.audioFocusChangeListener)){
 			ret = false;
-			Log.e("MediaPlayerService", "abandonAudioFocus() failed");
 		}
 		return ret;
 	}
 	////////////////////
 	// END AudioFocus //
 	////////////////////
-
-
-	/////////////////////////
-	// BEGIN Notifications //
-	/////////////////////////
-//	private Notification getNotification(){
-//		Intent intent = new Intent(this.getApplicationContext(), ArtistDetailsActivity.class);
-//		intent.putExtra(MediaPlayerService.EXTRA_ARTIST_ID, this.artist_id);
-//		PendingIntent pi = PendingIntent.getActivity(this.getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-//		NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this.getApplicationContext());
-//		notificationBuilder.setSmallIcon(R.drawable.ic_stat_notify_app_icon)
-//		                   .setContentText(this.getCurrentTrack().getTitle())
-//		                   .setContentIntent(pi)
-//		                   .setOngoing(true);
-//
-//		this.notificationBuilder = notificationBuilder;
-//
-//		return this.notificationBuilder.build();
-//	}
-
-	/** Updates the notification. */
-	private void updateNotification(String text){
-//		this.notificationBuilder.setContentText(text);
-//		MediaPlayerService.notificationManager.notify(MediaPlayerService.NOTIFICATION_ID, this.notificationBuilder.build());
-	}
-	///////////////////////
-	// END Notifications //
-	///////////////////////
 
 
 	/////////////////////////////////
@@ -572,7 +516,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 
 	@Override
 	public boolean onError(MediaPlayer mp, int what, int extra){
-		Log.v("MediaPlayerService", String.format("Error manipulation MediaPlayer (%d, %d)", what, extra));
+		if(BuildConfig.DEBUG) Log.v("MediaPlayerService", String.format("Error manipulation MediaPlayer (%d, %d)", what, extra));
 		switch(what){
 			case MediaPlayer.MEDIA_ERROR_IO:
 				Toast.makeText(this, R.string.error_player_IO, Toast.LENGTH_SHORT).show();
@@ -593,47 +537,32 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 	// END MediaPlayer callbacks //
 	///////////////////////////////
 
+
+	//////////////////////
+	// BEGIN Observable //
+	//////////////////////
 	/**
 	 * Register a new client to receive updates about the service status
 	 * @param client the client to register
 	 */
-	public void registerClient(MediaPlayerService.Client client){
-		// Check if previously registered clients are still alive
-		Iterator<WeakReference<MediaPlayerService.Client>> iterator = this.clients.iterator();
-		while(iterator.hasNext()){
-			if(null == iterator.next().get()){
-				Log.i("MediaPlayerService#registerClient", "Removed a dead client.");
-				iterator.remove();
-			}
-		}
-
-		Log.v("MediaPlayerService", "Got a new client " + client.toString());
-		this.clients.add(new WeakReference<MediaPlayerService.Client>(client));
+	public void registerClient(Client client){
+		this.clients.add(client);
 	}
 
 	/**
 	 * Unregister a new client
 	 * @param client the client to unregister
 	 */
-	public void unregisterClient(MediaPlayerService.Client client){
-		this.clients.remove(new WeakReference<MediaPlayerService.Client>(client));
+	public void unregisterClient(Client client){
+		this.clients.remove(client);
 	}
 
 	/**
 	 * Notify clients that the internal state of the service has changed
 	 */
 	private void notifyStateChanged(){
-		Iterator<WeakReference<MediaPlayerService.Client>> iterator = this.clients.iterator();
-		while(iterator.hasNext()){
-			WeakReference<MediaPlayerService.Client> clientReference = iterator.next();
-
-			try{
-				clientReference.get().onPlayerStateChanged(this.state);
-			}
-			catch(NullPointerException npe){
-				iterator.remove();
-				Log.w("MediaPlayerService#notifyStateChanged", "Removed client no longer available.");
-			}
+		for(Client client : this.clients){
+			client.onPlayerStateChanged(this.state);
 		}
 	}
 
@@ -643,17 +572,8 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 	 * @param duration the currently played track duration, in milliseconds
 	 */
 	private void notifyProgressChanged(int progress, int duration){
-		Iterator<WeakReference<MediaPlayerService.Client>> iterator = this.clients.iterator();
-		while(iterator.hasNext()){
-			WeakReference<MediaPlayerService.Client> clientReference = iterator.next();
-
-			try{
-				clientReference.get().onPlayerProgressChanged(progress, duration);
-			}
-			catch(NullPointerException npe){
-				iterator.remove();
-				Log.w("MediaPlayerService#notifyProgressChanged", "Removed client no longer available.");
-			}
+		for(Client client : this.clients){
+			client.onPlayerProgressChanged(progress, duration);
 		}
 	}
 
@@ -662,19 +582,13 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 	 * @param bufferedPercentage the percentage of the track that is currently buffered
 	 */
 	private void notifyBufferProgressChanged(int bufferedPercentage){
-		Iterator<WeakReference<MediaPlayerService.Client>> iterator = this.clients.iterator();
-		while(iterator.hasNext()){
-			WeakReference<MediaPlayerService.Client> clientReference = iterator.next();
-
-			try{
-				clientReference.get().onBufferProgressChanged(bufferedPercentage);
-			}
-			catch(NullPointerException npe){
-				iterator.remove();
-				Log.w("MediaPlayerService#notifyBufferProgressChanged", "Removed client no longer available.");
-			}
+		for(Client client : this.clients){
+			client.onBufferProgressChanged(bufferedPercentage);
 		}
 	}
+	////////////////////
+	// END Observable //
+	////////////////////
 
 
 
@@ -744,6 +658,29 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 					if (MediaPlayerService.this.isPlaying()) MediaPlayerService.this.player.setVolume(0.2f, 0.2f);
 					break;
 			}
+		}
+	}
+
+	/**
+	 * Returns the {@link com.zion.htf.data.SoundcloudTrack} corresponding to the current {@link MediaPlayerService#getCurrentTrack() playlist position}
+	 * @return The current {@link com.zion.htf.data.SoundcloudTrack}, or {@code null} if none found
+	 */
+	private SoundcloudTrack getCurrentTrack(){
+		SoundcloudTrack currentTrack = null;
+		if(null != this.tracks && 0 < this.tracks.size()) currentTrack = this.tracks.get(this.playlistPosition);
+		return currentTrack;
+	}
+
+	/**
+	 * Updates the notification, considering the current play and activity state
+	 */
+	private void updateNotification(){
+		if(!this.anyActivityInForeground && (this.isPlaying() || this.isPaused() || this.isPreparing())){
+			SoundcloudTrack currentTrack = this.getCurrentTrack();
+			if(null != currentTrack) this.notificationHelper.buildNotification(currentTrack.getArtist(), currentTrack.getTitle(), this.artist_id, this.artistPhoto, this.isPlaying() || this.isPreparing());
+		}
+		else if(this.anyActivityInForeground){
+			this.notificationHelper.killNotification();
 		}
 	}
 }

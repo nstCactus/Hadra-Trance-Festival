@@ -19,28 +19,27 @@
  *
  */
 
-package com.zion.analytics.db;
+package com.zion.music;
 
 import android.content.Context;
-import android.database.DatabaseErrorHandler;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
+import android.content.Intent;
 
-public class PiwikDatabaseHelper extends SQLiteOpenHelper{
-    private final Context context;
+public class ServiceUtils{
+	private static int activitiesInForeground = 0;
 
-    public PiwikDatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version){
-        super(context, name, factory, version);
-        this.context = context;
-    }
+	public static void notifyForegroundStateChanged(Context context, boolean inForeground){
+		int old = ServiceUtils.activitiesInForeground;
+		if (inForeground) {
+			ServiceUtils.activitiesInForeground++;
+		} else {
+			ServiceUtils.activitiesInForeground--;
+		}
 
-    @Override
-    public void onCreate(SQLiteDatabase db){
-        // Create the tables
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
-        // Upgrade the tables if needed
-    }
+		if (0 == old || 0 == ServiceUtils.activitiesInForeground) {
+			final Intent intent = new Intent(context, MediaPlayerService.class);
+			intent.setAction(MediaPlayerService.ACTION_FOREGROUND_STATE_CHANGED);
+			intent.putExtra(MediaPlayerService.EXTRA_NOW_IN_FOREGROUND, 0 != ServiceUtils.activitiesInForeground);
+			context.startService(intent);
+		}
+	}
 }

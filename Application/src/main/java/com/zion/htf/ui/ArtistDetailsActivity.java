@@ -29,7 +29,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
-import android.util.Log;
 
 import com.zion.htf.BuildConfig;
 import com.zion.htf.R;
@@ -67,7 +66,6 @@ public class ArtistDetailsActivity extends AbstractServiceProxyActivity implemen
 		try{
 			Bundle args = new Bundle(1);
 
-			Log.v("ArtistDetailsActivity", openingIntent.toString());
 			if(openingIntent.hasExtra(ArtistDetailsActivity.EXTRA_SET_ID)){
 				args.putInt(ArtistDetailsFragment.ARG_SET_ID, openingIntent.getIntExtra(ArtistDetailsActivity.EXTRA_SET_ID, 0));
 				args.putInt(ArtistSoundcloudFragment.ARG_SET_ID, openingIntent.getIntExtra(ArtistDetailsActivity.EXTRA_SET_ID, 0));

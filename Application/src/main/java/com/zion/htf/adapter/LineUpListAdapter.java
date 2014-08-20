@@ -91,7 +91,7 @@ public class LineUpListAdapter extends CachedImageCursorAdapter implements Stick
         holder.setType.setText(cursor.getString(MusicSet.COLUMN_TYPE));
         holder.hour.setText(String.format(Locale.ENGLISH, "%s - %s", LineUpListAdapter.DATE_FORMAT_SET_BOUNDS.format(cursor.getLong(MusicSet.COLUMN_BEGIN_DATE) * 1000), LineUpListAdapter.DATE_FORMAT_SET_BOUNDS.format(cursor.getLong(MusicSet.COLUMN_END_DATE) * 1000)));
 
-        holder.artistPhoto.setImageResource(R.drawable.no_image);
+        holder.artistPhoto.setImageBitmap(null);
         this.loadBitmap(Artist.getPictureResourceId(cursor.getString(MusicSet.COLUMN_ARTIST_PICTURE_NAME)), holder.artistPhoto);
     }
 

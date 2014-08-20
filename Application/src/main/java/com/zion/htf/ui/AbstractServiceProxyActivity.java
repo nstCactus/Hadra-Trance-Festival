@@ -22,84 +22,96 @@
 package com.zion.htf.ui;
 
 import android.content.ComponentName;
+import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 
-import java.lang.ref.WeakReference;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import com.zion.music.MediaPlayerService;
+
+import gov.nasa.arc.mct.util.WeakHashSet;
 
 public class AbstractServiceProxyActivity extends ActionBarActivity implements ServiceConnection{
-	protected IBinder serviceBinder = null;
 	protected ServiceConnection serviceConnection = (ServiceConnection)this;
 	private boolean serviceBound = false;
 
-	private final Set<WeakReference<AbstractServiceProxyActivity.ServiceProxyObserver>> observers = new HashSet<WeakReference<AbstractServiceProxyActivity.ServiceProxyObserver>>();
+	private final WeakHashSet<ServiceProxyObserver> observers = new WeakHashSet<ServiceProxyObserver>();
+
 
 	@Override
 	public void onServiceConnected(ComponentName name, IBinder serviceBinder){
-		this.serviceBinder = serviceBinder;
 		this.serviceBound = true;
+		MediaPlayerService.LocalBinder binder = (MediaPlayerService.LocalBinder)serviceBinder;
 
 		// Notify observers
-		for(WeakReference<AbstractServiceProxyActivity.ServiceProxyObserver> observer : this.observers){
-			observer.get().onServiceRegistered(serviceBinder);
+		for(ServiceProxyObserver observer : this.observers){
+			observer.onServiceConnectedToProxy(binder.getService());
 		}
 	}
 
 	@Override
 	public void onServiceDisconnected(ComponentName name){
-		this.serviceBinder = null;
 		this.serviceBound = false;
 
 		// Notify observers
-		for(WeakReference<AbstractServiceProxyActivity.ServiceProxyObserver> observer : this.observers){
-			observer.get().onServiceUnregistered(name);
+		for(ServiceProxyObserver observer : this.observers){
+			observer.onServiceConnectionLost(name);
 		}
 	}
 
 	@Override
 	protected void onPause(){
-		if(null != this.serviceBinder) this.unbindService(this.serviceConnection);
 		super.onPause();
+		Log.v("AbstractServiceProxyActivity", "Unbinding service");
+		if(this.isServiceBound()){
+			this.unbindService(this.serviceConnection);
+		}
+		else{
+			Log.w("AbstractServiceProxyActivity", "Useless call");
+		}
 	}
 
-	public void registerObserver(AbstractServiceProxyActivity.ServiceProxyObserver observer){
-		Log.v("AbstractServiceProxyActivity", String.format("Number of observers = %d", this.observers.size()));
-		if(!this.observerAlreadyExists(observer)) this.observers.add(new WeakReference<AbstractServiceProxyActivity.ServiceProxyObserver>(observer));
+	@Override
+	public void unbindService(ServiceConnection connection){
+		this.serviceBound = false;
+		super.unbindService(connection);
+	}
+
+	@Override
+	public boolean bindService(Intent service, ServiceConnection connection, int flags){
+		this.serviceBound = true;
+		return super.bindService(service, connection, flags);
 	}
 
 	/**
-	 * Checks if an observer is already register
-	 * @param observer the observer to look for in
-	 * @return {@code true} if the observer is already registered, {@code false} otherwise
+	 * Returns whether the service is currently bound
+	 * @return {@code true} if the service is currently bound, {@code false} otherwise
 	 */
-	private boolean observerAlreadyExists(AbstractServiceProxyActivity.ServiceProxyObserver observer){
-		boolean exists = false;
-		Iterator<WeakReference<AbstractServiceProxyActivity.ServiceProxyObserver>> iterator = this.observers.iterator();
+	public boolean isServiceBound(){
+		return this.serviceBound;
+	}
 
-		while(!exists && iterator.hasNext()){
-			WeakReference<AbstractServiceProxyActivity.ServiceProxyObserver> observerReference = iterator.next();
-			if(observerReference.get() == observer) exists = true;
-		}
 
-		return exists;
+	//////////////////////
+	// BEGIN Observable //
+	//////////////////////
+	public void registerObserver(AbstractServiceProxyActivity.ServiceProxyObserver observer){
+		this.observers.add(observer);
+		Log.v("AbstractServiceProxyActivity", String.format("Number of observers (after adding) = %d", this.observers.size()));
 	}
 
 	public void unregisterObserver(AbstractServiceProxyActivity.ServiceProxyObserver observer){
-		for(WeakReference<AbstractServiceProxyActivity.ServiceProxyObserver> observerReference : this.observers){
-			if (observerReference.get() == observer){
-				this.observers.remove(observerReference);
-				break;
-			}
-		}
+		this.observers.remove(observer);
+		Log.v("AbstractServiceProxyActivity", String.format("Number of observers (after removal) = %d", this.observers.size()));
 	}
+	////////////////////
+	// END Observable //
+	////////////////////
+
 
 	public interface ServiceProxyObserver{
-		void onServiceRegistered(IBinder serviceBinder);
-		void onServiceUnregistered(ComponentName name);
+		void onServiceConnectedToProxy(MediaPlayerService service);
+		void onServiceConnectionLost(ComponentName name);
 	}
 }

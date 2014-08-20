@@ -25,7 +25,7 @@
     <string name="error_failed_fetching_poi">Failed fetching the list of locations</string>
     <string name="action_switchToTerrain" tools:ignore="MissingTranslation">Terrain</string>
     <string name="action_switchToNormal" tools:ignore="MissingTranslation">Normal</string>
-    <string name="action_switchToHybrid">Satellite</string>
+    <string name="action_switchToHybrid" tools:ignore="MissingTranslation">Satellite</string>
     <string name="action_directions">Get directions</string>
 
 	<string-array name="map_types">

@@ -38,6 +38,7 @@
             android:id="@+id/artist_photo"
             android:layout_gravity="center"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             style="@style/artist.photo"
             tools:src="@drawable/ph_by_the_rain"
@@ -50,26 +51,24 @@
             android:layout_gravity="center_vertical"
             android:layout_below="@+id/artist_photo"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_marginTop="10dp">
 
             <com.zion.widget.TintImageButton
                 android:id="@+id/facebook"
                 android:src="@drawable/social_facebook"
-                android:onClick="onClick"
                 android:layout_margin="5dp"
                 style="@style/imageButtons" />
 
             <com.zion.widget.TintImageButton
                 android:id="@+id/soundcloud"
                 android:src="@drawable/social_soundcloud"
-                android:onClick="onClick"
                 android:layout_margin="5dp"
                 style="@style/imageButtons" />
 
             <com.zion.widget.TintImageButton
                 android:id="@+id/website"
                 android:src="@drawable/social_www"
-                android:onClick="onClick"
                 android:layout_margin="5dp"
                 style="@style/imageButtons" />
         </LinearLayout>
@@ -81,8 +80,10 @@
             android:padding="10dp"
             android:layout_alignParentTop="false"
             android:layout_toRightOf="@+id/artist_photo"
+            android:layout_toEndOf="@+id/artist_photo"
             android:layout_alignTop="@+id/artist_photo"
             android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:layout_centerVertical="true">
 
             <com.mobsandgeeks.ui.TypefaceTextView
@@ -92,6 +93,7 @@
                 android:id="@+id/artist_name"
                 android:textColor="@color/brand_orange"
                 android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 tools:text="By the rain" />
 
             <TextView
@@ -102,7 +104,8 @@
                 tools:text="TR / Epic Tribe/ BMMS/Trimurti"
                 android:textColor="@color/brand_yellow"
                 android:layout_below="@+id/artist_name"
-                android:layout_alignParentLeft="true"/>
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"/>
 
         </RelativeLayout>
     </RelativeLayout>

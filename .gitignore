@@ -1,26 +1,11 @@
-# built application files
-*.apk
-*.ap_
-
-# files for the dex VM
-*.dex
-
-# Java class files
-*.class
-
-# generated files
-build/*
-libs/*
-
-# local gradle wrapper
 .gradle
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
+.DS_Store
+/build
 
 # private stuff
-/.idea/*
-/local.properties
-
-# Finder's crap
-.DS_Store
-codeStyleSettings.xml
-.idea/dictionaries/*
 secrets.xml
+.idea/*
+gradle

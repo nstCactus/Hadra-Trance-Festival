@@ -32,7 +32,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:id="@+id/artist_photo"
-        android:src="@drawable/no_image"
+        android:background="@drawable/no_image_wrapper"
         tools:src="@drawable/ph_adn_smith"
         android:scaleType="centerCrop"
         android:layout_marginRight="10dp"

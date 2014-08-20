@@ -33,6 +33,7 @@
         android:id="@+id/artist_photo"
         android:layout_gravity="center_vertical"
         android:layout_centerVertical="true"
+        android:background="@drawable/no_image_wrapper"
         tools:src="@drawable/ph_adn_smith"
         android:cropToPadding="false"
         android:scaleType="fitCenter"
