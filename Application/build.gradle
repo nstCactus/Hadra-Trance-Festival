@@ -44,6 +44,9 @@ android {
     defaultConfig {
         minSdkVersion 10
         targetSdkVersion 19
+
+        resConfigs "en", "fr"
+        resConfigs "nodpi", "mdpi", "hdpi", "xhdpi", "xxhdpi", "xxxhdpi"
     }
 
     signingConfigs{
