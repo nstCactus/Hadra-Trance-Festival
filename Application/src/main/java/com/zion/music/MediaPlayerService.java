@@ -22,8 +22,10 @@
 package com.zion.music;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
@@ -74,7 +76,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 	private final MediaPlayerService.LocalBinder binder = new MediaPlayerService.LocalBinder();
 
 	/** Playlist */
-	private ArrayList<SoundcloudTrack> tracks = new ArrayList<SoundcloudTrack>();
+	private ArrayList<SoundcloudTrack> tracks = new ArrayList<>();
 
 	/** Position of the current playlist item */
 	private int playlistPosition = 0;
@@ -86,7 +88,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 	private boolean repeat = false;
 
 	/** Collection of clients to be notified of various status changes */
-	private final WeakHashSet<Client> clients = new WeakHashSet<Client>();
+	private final WeakHashSet<MediaPlayerService.Client> clients = new WeakHashSet<>();
 
 	/** Database identifier of the artist (used to open the correct Artist Details when notification clicked) */
 	private int artist_id;
@@ -99,7 +101,12 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 
 	/** The percentage of the track that is buffered */
 	private int bufferedPercentage;
-	private AudioManager audioManager;
+
+    /** Used to pause playback when headphones are unplugged */
+    private final BroadcastReceiver audioBecomingNoisyBroadcastReceiver = new AudioBecomingNoisyBroadcastReceiver();
+    private final IntentFilter audioBecomingNoisyIntentFilter = new IntentFilter(AudioManager.ACTION_AUDIO_BECOMING_NOISY);
+
+    private AudioManager audioManager;
 	private final AudioManager.OnAudioFocusChangeListener audioFocusChangeListener = new OnAudioFocusChangeListener();
 	private NotificationHelper notificationHelper;
 	private Bitmap artistPhoto;
@@ -271,6 +278,8 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 		if(this.requestAudioFocus()){
 			if(null == this.player) this.initPlayer();
 
+            this.registerReceiver(this.audioBecomingNoisyBroadcastReceiver, this.audioBecomingNoisyIntentFilter);
+
 			if(MediaPlayerService.State.Paused.equals(this.state)){
 				this.changeState(Playing);
 				this.player.start();
@@ -315,7 +324,9 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 			this.player = null;
 			this.changeState(Stopped);
 			this.abandonAudioFocus();
-		}
+            this.unregisterReceiver(this.audioBecomingNoisyBroadcastReceiver);
+
+        }
 	}
 
 	/**
@@ -385,7 +396,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 	 * @param offset whether to turn repeat on or off.
 	 */
 	public void seekTo(int offset){
-        if(MediaPlayerService.State.Playing == this.state || MediaPlayerService.State.Paused == this.state) this.player.seekTo(offset);
+        if(this.isPlaying() || this.isPaused()) this.player.seekTo(offset);
 	}
 
 	/**
@@ -516,7 +527,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 
 	@Override
 	public boolean onError(MediaPlayer mp, int what, int extra){
-		if(BuildConfig.DEBUG) Log.v("MediaPlayerService", String.format("Error manipulation MediaPlayer (%d, %d)", what, extra));
+		if(BuildConfig.DEBUG) Log.e("MediaPlayerService", String.format("Error manipulating MediaPlayer (%d, %d)", what, extra));
 		switch(what){
 			case MediaPlayer.MEDIA_ERROR_IO:
 				Toast.makeText(this, R.string.error_player_IO, Toast.LENGTH_SHORT).show();
@@ -545,7 +556,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 	 * Register a new client to receive updates about the service status
 	 * @param client the client to register
 	 */
-	public void registerClient(Client client){
+	public void registerClient(MediaPlayerService.Client client){
 		this.clients.add(client);
 	}
 
@@ -553,7 +564,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 	 * Unregister a new client
 	 * @param client the client to unregister
 	 */
-	public void unregisterClient(Client client){
+	public void unregisterClient(MediaPlayerService.Client client){
 		this.clients.remove(client);
 	}
 
@@ -561,7 +572,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 	 * Notify clients that the internal state of the service has changed
 	 */
 	private void notifyStateChanged(){
-		for(Client client : this.clients){
+		for(MediaPlayerService.Client client : this.clients){
 			client.onPlayerStateChanged(this.state);
 		}
 	}
@@ -572,7 +583,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 	 * @param duration the currently played track duration, in milliseconds
 	 */
 	private void notifyProgressChanged(int progress, int duration){
-		for(Client client : this.clients){
+		for(MediaPlayerService.Client client : this.clients){
 			client.onPlayerProgressChanged(progress, duration);
 		}
 	}
@@ -582,7 +593,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 	 * @param bufferedPercentage the percentage of the track that is currently buffered
 	 */
 	private void notifyBufferProgressChanged(int bufferedPercentage){
-		for(Client client : this.clients){
+		for(MediaPlayerService.Client client : this.clients){
 			client.onBufferProgressChanged(bufferedPercentage);
 		}
 	}
@@ -624,7 +635,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 		@Override
 		public void run(){
 			MediaPlayerService.this.notifyProgressChanged(MediaPlayerService.this.getCurrentPosition(), MediaPlayerService.this.getDuration());
-			if(Playing == MediaPlayerService.this.state){
+			if(MediaPlayerService.this.isPlaying()){
 				MediaPlayerService.this.playerProgressHandler.postDelayed(this, 1000);
 			}
 		}
@@ -683,4 +694,13 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 			this.notificationHelper.killNotification();
 		}
 	}
+
+    private class AudioBecomingNoisyBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(AudioManager.ACTION_AUDIO_BECOMING_NOISY.equals(intent.getAction())){
+                if(MediaPlayerService.this.isPlaying()) MediaPlayerService.this.pausePlayback();
+            }
+        }
+    }
 }
