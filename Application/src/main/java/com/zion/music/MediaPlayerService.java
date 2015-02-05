@@ -201,7 +201,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 			}
 			this.state = state;
 
-			if(state.equals(State.Stopped)){
+			if(state.equals(MediaPlayerService.State.Stopped)){
 				this.notificationHelper.killNotification();
 			}
 			else{
@@ -385,7 +385,7 @@ public class MediaPlayerService extends Service implements MediaPlayer.OnPrepare
 	 * @param offset whether to turn repeat on or off.
 	 */
 	public void seekTo(int offset){
-		this.player.seekTo(offset);
+        if(MediaPlayerService.State.Playing == this.state || MediaPlayerService.State.Paused == this.state) this.player.seekTo(offset);
 	}
 
 	/**
